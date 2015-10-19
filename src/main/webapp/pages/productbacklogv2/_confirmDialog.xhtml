@@ -1,0 +1,71 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:composite="http://java.sun.com/jsf/composite">
+
+
+	<p:confirmDialog modal="true" closable="false" width="400" header="Export Warning!" severity="alert" widgetVar="exportError">
+		<f:facet name="message">
+			<h:outputFormat styleClass="msgWithIdPlaceHolder" value="Please select at least one userstory to export" />
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="OK" type="button" onclick="exportError.hide();" />
+		</h:panelGroup>
+	</p:confirmDialog>
+	
+	<p:confirmDialog widgetVar="deleteFileDlg" id="deleteFileDlgId" width="400" modal="true" closable="false" severity="alert">
+		<f:facet name="header">
+					<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+						<f:param value="Attachment" />
+					</h:outputFormat>
+		</f:facet>
+		<f:facet name="message">
+			<h:outputFormat styleClass="msgWithIdPlaceHolder" value="#{msg['myagile.project.DeleteFile']}">
+				<f:param value="ID_PLACEHOLDER" />
+			</h:outputFormat>
+			<br />
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes" action="#{productBacklogBeanV2.deleteAttachment}" update="userStoryForm:filelist" oncomplete="deleteFileDlg.hide();revertIdPlaceholder();" />
+			<p:commandButton value="No" oncomplete="deleteFileDlg.hide();revertIdPlaceholder();" />
+		</h:panelGroup>
+	</p:confirmDialog>
+
+	<p:confirmDialog widgetVar="deleteNotAddedFileDlg" id="deleteNotAddedFileDlgId" width="400" modal="true" closable="false" severity="alert">
+		<f:facet name="header">
+					<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+						<f:param value="Attachment" />
+					</h:outputFormat>
+		</f:facet>
+		<f:facet name="message">
+			<h:outputFormat styleClass="msgWithIdPlaceHolder" value="#{msg['myagile.project.DeleteFile']}">
+				<f:param value="ID_PLACEHOLDER" />
+			</h:outputFormat>
+			<br />
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes" action="#{productBacklogBeanV2.deleteNotAddedAttachment}" update="userStoryForm:filelist" oncomplete="deleteNotAddedFileDlg.hide();revertIdPlaceholder();" />
+			<p:commandButton value="No" oncomplete="deleteNotAddedFileDlg.hide();revertIdPlaceholder();" />
+		</h:panelGroup>
+	</p:confirmDialog>
+	
+	<p:confirmDialog widgetVar="deleteDlgUs" width="400" modal="true" closable="false" severity="alert" id="deleteDialog">
+		<f:facet name="header">
+					<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+						<f:param value="User Story" />
+					</h:outputFormat>
+		</f:facet>
+		<f:facet name="message">
+			<h:outputFormat styleClass="msgWithIdPlaceHolder" value="#{msg['myagile.home.Delete']}">
+				<f:param value="user story" />
+				<f:param value="#ID_PLACEHOLDER" />
+			</h:outputFormat>
+			<br />
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton global="false" id="yesDelete"
+				onclick="($(this).parents('#deleteDialog').find('.ui-dialog-content').append('Sending inform email...Please wait!'));$(this).parent().find('#noDelete').css('display', 'none'); $(this).css('display', 'none');"
+				value="Yes" actionListener="#{productBacklogBeanV2.deleteUserStory}" oncomplete="deleteDlgUs.hide();revertIdPlaceholder();" process="@none"
+				update=":form-userStoryTable, :fieldset-userStoryForm , deleteDialog" />
+			<p:commandButton global="false" id="noDelete" value="No" oncomplete="deleteDlgUs.hide();revertIdPlaceholder();" process="@none" />
+		</h:panelGroup>
+	</p:confirmDialog>
+</ui:composition>

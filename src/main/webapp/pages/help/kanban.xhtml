@@ -1,0 +1,121 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+		xmlns:ui="http://java.sun.com/jsf/facelets" 
+		xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui" template="/WEB-INF/layouts/template.xhtml"
+		xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="layoutTitle">
+        Myagile User's Guide
+    </ui:define>
+	<ui:define name="layoutHead">
+	</ui:define>
+	<ui:define name="layoutBody">
+		<c:set value="#{request.contextPath}/resources/img/help/kanban" var="kanbanSourcePath"></c:set>
+		<div class="content-section">
+			<div class="heading">
+				<h4>Kanban Overview</h4>
+				<a id="kanbanOverview"></a>
+			</div>
+			<div class="content-block">
+				<div class="content-block-nav">
+					<p class="content-block-nav-back">
+						<a href="#{request.contextPath}/help"><i class="icon-double-angle-left"></i> Guide</a>
+						<a href="#{request.contextPath}/help/wizard"><i class="icon-double-angle-left"></i> Previous</a>
+					</p>
+					<p class="content-block-nav-forward">
+						<a href="#{request.contextPath}/help/manage-sprint">Next <i class="icon-double-angle-right"></i></a>
+					</p>
+				</div>
+				<div class="content-block-main">
+					<dl>
+						<dt><a id="kanban-1">1. Key Features:</a></dt>
+						<dd>
+							<ul>
+								<li>Tasks overview by team and sprint.</li>
+								<li>Task's details.</li>
+								<li>Point Estimation.</li>
+								<li>History of Point.</li>
+								<li>Task Assign.</li>
+								<li>Tasks Relationship.</li>
+								<li>Kanban settings (column colors, column names...).</li>
+							</ul>
+							<img alt="kanban_guide.picture" src="#{kanbanSourcePath}/kanban-1.jpg" />
+						</dd>
+						<dt><a id="kanban-2">2. Tasks overview by team and sprint</a></dt>
+						<dd>
+							<p>Tasks are loaded by team and sprint. In order to show tasks of different sprint and team you 
+							can do that by clicking on two drop down list and select team or sprint above the kanban</p>
+							<img alt="kanban_guide.picture" src="#{kanbanSourcePath}/kanban-2.jpg" />
+							
+						</dd>
+						<dt><a id="kanban-3">3. Task's detail</a></dt>
+						<dd>
+							<p>Each issue is represented by a yellow sticker. It only shows title of issue when first load. In 
+							order to view detail of issue, the user have to double clickon white space of sticker. The 
+							detail of issue will be shown.</p>
+							<img alt="kanban_guide.picture" src="#{kanbanSourcePath}/kanban-3.jpg" />
+						</dd>
+						<dt><a id="kanban-4">4. Point Estimation</a></dt>
+						<dd>
+							<p>There are two fields on the bottom left of expanded sticker.</p>
+							<img alt="kanban_guide.picture" src="#{kanbanSourcePath}/kanban-4.jpg" />
+							<p>One is Remaining Point (R) and the other is Estimate Point (E). User can update these 
+							information by clicking on the text and a text box will appear for inputting new information.</p>
+							<img alt="kanban_guide.picture" src="#{kanbanSourcePath}/kanban-5.jpg" />
+							<p>There some notes for working with estimate and remaining point:</p>
+							<ul>
+								<li>There are two formats of point DT or plain number. For example: D1T1 or 2</li>
+								<li>User can input point by many ways. For example: D1T1 or 1 1.</li>
+								<li>The remaining point can't be changed while it's in To Do column.</li>
+								<li>The estimate point can only be changed when it's in To Do column.</li>
+							</ul>
+						</dd>
+						<dt><a id="kanban-5">5. History of Point</a></dt>
+						<dd>
+							<p>User can view history of updated point by clicking on history icon</p>
+							<img alt="kanban_guide.picture" src="#{kanbanSourcePath}/kanban-6.jpg" />
+							<p>It will show list of updated history points</p>
+							<img alt="kanban_guide.picture" src="#{kanbanSourcePath}/kanban-7.jpg" />
+						</dd>
+						<dt><a id="kanban-6">6. Task Assign</a></dt>
+						<dd>
+							<p>User can assign task for each member in team by clicking on avatar icon on top right of 
+							sticker. An overlay panel will appear for selecting team member.</p>
+							<div style="width: 100%; display: flex; justify-content: space-around;">
+								<div><img alt="kanban_guide.picture" src="#{kanbanSourcePath}/kanban-8.jpg" /></div>
+								<div><img alt="kanban_guide.picture" src="#{kanbanSourcePath}/kanban-9.jpg" /></div>
+							</div>
+						</dd>
+						<dt><a id="kanban-7">7. Tasks Relationship</a></dt>
+						<dd>
+							<p>Some tasks which has issue parent will have a relationship icon located on top right and 
+							stand next to avatar icon. </p>
+							<img alt="kanban_guide.picture" src="#{kanbanSourcePath}/kanban-10.jpg" />
+							<p>When the user clicked on, a pop up will appear and give user a relationship graph between 
+							tasks. The red task is the highlight of clicked task.</p>
+							<img alt="kanban_guide.picture" src="#{kanbanSourcePath}/kanban-11.jpg" />
+						</dd>
+						<dt><a id="kanban-8">8. Kanban settings</a></dt>
+						<dd>
+							<p>The settings panel default is hidden and will be shown when user click on "Settings" button.</p>
+							<img alt="kanban_guide.picture" src="#{kanbanSourcePath}/kanban-12.jpg" />
+							<p>User can add more column by clicking "Add more Field" button. A text box will appear for user
+							input column name. Note: User can add new column as many as they want.</p>
+							<p>User can also set color for column by clicking "color rectangle" next to column name.</p>
+							<img alt="kanban_guide.picture" src="#{kanbanSourcePath}/kanban-13.jpg" />
+							<img alt="kanban_guide.picture" src="#{kanbanSourcePath}/kanban-14.jpg" />
+							<p>You can also remove column by clicking "X" button. There are some columns that can't be 
+							removed by default: "To do, Done and Accepted".</p>
+							<p>“Accepted” column is hidden by default, user can show it by clicking “Eye” icon. The 
+							difference between “Done” and “Accepted” column is in some situation, the “Done” column 
+							means “Done but not yet accepted by PO” and “Accepted” column means “Done and 
+							accepted by PO”.</p>
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+	<ui:define name="layoutFooter">
+	</ui:define>
+</ui:composition>

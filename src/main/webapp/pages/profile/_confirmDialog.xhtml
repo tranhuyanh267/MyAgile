@@ -1,0 +1,40 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:composite="http://java.sun.com/jsf/composite">
+<p:confirmDialog widgetVar="deleteDlgEmail" width="600" modal="true" closable="false" severity="alert" id="deleteDialogEmail">
+	<f:facet name="header">
+		<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+			<f:param value="Email" />
+		</h:outputFormat>
+	</f:facet>
+	<f:facet name="message">
+		<h:outputFormat styleClass="msgWithIdPlaceHolder" value="#{msg['myagile.home.Delete']}">
+			<f:param value="email "/>
+			<f:param value="#{profileMB.deletedEmail.email}"/>
+		</h:outputFormat>
+	</f:facet>
+	<h:panelGroup layout="block" style="text-align: right">
+		<p:commandButton global="false" id="yesDelete"
+			value="Yes" actionListener="#{profileMB.deleteMemberEmail}" oncomplete="deleteDlgEmail.hide();" process="@none"
+			update=":editProfile:emaiListPane, :editProfile:primaryEmailPane" />
+		<p:commandButton global="false" id="noDelete" value="No" oncomplete="deleteDlgEmail.hide();" process="@none" />
+	</h:panelGroup>	
+</p:confirmDialog>
+<p:confirmDialog widgetVar="switchDlgEmail" width="600" modal="true" closable="false" severity="alert" id="switchDialogEmail">
+	<f:facet name="header">
+		<h:outputFormat value="#{msg['myagile.SwitchDialog']}">
+			<f:param value="Email" />
+		</h:outputFormat>
+	</f:facet>
+	<f:facet name="message">
+		<h:outputFormat styleClass="msgWithIdPlaceHolder" value="#{msg['myagile.profile.SwitchEmail']}" escape="false">
+			<f:param value="#{profileMB.switchedEmail.email}"/>
+		</h:outputFormat>
+	</f:facet>
+	<h:panelGroup layout="block" style="text-align: right">
+		<p:commandButton global="false" id="yesSwitch"
+			value="Yes" actionListener="#{profileMB.switchAlternateToPrimaryEmail}" oncomplete="switchDlgEmail.hide();" process="@none"
+			update=":editProfile:emaiListPane, :editProfile:primaryEmailPane,:editProfile:addEmailPane" />
+		<p:commandButton global="false" id="noSwitch" value="No" oncomplete="switchDlgEmail.hide();" process="@none" />
+	</h:panelGroup>	
+</p:confirmDialog>
+</ui:composition>

@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+		xmlns:ui="http://java.sun.com/jsf/facelets" 
+		xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui" template="/WEB-INF/layouts/template.xhtml"
+		xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="layoutTitle">
+        Myagile User Guide
+    </ui:define>
+	<ui:define name="layoutHead">
+	</ui:define>
+	<ui:define name="layoutBody">
+		<c:set value="#{request.contextPath}/resources/img/help/scrumboard" var="scrumboardSourcePath"></c:set>
+		<div class="content-section">
+			<div class="heading">
+				<h4>Scrum Board Overview</h4>
+				<a id="wizardOverview"></a>
+			</div>
+			<div class="content-block">
+				<div class="content-block-nav">
+					<p class="content-block-nav-back">
+						<a href="#{request.contextPath}/help"><i class="icon-double-angle-left"></i> Guide</a>
+						<a href="#{request.contextPath}/help/remaining-task"><i class="icon-double-angle-left"></i> Previous</a>
+					</p>
+					<p class="content-block-nav-forward">
+						<a href="#{request.contextPath}/help/kanbanboard">Next <i class="icon-double-angle-right"></i></a>
+					</p>
+				</div>
+				<div class="content-block-main">
+				
+					<p>Choose the “Scrum Board” to come the Scrum Board page</p>
+					<p>Srum board:</p>
+					<ul>
+						<li>Is used to manage Issues in one Sprint (often 2 weeks/Sprint). Choose Setting for more detail.</li>
+						<li>User/Team estimates total points for whole Issues in Sprint before starting Sprint</li>
+						<li>During Sprint time, user/team is not allowed to ask more Issue</li>
+					</ul>
+					<img alt="scrumboard" src="#{scrumboardSourcePath}/01.png" />
+					<dl>
+						<dt><a id="create">1. Create userstory</a></dt>
+						<dd>
+							<p>Click on "Create User Story" button and input information.</p>
+							<img alt="scrumboard.picture" src="#{scrumboardSourcePath}/02.png" />
+							<p>Click “Save”.</p>
+						</dd>
+						<dt><a id="update">2. Move task between columns</a></dt>
+						<dd>
+							<p>Move (drap and drop) task to other column</p>
+							<img alt="scrumboard" src="#{scrumboardSourcePath}/03.png" />
+						</dd>
+						<dt><a id="update">3. View details of task</a></dt>
+						<dd>
+							<p>Click on task ID to view details.</p>
+							<img alt="scrumboard" src="#{scrumboardSourcePath}/09.png" />
+						</dd>
+						<dt><a id="delete">4. Setting</a></dt>
+						<dd>
+							<p>Click "Setting" button to open the setting panel</p>
+							<img alt="scrumboard" src="#{scrumboardSourcePath}/04.png" />
+							<p>1. Change the color of column header.</p>
+							<p>2. Delete column.</p>
+							<p>3. Show/hide column.</p>
+							<p>4. Check this check box to add swimline for scrum board.</p>
+							<img alt="scrumboard" src="#{scrumboardSourcePath}/swimline.png" />
+							<p>Click "Add more Field" button to add more columns to Scrum Board:</p>
+							<img alt="scrumboard" src="#{scrumboardSourcePath}/06.png" />
+							<BR />
+							<BR />
+							
+							
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+	<ui:define name="layoutFooter">
+	</ui:define>
+</ui:composition>

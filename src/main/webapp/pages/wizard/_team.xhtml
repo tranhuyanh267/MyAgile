@@ -1,0 +1,149 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<script type="text/javascript">
+		navigate(1);		
+	</script>
+	<style>
+	.teaminfo-column td{
+		border: none;
+	}
+	.teaminfo-column .ui-message-error{
+		margin: auto 0px;
+	}
+	</style>
+	<p:fieldset id="panel">
+		<p:progressBar id="progressBarTeam" widgetVar="pbTeam" value="50" labelTemplate="Progress: 2/4"/>
+		<h:outputText value="Team Details" style="font-weight:bold;margin-left:5px;color:#45a1de;font-size: 15px" />		
+		<p:separator style="margin:5px" />	
+			<ui:repeat var="x" value="#{wizardBean.createdTeamList}"
+			varStatus="index" id="repeatTeam">
+			<p:commandButton value="X" style="float:right" actionListener="#{wizardBean.removeTeam(index.index)}" immediate="true" update="@([id$=panel])" />
+				<h:panelGrid columns="2" cellpadding="10" columnClasses="teaminfo-column,teaminfo-column">
+					<h:panelGroup layout="block" id="team-logo"
+						style="padding:10px; margin:0 auto; width:200px">
+						<h:panelGroup layout="block" id="team-logo-img">
+							<h:graphicImage alt="team-logo" rendered="#{x.logo != null}"
+								value="/file/?type=team-logo&amp;t=#{x.teamId}&amp;filename=#{x.logo}"
+								styleClass="img-rounded img-polaroid input-block-level" />
+							<h:graphicImage alt="team-logo" rendered="#{x.logo == null}"
+								value="/resources/img/no_image_available.png"
+								styleClass="img-rounded img-polaroid input-block-level" />
+							<div id="upload-error#{index.index}"
+								class="text-center alert alert-error "
+								style="margin-bottom: 5px; margin-top: 5px; display: none"></div>
+						</h:panelGroup>
+
+						<button type="button" id="btnChangeLogoTeam#{index.index}"
+							style="margin-top: 10px;"
+							class="btn btn-small btn-info input-block-level">
+							<i class="icon-picture"></i> Change Logo
+						</button>
+						<div id="team-logo-uploaderTeam#{index.index}"
+							style="display: none;"></div>
+
+						<p:blockUI block="team-logo"
+							widgetVar="teamLogoBlock#{index.index}">
+							Uploading... (<span class="upload-progress">0%</span>)
+						</p:blockUI>
+					</h:panelGroup>
+
+					<p:panelGrid id="createTeamFormWizard">
+						<p:row>
+							<p:column>
+								<h:outputLabel for="teamName" value="Team Name: " />
+							</p:column>
+							<p:column>
+								<p:inputText id="teamName" value="#{x.teamName}" required="true" requiredMessage="#{msg['myagile.team.EmptyTeamName']}" maxlength="255">
+									<p:ajax update="teamNameMsgs" event="keyup" />
+								</p:inputText>
+								
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column colspan="2">
+								<p:message for="teamName" id="teamNameMsgs" />
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputLabel for="mailGroup" value="Group Mail: " />
+							</p:column>
+							<p:column>
+								<p:inputText id="mailGroup" value="#{x.mailGroup}" required="true" maxlength="255" requiredMessage="#{msg['myagile.team.EmptyEmail']}">
+									<p:ajax event="keyup" update="mailGroupMsgs"/>					
+									<f:validator binding="#{teamValidator}" />
+								</p:inputText>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column colspan="2">
+								<p:message for="mailGroup" id="mailGroupMsgs" />
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputLabel for="descriptiont" value="Description: " />
+							</p:column>
+							<p:column>
+								<p:inputTextarea id="descriptiont#{index.index}" autoResize="true" value="#{x.description}" style="margin-bottom:10px" maxlength="1000" />
+								<h:inputHidden />
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputLabel for="estDate" value="Established date: " />
+							</p:column>
+							<p:column>
+								<p:calendar id="estDate" value="#{x.establishedDate}" pattern="MM/dd/yyyy" avigator="true" converterMessage="Date is invalid. Date format MM/dd/yyyy" maxlength="255">
+									<f:convertDateTime type="date" pattern="MM/dd/yyyy" />
+								</p:calendar>
+						<p:message for="estDate" />
+							</p:column>
+						</p:row>
+						<h:outputLabel for="selectproject" value="Projects: "
+							style="display:none" />
+						<p:selectCheckboxMenu id="selectproject" style="display:none"
+							value="#{teamBean.selectedProjects}" label="Project"
+							filter="true" filterText="Filter" filterMatchMode="startsWith"
+							panelStyle="width:300px">
+							<f:selectItems value="#{teamBean.findProjectsByUser()}" var="p"
+								itemLabel="#{p.projectName}" itemValue="#{p.projectId}" />
+						</p:selectCheckboxMenu>
+						<h:inputHidden />
+					</p:panelGrid>
+				</h:panelGrid>
+		
+			<p:remoteCommand name="updateLogo"
+				actionListener="#{wizardBean.newTeamLogo}" update="team-logo-img"
+				process="@this" />	
+				<p:separator />
+		</ui:repeat>
+		<script type="text/javascript">
+		//<![CDATA[			
+			init();
+		//]]>
+		</script>
+		
+		<p:commandButton value="Add more Team" type="submit" update="panel" style="float:left" actionListener="#{wizardBean.addMoreTeam}" rendered="#{wizardBean.createdTeamList.size() != 0}"/>
+		<p:commandButton value="Create Team" update="panel" style="float:left; margin: 12px 5px;" actionListener="#{wizardBean.addMoreTeam}" rendered="#{wizardBean.createdTeamList.size() == 0}"/>
+
+		<p:selectCheckboxMenu id="checkTeams" value="#{wizardBean.selectedTeams}" style="margin-top: 10px;" label="Select Team to Assign"	filter="true" filterText="Filter" filterMatchMode="startsWith">
+			<f:selectItems value="#{wizardBean.teams}" var="t"	itemLabel="#{t.teamName} (#{t.mailGroup})" itemValue="#{t.teamId}" />
+		</p:selectCheckboxMenu>	
+		
+	</p:fieldset>
+
+	<script>
+	/*
+	var mailGroup=$( "input[id$='mailGroup']" )
+	$.each( mailGroup, function( key, value ) {
+		mailGroup.eq(key).keyup(function(){
+		});
+	})	*/	
+	</script>
+</ui:composition>

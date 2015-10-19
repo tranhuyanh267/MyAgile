@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:custom="http://myagile.com/custom">
+<p:fieldset styleClass="span12">
+	<h:form id="form-userStoryTable" prependId="false">
+		<h:panelGroup id="wrapper">
+			<h:panelGroup layout="block" styleClass="wrap-search-link">
+				<h:panelGroup styleClass = "wrap-search" layout="block">
+					<h:outputLabel value="Search:"></h:outputLabel>
+					<h:inputText id="txtSearch" value="#{adminBeanV2.lazyLoadingMember.filters.value}" onkeyup="ajaxDelay()" onkeypress="if(event.keyCode == 13) return false;">
+						<p:watermark value="Please enter a keywork" for="txtSearch"></p:watermark>
+					</h:inputText>
+				</h:panelGroup>
+				<h:panelGroup styleClass="wrap-admin-link-project" layout="block">
+					<h:panelGroup styleClass="admin-link-user-project" layout="block">
+						<a href="#{request.contextPath}/admin/users" class="selected-link">Users</a>
+						| <a href="#{request.contextPath}/admin/projects">Projects</a>
+					</h:panelGroup>
+				</h:panelGroup>
+				<div class = "clear:both;"></div>
+			</h:panelGroup>
+			<ui:param name="sortField" value="#{adminBeanV2.lazyLoadingMember.sorters}"></ui:param>
+			<h:panelGroup id="wrap-tb-users">
+				<table id = "tb-users" border = "1">
+					<thead>
+						<tr>
+							<th class = "header-sort" data-field = "username">
+								<h:outputText value="Username"/>
+								<h:panelGroup styleClass="th-username ui-icon ui-icon-carat-2-n-s" rendered="#{sortField.field ne 'username'}"></h:panelGroup>
+								<h:panelGroup styleClass="th-username ui-icon ui-icon-triangle-1-n" rendered="#{sortField.field eq 'username' and sortField.value eq 'ASC'}"></h:panelGroup>
+								<h:panelGroup styleClass="th-username ui-icon ui-icon-triangle-1-s" rendered="#{sortField.field eq 'username' and sortField.value eq 'DESC'}"></h:panelGroup>
+							</th>
+							<th class = "header-sort" data-field = "firstName">
+								<h:outputText value="First Name"/>
+								<h:panelGroup styleClass="th-firstName ui-icon ui-icon-carat-2-n-s" rendered="#{sortField.field ne 'firstName'}"></h:panelGroup>
+								<h:panelGroup styleClass="th-firstName ui-icon ui-icon-triangle-1-n" rendered="#{sortField.field eq 'firstName' and sortField.value eq 'ASC'}"></h:panelGroup>
+								<h:panelGroup styleClass="th-firstName ui-icon ui-icon-triangle-1-s" rendered="#{sortField.field eq 'firstName' and sortField.value eq 'DESC'}"></h:panelGroup>
+							</th>
+							<th class = "header-sort" data-field = "lastName">
+								<h:outputText value="Last Name"/>
+								<h:panelGroup styleClass="th-lastName ui-icon ui-icon-carat-2-n-s" rendered="#{sortField.field ne 'lastName'}"></h:panelGroup>
+								<h:panelGroup styleClass="th-lastName ui-icon ui-icon-triangle-1-n" rendered="#{sortField.field eq 'lastName' and sortField.value eq 'ASC'}"></h:panelGroup>
+								<h:panelGroup styleClass="th-lastName ui-icon ui-icon-triangle-1-s" rendered="#{sortField.field eq 'lastName' and sortField.value eq 'DESC'}"></h:panelGroup>
+							</th>
+							<th class = "header-sort" data-field = "company">
+								<h:outputText value="Company"/>
+								<h:panelGroup styleClass="th-company ui-icon ui-icon-carat-2-n-s" rendered="#{sortField.field ne 'company'}"></h:panelGroup>
+								<h:panelGroup styleClass="th-company ui-icon ui-icon-triangle-1-n" rendered="#{sortField.field eq 'company' and sortField.value eq 'ASC'}"></h:panelGroup>
+								<h:panelGroup styleClass="th-company ui-icon ui-icon-triangle-1-s" rendered="#{sortField.field eq 'company' and sortField.value eq 'DESC'}"></h:panelGroup>
+							
+							</th>
+							<th class = "header-sort" data-field = "tokenDate">
+								<h:outputText value="Created"/>
+								<h:panelGroup styleClass="th-tokenDate ui-icon ui-icon-carat-2-n-s" rendered="#{sortField.field ne 'tokenDate'}"></h:panelGroup>
+								<h:panelGroup styleClass="th-tokenDate ui-icon ui-icon-triangle-1-n" rendered="#{sortField.field eq 'tokenDate' and sortField.value eq 'ASC'}"></h:panelGroup>
+								<h:panelGroup styleClass="th-tokenDate ui-icon ui-icon-triangle-1-s" rendered="#{sortField.field eq 'tokenDate' and sortField.value eq 'DESC'}"></h:panelGroup>
+							</th>
+							<th><h:outputText value="Role"/></th>
+							<th><h:outputText value="Admin"/></th>
+							<th><h:outputText value="Lock"/></th>
+							<th><h:outputText value="Project"/></th>
+						</tr>
+					</thead>
+					<tbody>
+						<ui:repeat var="member" value="#{adminBeanV2.members}">
+							<tr>
+								<!-- logo img -->
+								<td>
+									<h:panelGroup id="avatar-logo-img">
+										<h:graphicImage id="imageAvatar" alt="member-logo"
+											rendered="#{not empty member.avatar}"
+											value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+											styleClass="avatar img-circle" />
+										<h:graphicImage alt="member-logo"
+											rendered="#{empty member.avatar}"
+											value="/resources/img/no_image_available.png"
+											styleClass="avatar img-circle" />
+									</h:panelGroup>
+									<h:outputText value="#{member.username}" />
+								</td>
+								<!-- first name -->
+								<td>
+									<h:outputText value="#{member.firstName}" />
+								</td>
+								<!-- last name -->
+								<td>
+									<h:outputText value="#{member.lastName}" />
+								</td>
+								<!-- company -->
+								<td>
+									<h:outputText value="#{member.company}" />
+								</td>
+								<!-- date created -->
+								<td>
+									<h:outputText value="#{member.tokenDate}">
+										<f:convertDateTime pattern="MM/dd/yyyy" />
+									</h:outputText>
+								</td>
+								<!-- role -->
+								<td class="td-role">
+									<h:outputText value="#{adminBeanV2.getRoleAccount(member.memberId)}"/>
+								</td>
+								<!-- admin -->
+								<td class="td-admin">
+									<p:commandLink oncomplete="assignRole.show()"
+										styleClass="assignButton"
+										rendered="#{!memberBean.isAdministrator(member.memberId) and adminBeanV2.memberLogin.memberId != member.memberId }"
+										id="assignButton" title="Assign to be Admin">
+										<i class="icon icon-check-empty"></i>
+										<f:setPropertyActionListener value="#{member.memberId}"
+											target="#{adminBeanV2.memId}" />
+									</p:commandLink>
+									<p:commandLink oncomplete="unassignAdminRole.show()"
+										styleClass="assignButton"
+										rendered="#{memberBean.isAdministrator(member.memberId) and adminBeanV2.memberLogin.memberId != member.memberId}"
+										id="unassignButton" title="Unassign this member">
+										<i class="icon icon-check"></i>
+										<f:setPropertyActionListener value="#{member.memberId}"
+											target="#{adminBeanV2.memId}" />
+									</p:commandLink>
+								</td>
+								<!-- lock -->
+								<td class="td-lock">
+									<p:commandLink action="#{adminBeanV2.lockUser(member.memberId)}"
+										rendered="#{adminBeanV2.memberLogin.memberId != member.memberId and !memberBean.isLocked(member.memberId)}"
+										id="lockButton" title="Unlocked. Click to lock"
+										update=":form-userStoryTable">
+										<i class="icon icon-unlock"></i>
+				
+									</p:commandLink>
+									<p:commandLink action="#{adminBeanV2.unlockUser(member.memberId)}"
+										rendered="#{adminBeanV2.memberLogin.memberId != member.memberId and memberBean.isLocked(member.memberId)}"
+										id="unlockButton" title="Locked. Click to unlock"
+										update=":form-userStoryTable">
+										<i class="icon icon-lock"></i>
+									</p:commandLink>
+								</td>
+								<!-- project -->
+								<td class = 'td-project'>
+									<h:commandLink id="viewbtn" title="View"
+										action="#{adminBeanV2.toViewUserProject}" target="_new">
+										<i class="icon icon-search"></i>
+										<f:setPropertyActionListener value="#{member.memberId}"
+											target="#{adminBeanV2.idUserForProject}" />
+									</h:commandLink>
+								</td>
+							</tr>
+						</ui:repeat>	
+						<ui:fragment rendered = "#{empty adminBeanV2.members}">
+							<tr>
+								<td colspan="9"><h:outputText value="No users"/></td>
+							</tr>
+						</ui:fragment>					
+					</tbody>
+					<tfoot>
+						<tr>
+							<th colspan="9">
+								<h:outputText value="Showing #{adminBeanV2.members.size()} of #{adminBeanV2.totalRowMember} entries" rendered="#{adminBeanV2.totalRowMember gt 0}" style="float:right;color:white;font-weight:normal;"/>
+							</th>
+						</tr>
+					</tfoot>
+				</table>
+				<h:panelGroup styleClass="" style="clear:both;" layout="block"/>
+			</h:panelGroup>
+			<!-- assign role confirm -->
+			<p:confirmDialog widgetVar="assignRole" id="assignAdminRole"
+				width="400" modal="true" closable="false" severity="alert"
+				type="hidden">
+				<f:facet name="header">
+					<h:outputFormat value="#{msg['myagile.admin.AssignRole']}">
+
+					</h:outputFormat>
+				</f:facet>
+				<f:facet name="message">
+					<h:outputFormat styleClass="msgWithIdPlaceHolder"
+						value="#{msg['myagile.admin.Assign']}">
+					</h:outputFormat>
+				</f:facet>
+				<h:panelGroup layout="block" style="text-align: right">
+					<p:commandButton value="Yes"
+						action="#{adminBeanV2.assignUserToAdministrator(adminBeanV2.memId)}"
+						oncomplete="assignRole.hide()" update=":form-userStoryTable" />
+					<p:commandButton value="No" oncomplete="assignRole.hide()" />
+				</h:panelGroup>
+			</p:confirmDialog>
+			<!-- un assign role -->
+			<p:confirmDialog widgetVar="unassignAdminRole" id="adminRole"
+				width="400" modal="true" closable="false" severity="alert"
+				type="hidden">
+				<f:facet name="header">
+					<h:outputFormat value="#{msg['myagile.admin.UnassignRole']}">
+
+					</h:outputFormat>
+				</f:facet>
+				<f:facet name="message">
+					<h:outputFormat styleClass="msgWithIdPlaceHolder"
+						value="#{msg['myagile.admin.UnAssign']}">
+					</h:outputFormat>
+				</f:facet>
+				<h:panelGroup layout="block" style="text-align: right">
+					<p:commandButton value="Yes"
+						action="#{adminBeanV2.assignUserToUser(adminBeanV2.memId)}"
+						oncomplete="unassignAdminRole.hide()"
+						update=":form-userStoryTable" />
+					<p:commandButton value="No" oncomplete="unassignAdminRole.hide()" />
+				</h:panelGroup>
+			</p:confirmDialog>
+
+			<script>
+				removeTextInPagination();
+				setTextAllInPaginationSelect();
+				addElementUserProjectLink("#usersList");
+				
+			    var delay = (function() {
+			        var timer = 0;
+			        return function(callback, ms) {
+			            clearTimeout(timer);
+			            timer = setTimeout(callback, ms);
+			        };
+			    })();
+			
+			    function ajaxDelay() {
+			        delay( function() {
+			        	searchMember();
+			        }, 300);
+			    };
+			</script>
+			
+			<h:outputText styleClass="remain-member-data" rendered="#{adminBeanV2.remainMember}" style="display:none;"/>
+		
+		</h:panelGroup>
+		<p:remoteCommand name="searchMember" actionListener="#{adminBeanV2.filterMember}" update="wrap-tb-users"/>
+		<p:remoteCommand name="sortMember" actionListener="#{adminBeanV2.sortMember}" update="form-userStoryTable"/>
+		<p:remoteCommand name="loadMoreMember" actionListener="#{adminBeanV2.loadMoreMember}" update="form-userStoryTable"/>
+	</h:form>
+</p:fieldset>
+
+</html>

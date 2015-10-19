@@ -1,0 +1,17 @@
+#holidayForm\:leaveType td input,label {
+	display: inline;
+}
+
+.highlight-calendar a {
+	font-weight: bold !important;
+	background-color: #FFB547
+}
+
+.column-calendar td
+{
+	vertical-align: top;
+}
+
+.column1{
+	padding-right:10px
+}

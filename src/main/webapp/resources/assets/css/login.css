@@ -1,0 +1,242 @@
+/* 	Login modules
+*/
+#login {
+	margin: 15px auto;
+	padding: 0px;
+	text-align: center;
+}
+
+#login .inner {
+	width: 400px;
+	margin: 60px auto;
+	text-align: left;
+	border: 1px solid #aab;
+	background-color: #f0f0fa;
+	-moz-box-shadow: 2px 2px 2px #eee;
+	-webkit-box-shadow: 2px 2px 2px #eee;
+	-khtml-box-shadow: 2px 2px 2px #eee;
+	box-shadow: 2px 2px 2px #eee;
+}
+
+#login .tick {
+	position: relative;
+	width: 15px;
+	height: 16px;
+	left: 170px;
+	z-index: 200;
+	background-image: url("../../img/tick_16.png");
+}
+
+#login .spinner {
+	background-image: url("../../img/ajax_loader/spinner.gif");
+	z-index: 200;
+}
+
+#login .inner .fheader {
+	background-color: #45A1DE;
+	margin: 0px 0 14px 0;
+	color: #2e3741;
+	font-size: 16px;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+
+#login .txtinput {
+	display: block;
+	margin-bottom: 5px !important;
+	margin-left: 10px;
+	padding: 11px 20px;
+	padding-left: 45px;
+	width: 77.9%;
+}
+
+#login input.usernameicon {
+	background: #fff url("../../img/fa-user.png") 7px 5px no-repeat;
+}
+
+#login input#forgetPassword\:projectName {
+	background: #fff url("../../img/fa-user.png") 7px 5px no-repeat;
+}
+
+#login input#password, #login input#newPassword, #login input#newConfirmPassword {
+	background: #fff url("../../img/lock.png") 7px 5px no-repeat;
+}
+
+#login input#firstName, #login input#lastName {
+	background: #fff url("../../img/align-left.png") 7px 5px no-repeat;
+}
+
+#login .checkbox {
+	margin: 0 11px 0 11px;
+	padding-left: 0 !important;
+	padding-top: 8px
+}
+
+#submitLogin {
+	margin-left: 11px;
+	margin-top: 15px
+}
+
+#autoLogin {
+	margin-top: 15px
+}
+
+#loadLogin {
+	position: absolute;
+	top: 10px;
+	left: 170px;
+}
+
+#parentSpinner {
+	position: relative;
+}
+
+label.checkbox_1 {
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    padding-left: 25px;
+    margin: 0px;
+}
+
+label.checkbox_1:before {  
+    content: "";  
+    display: inline-block;    
+    width: 16px;  
+    height: 16px;    
+    margin-right: 10px;  
+    position: absolute;  
+    left: 0;    
+    bottom: 2px;  
+    background-color: #aaa;  
+    border-radius: 3px;
+    box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);  
+}  
+
+input[type=checkbox].checkbox_1 {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  bottom: 2px; 
+  border: 1px solid transparent;
+  margin-top: 3px;
+}
+
+input[type=checkbox].checkbox_1:checked + label.checkbox_1:before {  
+    content: "\2713";  
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);  
+    font-size: 15px;  
+    color: #f3f3f3;  
+    text-align: center;  
+    line-height: 15px;  
+}  
+
+#login .requirements {
+	width: 400px;
+	margin: 0 auto;
+	text-align: left;
+}
+
+#req-info {
+	padding: 8px;
+}
+
+#req-info table {
+	text-align: center;
+	width: 100%;
+}
+
+#req-info th {
+	font-size: 13px;
+	vertical-align: top;
+}
+
+#req-info td {
+	font-size: 12px;
+	vertical-align: top;
+	border-right: 1px dashed black;
+}
+
+.no-border {
+	border: none !important;
+}
+
+.warn-info {
+	background-color: #fcf8e3;
+	border: 1px solid #fbeed5;
+}
+
+.error-info {
+	background-color: #f2dede;
+	border: 1px solid #eed3d7;
+}
+
+#loadSpinnerImage {
+	position: absolute;
+	top: 12px;
+	left: 350px;
+}
+
+.avatar {
+	width: 50px;
+	height: 50px;
+	margin-left: 5px;
+	border: 1px solid #45A1DE;
+}
+
+#signupBtn {
+	margin-left: 11px;
+	margin-top: 15px;
+}
+
+#loginLdap {
+	margin-top: 15px;
+}
+
+@media ( max-width : 767px) {
+	#footer {
+		min-width: 445px;
+	}
+	.navbar-inner {
+		min-width: 405px;
+	}
+}
+
+.ui-message-error {
+    margin: 0 10px !important;
+    margin-bottom: 5px !important;
+	font-size: 13px;
+}
+
+#forgetPassword {
+	float:right;
+	margin-right: 11px;
+	padding-top: 8px;
+	clear: both;
+}
+
+.d{
+	display:none;
+}
+.highlight{
+	background-color:#2E94D8;
+}
+
+.tab-menu{
+	height: 50px;
+	display: inline-block;
+	line-height: 50px;
+	padding: 0px 10px;
+}
+.link-color{
+	color:white;
+}
+
+a:hover {
+    background-color:#2E94D8;
+    color:white;
+}
+a{
+	cursor:pointer;
+}

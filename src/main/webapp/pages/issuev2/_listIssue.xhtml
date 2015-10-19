@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:custom="http://myagile.com/custom">
+
+<style>
+.ui-datatable tbody td {
+	white-space: normal !important;
+}
+
+.filter-export-data a {
+/* 	text-decoration: none; */
+	font-size: 13px;
+	font-weight: bold;
+}
+
+.ui-chkbox-all {
+margin: 0px 0px !important;
+}
+
+#listIssueForm\:ExcelDialog #listIssueForm\:options td input,label{
+	display: inline;
+}
+
+#listIssueFieldSet .ui-fieldset-content{
+	margin-top: -16px;
+}
+</style>
+
+<script type="text/javascript" src="resources/assets/js/fixbugPrimefacesDataTable.js"/>
+
+		<p:fieldset legend="List Issues" id="listIssueFieldSet">
+		<h:form id="listIssueForm">
+		<h:panelGroup id="issueToolbar" rendered="#{not empty issueBeanV2.sprintList}" layout="block" styleClass="filter-export-data" style="margin: 10px 0 10px 0;">
+			<div class="row-fluid form-inline">
+				<h:panelGroup layout="block" styleClass="pull-left">
+				<span class="title-margin-right-combobox">Filter Options:</span>
+				<p:selectOneMenu style="width: 100px;" value="#{issueBeanV2.filterIssueType}" styleClass="text-left">
+						<p:ajax listener="#{issueBeanV2.filterIssues}" update="listIssueForm:wrap-listIssues,export-pdf" />
+						<f:selectItem itemLabel="Any Type" itemValue="Any" />
+						<f:selectItem itemLabel="Task" itemValue="Task" />
+						<f:selectItem itemLabel="Bug" itemValue="Bug" />
+					</p:selectOneMenu>
+					<p:spacer width="10"></p:spacer>
+					<p:selectOneMenu style="width: 100px;" value="#{issueBeanV2.filterIssueStatus}" styleClass="text-left">
+						<p:ajax listener="#{issueBeanV2.filterIssues}" update="listIssueForm:wrap-listIssues,export-pdf" />
+						<f:selectItem itemLabel="Any Status" itemValue="Any" />
+						<f:selectItems value="#{issueBeanV2.statusList}" var="s" itemValue="#{s.statusId}" itemLabel="#{s.name}" />
+					</p:selectOneMenu>
+					<p:spacer width="10"></p:spacer>
+					<p:selectOneMenu style="width: 110px;" value="#{issueBeanV2.filterIssuePriority}" styleClass="text-left">
+						<p:ajax listener="#{issueBeanV2.filterIssues}" update="listIssueForm:wrap-listIssues,export-pdf" />
+						<f:selectItem itemLabel="Any Priority" itemValue="Any" />
+						<f:selectItem itemLabel="Must" itemValue="MUST" />
+						<f:selectItem itemLabel="Should" itemValue="SHOULD" />
+						<f:selectItem itemLabel="Could" itemValue="COULD" />
+						<f:selectItem itemLabel="Wont" itemValue="WONT" />
+					</p:selectOneMenu>
+				</h:panelGroup>
+				
+				<h:panelGroup id="export-pdf">
+					<h:panelGroup layout="block" styleClass="pull-right text-right">
+						<h:outputText>Export Issues </h:outputText>
+						<p:commandLink id="exportExcel" title="Export To Excel" onclick="isEmptySelectedIssueForExport([{name: 'exportType', value: 'Excel'}]);">
+								<h:graphicImage alt="excel icon" value="/#{request.contextPath}/resources/img/icons/excel.png"/>
+						</p:commandLink>
+						<p:commandButton ajax="false" id="exportExcelButton" style="display: none;" actionListener="#{issueBeanV2.exportIssuesExcel}"></p:commandButton>
+						
+						<p:commandLink id="exportPDF" title="Export To PDF" onclick="isEmptySelectedIssueForExport([{name: 'exportType', value: 'PDF'}]);">
+								<h:graphicImage alt="pdf icon" value="/#{request.contextPath}/resources/img/icons/pdf.png" />
+						</p:commandLink>
+						<p:commandButton ajax="false" id="exportPDFButton" style="display: none;" actionListener="#{issueBeanV2.exportIssuesPDF}"></p:commandButton>				
+					</h:panelGroup> 
+				</h:panelGroup>
+			</div>
+		</h:panelGroup>
+		<h:panelGroup id="wrap-listIssues" layout="block">
+			<ui:param name="sortField" value="#{issueBeanV2.issueStateLazyLoading.sorters}"></ui:param>
+			<table border = "1" id="listIssues">
+				<thead>
+					<tr>
+						<th style = "width:50px;">
+							<h:panelGroup styleClass="select-or-unselect-all-issue" style="cursor:pointer;" rendered="#{!issueBeanV2.checkedAll}">
+		            			<i class="icon icon-check-empty icon-select-unselect-all" style="color:white;"></i>
+			            	</h:panelGroup>
+			            	<h:panelGroup styleClass="select-or-unselect-all-issue" style="cursor:pointer;" rendered="#{issueBeanV2.checkedAll}">
+			            		<i class="icon icon-check icon-select-unselect-all" style="color:white;"></i>
+			            	</h:panelGroup>
+						</th>
+						<th style="width:50px">
+							<h:outputText value="#ID"></h:outputText>
+						</th>
+						<th class = "header-sort" data-field = 'subject'>
+							<h:outputText value="Subject"></h:outputText>
+							<h:panelGroup styleClass="th-subject ui-icon ui-icon-carat-2-n-s" rendered="#{sortField.field ne 'subject'}"></h:panelGroup>
+							<h:panelGroup styleClass="th-subject ui-icon ui-icon-triangle-1-n" rendered="#{sortField.field eq 'subject' and sortField.value eq 'ASC'}"></h:panelGroup>
+							<h:panelGroup styleClass="th-subject ui-icon ui-icon-triangle-1-s" rendered="#{sortField.field eq 'subject' and sortField.value eq 'DESC'}"></h:panelGroup>
+						</th>
+						<th style = "width:50px;">
+							<h:outputText value="Type"></h:outputText>
+						</th>
+						<th style = "width:50px;">
+							<h:outputText value="Estimate"></h:outputText>
+						</th>
+						<th style = "width:50px;">
+							<h:outputText value="Remain"></h:outputText>
+						</th>
+						<th style = "width:50px;"><h:outputText value="Edit" ></h:outputText></th>
+						<th style = "width:50px;"><h:outputText value="Delete" ></h:outputText></th>
+						<th style = "width:50px;"><h:outputText value="View"></h:outputText></th>
+					</tr>
+				</thead>
+				<tbody>
+					<ui:repeat var="issue" value="#{issueBeanV2.issueList}">
+						<tr>
+							<td class="td-selected">
+								<h:panelGroup styleClass="icon-select-issue" style="cursor:pointer;" rendered="#{!issueBeanV2.selectedIssues.contains(issue)}">
+				            		<i class="icon icon-check-empty" data-id-issue = "#{issue.issueId}"></i>
+				            	</h:panelGroup>
+				            	<h:panelGroup styleClass="icon-select-issue" style="cursor:pointer;" rendered="#{issueBeanV2.selectedIssues.contains(issue)}">
+				            		<i class="icon icon-check" data-id-issue = "#{issue.issueId}"></i>
+				            	</h:panelGroup>
+							</td>
+							<td>
+								<h:outputText value="##{issue.displayIssueId}" />
+							</td>
+							<td>
+								<h:outputText value="#{issue.subject}" />
+							</td>
+							<td>
+									<h:outputText value="#{issue.type}" />
+							</td>
+							<td>
+								<h:outputText value="#{issueBeanV2.estimatePointByFormat}" />
+							</td>
+							<td>
+								<h:outputText value="#{issueBeanV2.remainPointByFormat}" />
+							</td>
+							<td class="td-button-view">
+								<p:commandButton id="editButton" stitle="Edit" icon="icon-edit" action="#{issueBeanV2.editIssue}" oncomplete="handleEditRequest(xhr,status,args)" update=":issueForm">
+									<f:setPropertyActionListener value="#{issue}" target="#{issueBeanV2.issue}" />
+								</p:commandButton>
+							</td>
+							<td class="td-button-delete">
+								<p:commandButton id="deleteButton" title="Delete" icon="icon-trash" onclick="deleteDlg#{issue.issueId}.show()" global="false">
+									<f:setPropertyActionListener value="#{issue}" target="#{issueBeanV2.issue}" />
+								</p:commandButton>
+								<p:confirmDialog widgetVar="deleteDlg#{issue.issueId}" id="deleteDialog" width="400" modal="true" closable="false" severity="alert">
+									<f:facet name="header">
+										<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+											<f:param value="Issue" />
+										</h:outputFormat>
+									</f:facet>
+									<f:facet name="message">
+										<h:outputFormat styleClass="msgWithIdPlaceHolder" value="#{msg['myagile.home.Delete']}">
+											<f:param value="issue" />
+											<f:param value="##{issue.displayIssueId}"/>
+										</h:outputFormat>
+									</f:facet>
+									<h:panelGroup layout="block" style="text-align: right">
+										<p:commandButton value="Yes" action="#{issueBeanV2.deleteIssue}" oncomplete="deleteDlg#{issue.issueId}.hide();" update=":listIssueForm:wrap-listIssues,:listIssueForm,:issueForm" />
+										<p:commandButton value="No" oncomplete="deleteDlg#{issue.issueId}.hide();" global="false"/>
+									</h:panelGroup>
+								</p:confirmDialog>
+	
+							</td>
+							<td class="td-view">
+								<h:commandLink id="viewbtn" title="View" action="#{issueBeanV2.toViewIssuePage}" target="_blanks">
+									<i class="icon icon-search"></i>
+									<f:setPropertyActionListener  value="#{issue}" target="#{issueBeanV2.viewIssue}" />
+								</h:commandLink>
+							</td>
+						</tr>
+					</ui:repeat>
+					<ui:fragment rendered = "#{empty issueBeanV2.issueList}">
+						<tr>
+							<td colspan="9">
+								<h:outputText value="No Issues found."/>
+							</td>
+						</tr>
+					</ui:fragment>
+				</tbody>
+				<tfoot>
+					<tr>
+						<th colspan="9">
+							<h:outputText value="Total Estimate Points: #{issueBeanV2.issuesTotalPoints}" style="float:left;font-weight:normal;"/>
+							<h:outputText value="Showing #{issueBeanV2.issueList.size()} of #{issueBeanV2.totalRowIssue} entries" rendered="#{issueBeanV2.totalRowIssue gt 0}" style="float:right;color:white;font-weight:normal;"/>
+						</th>
+					</tr>
+				</tfoot>
+			</table>
+			
+			
+			<h:outputText rendered="#{issueBeanV2.issueRemainning}" styleClass="issue-list-size" style="display:none;"></h:outputText>
+			
+		</h:panelGroup>
+		<p:remoteCommand name="fieldSort" actionListener="#{issueBeanV2.sortIssue()}" global="true" update="wrap-listIssues"/>
+			<p:remoteCommand name="loadmore" actionListener="#{issueBeanV2.loadMoreIssue()}" update="wrap-listIssues"></p:remoteCommand>
+	
+				
+		</h:form>	
+	</p:fieldset>	
+</ui:composition>

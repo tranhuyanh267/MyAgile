@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/layouts/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	
+	<ui:define name="layoutTitle">
+		All sprint statistics
+	</ui:define>
+	<ui:define name="metadata">
+		<f:metadata>
+	    	<f:event listener="#{statisticBean.initPreViewStatisticsAll}" type="preRenderView"/>
+		</f:metadata>
+	</ui:define>
+	<ui:define name="layoutHead">
+		<link rel="stylesheet" media="screen" href="#{request.contextPath}/resources/assets/libs/handsontable/jquery.handsontable.full.css"/>
+		<script type="text/javascript" src="#{request.contextPath}/resources/assets/js/statistic.js" />
+		<script src="#{request.contextPath}/resources/assets/libs/handsontable/jquery.handsontable.full.js"></script>
+		<script src="#{request.contextPath}/resources/assets/libs/jqplot/jqplot.pointLabels.js"></script>
+		
+		<script type="text/javascript" src="#{request.contextPath}/resources/assets/libs/jqplot/jqplot.barRenderer.js" />
+        <style type="text/css">
+            .selector-wrapper {
+                width: 335px;
+                height: 35px;
+                display: inline-block;
+                text-align: right;
+            }
+            .selector-wrapper .ui-selectonemenu {
+                text-align: left;
+            }
+            #listStatisticTable table tr th{
+            	word-wrap: break-word;
+            }
+            @media (max-width: 672px) {
+                #wrap, #footer {
+                    min-width: 622px;
+                }
+                #body-div.container {
+                    width: 622px;
+                }
+            }
+            
+			
+        </style>
+	</ui:define>
+	
+	<ui:define name="layoutBody">
+		<h:panelGroup layout="block" styleClass="row">
+			<p:fieldset id="tableAllStatisticField" style=" margin-bottom:5px;" styleClass="span12">
+				<div style="margin-bottom:20px;max-width: 95%; max-height: 95%;margin-left:auto;margin-right:auto;">
+					<h2 class="text-center lead" style="margin-bottom: 20px">All sprint statistics</h2>
+					<p:commandButton style="margin-top: -85px;" icon="icon-reply-all" value="Back" onclick="window.location = 'statistics'" />
+					<div class="handsontable" id="listStatisticTable"></div>
+				</div>
+				<h:form id="formChart" style="text-align: center;">
+					<p:selectOneMenu value="#{statisticBean.selectedChart}">  
+			            <f:selectItem itemLabel="Velocity Chart" itemValue="velocity" />  
+			            <f:selectItem itemLabel="Story Chart" itemValue="story" />  
+			            <f:selectItem itemLabel="Point Chart" itemValue="point" />  
+			            <p:ajax listener="#{statisticBean.handleStatisticAllSprint}" update="formChart"/>
+			        </p:selectOneMenu> 			        
+					
+			        <p:barChart  id="bar" value="#{statisticBean.combinedModel}" widgetVar="chartStatistic"
+				legendPosition="n" title="Combined Bar Chart" zoom="true" style="height:80%"
+				extender="ext"/>
+				
+				<script type="text/javascript">
+					initData('#{statisticBean.sprintList}',#{statisticBean.statisticAllDataJSON});
+				    $(window).resize(function() {
+				    	chartStatistic.plot.replot( { resetAxes: true } );
+				    });
+				</script>
+				</h:form>
+			</p:fieldset>
+			
+			
+		</h:panelGroup>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,168 @@
+<ui:composition template="/WEB-INF/layouts/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="layoutTitle">
+	Team Management
+	</ui:define>
+	<ui:define name="layoutHead">
+		<link rel="stylesheet" type="text/css"
+			href="#{request.contextPath}/resources/assets/css/team.css" />
+		<script type="text/javascript"
+			src="#{request.contextPath}/bundles/plupload.js" />
+		<script type="text/javascript"
+			src="#{request.contextPath}/resources/assets/js/team.js" />
+	</ui:define>
+
+	<ui:define name="layoutBody">
+		<style>
+.teaminfo-column {
+	vertical-align: top;
+}
+</style>
+		<div class="row">
+			<h:form style="text-align:right">
+				<p:commandButton value="New team" onclick="showForm()"
+					update=":teamForm" icon="icon-plus"
+					actionListener="#{teamBean.createNewTeam}">
+					<f:ajax execute="@form" render="@none" />
+				</p:commandButton>
+			</h:form>
+
+			<p:fieldset id="show_team_form" style="margin-bottom:10px;">
+				<h:form id="teamForm" styleClass="editform">
+					<div class="ui-messages-info ui-corner-all" id="SaveMsgs"
+						style="display: none;">
+						<span class="ui-messages-info-icon"></span><span
+							class="ui-messages-info-detail">#{msg['myagile.SaveSuccess']}</span>
+					</div>
+					<div class="ui-messages-info ui-corner-all" id="EditMsgs"
+						style="display: none;">
+						<span class="ui-messages-info-icon"></span><span
+							class="ui-messages-info-detail">#{msg['myagile.UpdateSuccess']}</span>
+					</div>
+					<h:panelGrid columns="2" cellpadding="10"
+						columnClasses="teaminfo-column,teaminfo-column"
+						style="margin-bottom: -28px;">
+						<h:panelGroup layout="block" id="team-logo"
+							style="padding:10px; margin:0 auto; width:200px">
+							<h:panelGroup layout="block" id="team-logo-img">
+								<h:graphicImage alt="team-logo"
+									rendered="#{teamBean.teamTemp.logo != null}"
+									value="/file/?type=team-logo&amp;t=#{teamBean.teamTemp.teamId}&amp;filename=#{teamBean.teamTemp.logo}"
+									styleClass="img-rounded img-polaroid input-block-level" />
+								<h:graphicImage alt="team-logo"
+									rendered="#{teamBean.teamTemp.logo == null}"
+									value="/resources/img/team.jpg"
+									styleClass="img-rounded img-polaroid input-block-level" />
+								<div id="upload-error" class="text-center alert alert-error "
+									style="margin-bottom: 5px; margin-top: 5px; display: none"></div>
+							</h:panelGroup>
+
+							<button type="button" id="btnChangeLogo"
+								style="margin-top: 10px;"
+								class="btn btn-small btn-info input-block-level">
+								<i class="icon-picture"></i> Change Logo
+							</button>
+							<div id="team-logo-uploader" style="display: none;"></div>
+
+							<p:blockUI block="team-logo" widgetVar="teamLogoBlock">
+						Uploading... (<span class="upload-progress">0%</span>)
+					</p:blockUI>
+						</h:panelGroup>
+
+						<h:panelGrid columns="3">
+							<h:outputLabel for="teamName" value="Team Name: " />
+							<p:inputText id="teamName" value="#{teamBean.teamTemp.teamName}"
+								required="true"
+								requiredMessage="#{msg['myagile.team.EmptyTeamName']}"
+								maxlength="255" styleClass="remove-html-control-character">
+								<p:ajax update="teamNameMsgs" event="keyup" />
+							</p:inputText>
+							<p:message for="teamName" id="teamNameMsgs" />
+
+							<h:outputLabel for="mailGroup" value="Group Mail: " />
+							<p:inputText id="mailGroup"
+								value="#{teamBean.teamTemp.mailGroup}" required="true"
+								maxlength="255"
+								requiredMessage="#{msg['myagile.team.EmptyEmail']}"
+								validatorMessage="#{msg['myagile.InvalidEmailFormat']}">
+								<f:validateRegex
+									pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+								<p:ajax update="mailGroupMsgs" event="keyup" />
+							</p:inputText>
+							<p:message for="mailGroup" id="mailGroupMsgs" />
+
+							<h:outputLabel for="description" value="Description: " />
+							<p:inputTextarea id="description" autoResize="true"
+								value="#{teamBean.teamTemp.description}"
+								style="margin-bottom:10px" maxlength="1000" />
+							<h:inputHidden />
+
+							<h:outputLabel for="estDate" value="Established date: " />
+							<p:calendar id="estDate"
+								value="#{teamBean.teamTemp.establishedDate}"
+								pattern="MM/dd/yyyy" avigator="true"
+								converterMessage="#{msg['myagile.InvalidDateFormat']}"
+								maxlength="255">
+								<f:convertDateTime type="date" pattern="MM/dd/yyyy" />
+							</p:calendar>
+							<p:message for="estDate" />
+
+							<h:outputLabel for="selectproject" value="Projects: " />
+							<p:selectCheckboxMenu id="selectproject" value="#{teamBean.selectedProjects}" label="Project"
+								filter="true" filterText="Filter" filterMatchMode="startsWith" panelStyle="width:300px">
+								<f:selectItems value="#{teamBean.findProjectsByUser()}" var="p" itemLabel="#{p.projectName}" itemValue="#{p.projectId}" />
+							</p:selectCheckboxMenu>
+							<h:inputHidden />
+                            <c:if test="#{not empty teamBean.teamTemp.teamId}">
+								<h:outputLabel value="Hide Team: " for="hideTeamCheckbox"/>
+								<p:selectBooleanCheckbox id="hideTeamCheckbox" value="#{teamBean.hideTeam}"/>
+								<h:inputHidden/>
+								
+								<h:outputLabel  for="hideReason" value="Note: "></h:outputLabel>
+								<p:inputText  id="hideReason" value="#{teamBean.teamTemp.note}" styleClass="remove-html-control-character"/>
+								<p:message for="hideReason" id="hideReasonMsgs" />
+							</c:if>
+						</h:panelGrid>
+					</h:panelGrid>
+					<p:separator style="margin-bottom:10px" />
+					<h:panelGroup layout="block"
+						style="text-align:center;margin-bottom: -15px;">
+						<p:commandButton id="addbtn" value="Save" style="margin-right:5px"
+							icon="icon-save" action="#{teamBean.saveTeam}"
+							update=":listTeamForm :teamForm"
+							oncomplete="handleSave(xhr, status, args)" 
+							/>
+						<p:commandButton value="Close" onclick="closeForm()"
+							actionListener="#{teamBean.createNewTeam}" styleClass="secondary"
+							update="teamForm" process="@this" />
+					</h:panelGroup>
+					<p:remoteCommand name="updateLogo"
+						actionListener="#{teamBean.newTeamLogo}" update="team-logo-img"
+						process="@this" />
+					<script type="text/javascript">
+						initUpload('#{request.contextPath}/upload');
+						$(document).ready(function() {
+							$('#SaveMsgs').hide();
+							$('#EditMsgs').hide();
+
+						});
+					</script>
+				</h:form>
+			</p:fieldset>
+			<ui:include src="_teamList.xhtml" />
+		</div>
+	</ui:define>
+
+	<ui:define name="layoutFooter">
+		<h:panelGroup styleClass="ajaxPopUp" id="loading-wait-page-loaded"
+			style="display:none;">
+			<p:graphicImage alt="ajax loader" styleClass="imgAjax"
+				value="/resources/img/ajax_loader/ajax_loader.gif" />
+		</h:panelGroup>
+	</ui:define>
+</ui:composition>

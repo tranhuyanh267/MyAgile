@@ -1,0 +1,487 @@
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+    
+    <url-mapping id="aboutus">
+		<pattern value="/about" />
+		<view-id value="/pages/about/about.xhtml" />
+	</url-mapping>
+    
+    <url-mapping id="init">
+		<pattern value="/init/olddb" />
+		<view-id value="/pages/init/index.xhtml" />
+	</url-mapping>
+	 
+    <url-mapping id="kanban">
+		<pattern value="/kanban-old" />
+		<view-id value="/pages/kanban/index.xhtml" />
+	</url-mapping>
+	
+	 <url-mapping id="kanban">
+		<pattern value="/kanban" />
+		<view-id value="/pages/kanbanv2/index.xhtml" />
+	</url-mapping>
+	                
+	<url-mapping id="userproject">
+		<pattern value="/admin/userproject-old" />
+		<view-id value="/pages/admin/userproject.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="projects">
+		<pattern value="/admin/projects-old" />
+		<view-id value="/pages/admin/projects.xhtml" />
+	</url-mapping>  
+    
+    <url-mapping id="admin">
+		<pattern value="/admin/users-old" />
+		<view-id value="/pages/admin/users.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="userprojectv2">
+		<pattern value="/admin/userproject" />
+		<view-id value="/pages/adminv2/userproject.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="projectsv2">
+		<pattern value="/admin/projects" />
+		<view-id value="/pages/adminv2/projects.xhtml" />
+	</url-mapping>  
+    
+    <url-mapping id="adminv2">
+		<pattern value="/admin/users" />
+		<view-id value="/pages/adminv2/users.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="wiki">
+		<pattern value="/wiki" />
+		<view-id value="/pages/wiki/index.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="addWiki">
+		<pattern value="/wiki/add" />
+		<view-id value="/pages/wiki/addwiki.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="editTopic">
+		<pattern value="/wiki/edit" />
+		<view-id value="/pages/wiki/editWiki.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="login">
+		<pattern value="/login" />
+		<view-id value="/pages/login/login.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="logout">
+		<pattern value="/logout" />
+		<view-id value="/pages/login/logout.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="project">
+		<pattern value="/project" />
+		<view-id value="/pages/project/index.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="sprint">
+		<pattern value="/sprint" />
+		<view-id value="/pages/dashboard/index.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="manageSprint">
+		<pattern value="/sprint/managesprint" />
+		<view-id value="/pages/sprint/index.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="addIssue">
+		<pattern value="/issue-old" />
+		<view-id value="/pages/issue/index.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="addIssuev2">
+		<pattern value="/issue" />
+		<view-id value="/pages/issuev2/index.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="viewIssue">
+		<pattern value="/issue-old/view" />
+		<view-id value="/pages/issue/viewIssue.xhtml" />
+	</url-mapping>
+	
+		<url-mapping id="viewIssueV2">
+		<pattern value="/issue/view" />
+		<view-id value="/pages/issuev2/viewIssue.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="home">
+		<pattern value="/" />
+		<view-id value="/pages/home/index.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="team">
+		<pattern value="/team" />
+		<view-id value="/pages/team/index.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="manageTeam">
+		<pattern value="/team/manageteam" />
+		<view-id value="/pages/team/addTeam.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="productBacklog">
+		<pattern value="/productbacklog-old" />
+		<view-id value="/pages/productbacklog/index.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="productBacklogv2">
+		<pattern value="/productbacklog" />
+		<view-id value="/pages/productbacklogv2/index.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="sprintBacklog">
+		<pattern value="/sprintbacklog-old" />
+		<view-id value="/pages/sprintbacklog/index.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="sprintBacklogv2">
+		<pattern value="/sprintbacklog" />
+		<view-id value="/pages/sprintbacklogv2/index.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="remainingtask-old">
+		<pattern value="/remaining-old" />
+		<view-id value="/pages/remainingtaskv2/index.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="remainingtask">
+		<pattern value="/remaining" />
+		<view-id value="/pages/remainingtask/index.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="wizard">
+		<pattern value="/wizard" />
+		<view-id value="/pages/wizard/index.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="meeting">
+		<pattern value="/meeting-old" />
+		<view-id value="/pages/meeting/index.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="meetingv2">
+		<pattern value="/meeting" />
+		<view-id value="/pages/meetingv2/index.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="statistics">
+		<pattern value="/statistics" />
+		<view-id value="/pages/statistics/index.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="statisticsall">
+		<pattern value="/statisticsall" />
+		<view-id value="/pages/statistics/statisticsAll.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="saveSuccessfully">
+		<pattern value="/wizard/saveSuccessfully" />
+		<view-id value="/pages/wizard/saveSuccessful.xhtml" />
+	</url-mapping>
+
+
+	<url-mapping id="profile">
+		<pattern value="/profile" />
+		<view-id value="/pages/profile/edit.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="forgetPassword">
+		<pattern value="/forgetPassword" />
+		<view-id value="/pages/member/forgetPassword.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="help">
+		<pattern value="/help" />
+		<view-id value="/pages/help/index.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="document">
+		<pattern value="/help/document" />
+		<view-id value="/pages/help/index.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="video">
+		<pattern value="/help/video" />
+		<view-id value="/pages/help/videoguide.xhtml" />
+	</url-mapping>
+	<url-mapping id="video">
+		<pattern value="/help/videoSwitchEmail" />
+		<view-id value="/pages/help/videoSwitchEmail.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="video">
+		<pattern value="/help/videoHome" />
+		<view-id value="/pages/help/videoHome.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="video">
+		<pattern value="/help/videoSprintBacklog" />
+		<view-id value="/pages/help/videoSprintBacklog.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="video">
+		<pattern value="/help/videoRemainingTask" />
+		<view-id value="/pages/help/videoRemainingTask.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="video">
+		<pattern value="/help/videoIssue" />
+		<view-id value="/pages/help/videoIssue.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="videoShowTeam">
+		<pattern value="/help/videoShowTeam" />
+		<view-id value="/pages/help/videoShowTeam.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="videoProject">
+		<pattern value="/help/videoProject" />
+		<view-id value="/pages/help/videoProject.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="videoProject">
+		<pattern value="/help/videoWiki" />
+		<view-id value="/pages/help/videoWiki.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="videoProject">
+		<pattern value="/help/videoKanbanBoard" />
+		<view-id value="/pages/help/videoKanbanBoard.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="videoPBL">
+		<pattern value="/help/videoPBL" />
+		<view-id value="/pages/help/videoPBL.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="videoKanBan">
+		<pattern value="/help/videoScrumBoard" />
+		<view-id value="/pages/help/videoKanBan.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="videoMeeting">
+		<pattern value="/help/videoMeeting" />
+		<view-id value="/pages/help/videoMeeting.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="videoFeedBack">
+		<pattern value="/help/videoFeedBack" />
+		<view-id value="/pages/help/videoFeedback.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="videoSprint">
+		<pattern value="/help/videoSprint" />
+		<view-id value="/pages/help/videoSprint.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="gettingStartedHelp">
+		<pattern value="/help/getting-started" />
+		<view-id value="/pages/help/gettingStarted.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="gettingStartedHelpPDF">
+		<pattern value="/help/gettingStarted.pdf" />
+		<view-id value="/resources/pdf/gettingStarted.pdf" />
+	</url-mapping>
+
+	<url-mapping id="teamHelp">
+		<pattern value="/help/team" />
+		<view-id value="/pages/help/team.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="teamHelpPDF">
+		<pattern value="/help/team.pdf" />
+		<view-id value="/resources/pdf/team.pdf" />
+	</url-mapping>
+
+	<url-mapping id="projectHelp">
+		<pattern value="/help/project" />
+		<view-id value="/pages/help/project.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="projectHelpPDF">
+		<pattern value="/help/project.pdf" />
+		<view-id value="/resources/pdf/project.pdf" />
+	</url-mapping>
+
+	<url-mapping id="threeBacklogsHelp">
+		<pattern value="/help/three-backlogs" />
+		<view-id value="/pages/help/threeBacklogs.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="threeBacklogsHelpPDF">
+		<pattern value="/help/three-backlogs.pdf" />
+		<view-id value="/resources/pdf/threeBacklogs.pdf" />
+	</url-mapping>
+
+	<url-mapping id="manageSprintHelp">
+		<pattern value="/help/manage-sprint" />
+		<view-id value="/pages/help/manageSprint.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="manageSprintHelpPDF">
+		<pattern value="/help/manage-sprint.pdf" />
+		<view-id value="/resources/pdf/manageSprint.pdf" />
+	</url-mapping>
+
+	<url-mapping id="StatisticsHelp">
+		<pattern value="/help/statistics" />
+		<view-id value="/pages/help/statistics.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="StatisticsHelpPDF">
+		<pattern value="/help/statistics.pdf" />
+		<view-id value="/resources/pdf/statistics.pdf" />
+	</url-mapping>
+
+	<url-mapping id="pbacklogHelp">
+		<pattern value="/help/product-backlog" />
+		<view-id value="/pages/help/productBacklog.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="productBacklogHelpPDF">
+		<pattern value="/help/productBacklog.pdf" />
+		<view-id value="/resources/pdf/productBacklog.pdf" />
+	</url-mapping>
+
+	<url-mapping id="sbacklogHelp">
+		<pattern value="/help/sprint-backlog" />
+		<view-id value="/pages/help/sprintBacklog.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="sprintBacklogHelpPDF">
+		<pattern value="/help/sprintBacklog.pdf" />
+		<view-id value="/resources/pdf/sprintBacklog.pdf" />
+	</url-mapping>
+
+	<url-mapping id="wizardHelp">
+		<pattern value="/help/wizard" />
+		<view-id value="/pages/help/wizard.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="wizardHelpPDF">
+		<pattern value="/help/wizard.pdf" />
+		<view-id value="/resources/pdf/wizard.pdf" />
+	</url-mapping>
+	
+	<url-mapping id="scrumboardHelp">
+		<pattern value="/help/scrumboard" />
+		<view-id value="/pages/help/scrumboard.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="scrumboardHelpPDF">
+		<pattern value="/help/scrumboard.pdf" />
+		<view-id value="/resources/pdf/scrumboard.pdf" />
+	</url-mapping>
+
+	<url-mapping id="kanbandHelp">
+		<pattern value="/help/kanbanboard" />
+		<view-id value="/pages/help/kanbanboard.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="kanbanHelpPDF">
+		<pattern value="/help/kanban.pdf" />
+		<view-id value="/resources/pdf/kanban.pdf" />
+	</url-mapping>
+
+	<url-mapping id="meetingHelp">
+		<pattern value="/help/meeting" />
+		<view-id value="/pages/help/meeting.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="meetingHelpPDF">
+		<pattern value="/help/meeting.pdf" />
+		<view-id value="/resources/pdf/meeting.pdf" />
+	</url-mapping>
+	
+	<url-mapping id="wikiHelp">
+		<pattern value="/help/wiki" />
+		<view-id value="/pages/help/wiki.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="wikiHelpPDF">
+		<pattern value="/help/wiki.pdf" />
+		<view-id value="/resources/pdf/wiki.pdf" />
+	</url-mapping>
+
+	<url-mapping id="accountHelp">
+		<pattern value="/help/account" />
+		<view-id value="/pages/help/account.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="accountHelpPDF">
+		<pattern value="/help/account.pdf" />
+		<view-id value="/resources/pdf/account.pdf" />
+	</url-mapping>
+
+	<url-mapping id="chatHelp">
+		<pattern value="/help/chat" />
+		<view-id value="/pages/help/chat.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="chatPDF">
+		<pattern value="/help/chat.pdf" />
+		<view-id value="/resources/pdf/chat.pdf" />
+	</url-mapping>
+
+	<url-mapping id="issueHelp">
+		<pattern value="/help/issue" />
+		<view-id value="/pages/help/issue.xhtml" />
+	</url-mapping>
+
+	<url-mapping id="issuePDF">
+		<pattern value="/help/issue.pdf" />
+		<view-id value="/resources/pdf/issue.pdf" />
+	</url-mapping>
+	
+	<url-mapping id="remainingTask">
+		<pattern value="/help/remaining-task" />
+		<view-id value="/pages/help/remainingTask.xhtml" />
+	</url-mapping>
+	<url-mapping id="remainingTaskPdf">
+		<pattern value="/help/remainingTask.pdf" />
+		<view-id value="/resources/pdf/remainingTask.pdf" />
+	</url-mapping>
+	<url-mapping id="AndroidApp">
+		<pattern value="/app" />
+		<view-id value="/pages/android/app.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="topicEditting">
+		<pattern value="/topic/edit" />
+		<view-id value="/pages/sharingtopic/edit.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="topicDetail">
+		<pattern value="/topic/detail" />
+		<view-id value="/pages/sharingtopic/detail.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="viewUserStory">
+		<pattern value="/userstory/viewDetail" />
+		<view-id value="/pages/userstory/index.xhtml" />
+	</url-mapping>
+	
+	<url-mapping id="viewKanbanIssue">
+		<pattern value="/kanbanIssue/viewDetail" />
+		<view-id value="/pages/kanbanissue/index.xhtml" />
+	</url-mapping>
+	<url-mapping id="editKanbanIssue">
+		<pattern value="/kanbanIssue/edit" />
+		<view-id value="/pages/kanbanissue/indexEditKanbanIssue.xhtml" />
+	</url-mapping>
+	<url-mapping id="editUserStory">
+		<pattern value="/userstory/edit" />
+		<view-id value="/pages/userstory/indexEditUserStory.xhtml" />
+	</url-mapping>
+	
+</pretty-config>

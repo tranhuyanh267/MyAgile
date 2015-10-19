@@ -1,0 +1,51 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+    <div id="#{member.memberId}" class="conversation hide">
+        <div class="titlebar">
+            <a class="titleText">
+                <h:outputText value="#{onlineSessionBean.showName(member)}"/>
+            </a>
+            <i class="btn-close icon-remove"></i>
+            <h:panelGroup id="pg-times" layout="block">
+	            <h:outputText styleClass="btn-clock icon-time" id="time-icon"/>
+	            <p:overlayPanel for="time-icon" styleClass="times-selector" showEffect="fade">
+					<ul class="times-list">
+						<li style="cursor: pointer;" data-dateNumber="1">Last 24 Hours</li>
+						<li style="cursor: pointer;" data-dateNumber="7">Last 7 Days</li>
+						<li style="cursor: pointer;" data-dateNumber="30">Last 30 Days</li>
+						<li style="cursor: pointer;" data-dateNumber="180">Last 6 Months</li>
+						<li style="cursor: pointer;" data-dateNumber="365">Last Years</li>
+						<li style="cursor: pointer;" data-dateNumber="all">Show All</li>
+					</ul>															
+			    </p:overlayPanel>
+		    </h:panelGroup>
+        </div>
+        <div class="conversationContent">
+       		
+        </div>
+       <textarea class="inputMessage"></textarea>
+        
+        <h:form styleClass="hide">
+            <p:remoteCommand name="sendMessageTo#{member.memberId}"
+                             actionListener="#{onlineSessionBean.sendMessage(member)}"
+                             global="false"></p:remoteCommand>
+            <p:remoteCommand name="sendTypingStatusTo#{member.memberId}"
+                             actionListener="#{onlineSessionBean.sendTypingStatus(member)}"
+                             global="false"></p:remoteCommand>
+        </h:form>
+        <h:panelGroup id="avatar-logo-img" styleClass="friend-image-original hide">
+            <h:graphicImage alt="user.png"
+                            value="/resources/img/user.png"
+                            class="pic avatar img-circle"
+                            rendered="#{empty member.avatar}"/>
+            <h:graphicImage alt="#{member.avatar}"
+                            value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+                            class="pic avatar img-circle"
+                            rendered="#{not empty member.avatar}"/>
+        </h:panelGroup>
+    </div>
+</ui:composition>

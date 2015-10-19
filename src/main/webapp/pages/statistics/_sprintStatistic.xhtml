@@ -1,0 +1,398 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:custom="http://myagile.com/custom">
+	<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/css/statistics.css" />
+	<script type="text/javascript" src="#{request.contextPath}/resources/assets/js/statistic.js" />
+	<p:fieldset style="margin-bottom: 10px" styleClass="span12">
+		<h:panelGrid style="margin: 0px auto; width: 100%">
+			<h:panelGroup>
+				<h:form id="statisticForm">
+					<h:panelGroup style="width: 100%; float:left; margin-bottom: 5px;">
+						<h:outputText value="Statistics" style="font-weight: bold; margin-left: 5px;color: #45a1de; float: left;" />
+						<p:commandButton icon="icon-refresh" 
+							value="Re-generate"
+							rendered="#{statisticBean.statistic!=null and custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}" style="float:right;"
+							onclick="updateDialogGenerateStatictis();"
+							oncomplete="regenerate.show();" 
+							global="false" />
+						<p:commandButton icon="icon-refresh" 
+							value="Generate"
+							style="float:right;"
+							actionListener="#{statisticBean.generateStatistic}"
+							update=":statisticForm,:holidayForm,:listHolidays"
+							rendered="#{not empty statisticBean.sprintList and statisticBean.statistic==null and custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}" />
+					</h:panelGroup>
+					<p:separator style="margin:5px" />
+					<h:panelGroup layout="block" id="panelStatisticHeader" style="width:100%; margin: 0px auto;" rendered="#{statisticBean.statistic==null}">
+						<h:outputText value="There is no statistics report for this sprint. " />
+					</h:panelGroup>
+					<p:panelGrid id="panel" 
+						style="width: 60%; margin: 0px auto;"
+						rendered="#{statisticBean.statistic!=null}"
+						styleClass="panelClass">
+						<p:row>
+							<p:column style="width: 30%;">
+								<h:outputText value="Team size:" style="font-weight:bold;" />
+							</p:column>
+							<p:column style="width: 30%; text-align: center" colspan="2">
+								<p:inplace widgetVar="teamSize" disabled="#{!custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+									<p:ajax event="save"
+										listener="#{statisticBean.updateTeamSizeStatistic}"
+										global="false"
+										oncomplete="handleSaveStatistic(xhr, status, args);" />
+									<p:ajax event="cancel" global="false" listener="#{statisticBean.cancelUpdate}" />
+									<p:inputText style="max-width: 68px;" 
+										id="teamsize"
+										value="#{statisticBean.statistic.teamSize}"
+										onkeyup="if(event.keyCode == 27){teamSize.cancel()}"
+										onkeypress="if(event.keyCode == 13){teamSize.save(); teamSize.hide();return false;}"
+										label="text"
+										title="#{component.valid ? '' : 'Team size is number between 0 and 1000'}">
+										<f:validateLongRange minimum="0" maximum="1000" />
+									</p:inputText>
+								</p:inplace>
+							</p:column>
+							<p:column style="width: 38%;">
+								<p:inplace widgetVar="unitTeamSize" disabled="#{!custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+									<p:ajax event="save" listener="#{statisticBean.updateUnitTeamSize}" global="false" />
+									<p:ajax event="cancel" global="false" listener="#{statisticBean.cancelUpdate}" />
+									<p:inputText style="max-width: 180px;" 
+										id="unitTeamSize"
+										value="#{statisticBean.statistic.unitTeamSize}"
+										onkeyup="if(event.keyCode == 27){unitTeamSize.cancel()}"
+										onkeypress="if(event.keyCode == 13){unitTeamSize.save(); unitTeamSize.hide();return false;}" />
+								</p:inplace>
+							</p:column>
+							<p:column style="width: 2%;" rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+								<p:commandLink onclick="teamSize.show();">
+									<span class="ui-icon ui-icon-pencil" />
+								</p:commandLink>
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<h:outputText value="Sprint size:" style="font-weight:bold;" />
+							</p:column>
+							<p:column colspan="2" style="text-align:center">
+								<p:inplace widgetVar="sprintSize" disabled="#{!custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+									<p:ajax event="save" listener="#{statisticBean.updateSprintSizeStatistic}" global="false" />
+									<p:ajax event="cancel" global="false" listener="#{statisticBean.cancelUpdate}" />
+									<p:inputText style="max-width: 68px;"
+										value="#{statisticBean.statistic.sprintSize}"
+										onkeyup="if(event.keyCode == 27){sprintSize.cancel()}"
+										onkeypress="if(event.keyCode == 13){sprintSize.save();return false;}"
+										label="text"
+										title="#{component.valid ? '' : 'Sprint size is number between 0 and 1000'}">
+										<f:validateLongRange minimum="0" maximum="1000" />
+									</p:inputText>
+								</p:inplace>
+							</p:column>
+							<p:column>
+								<p:inplace widgetVar="unitSprintSize" disabled="#{!custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+									<p:ajax event="save"
+										listener="#{statisticBean.updateUnitSprintSize}"
+										global="false" />
+									<p:ajax event="cancel" global="false" listener="#{statisticBean.cancelUpdate}" />
+									<p:inputText style="max-width: 180px;" 
+										id="unitSprintSize"
+										value="#{statisticBean.statistic.unitSprintSize}"
+										onkeyup="if(event.keyCode == 27){unitSprintSize.cancel()}"
+										onkeypress="if(event.keyCode == 13){unitSprintSize.save(); unitSprintSize.hide();return false;}" />
+								</p:inplace>
+							</p:column>
+							<p:column rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+								<p:commandLink onclick="sprintSize.show();">
+									<span class="ui-icon ui-icon-pencil" />
+								</p:commandLink>
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<h:outputText value="Available man day:" style="font-weight: bold;" />
+							</p:column>
+							<p:column colspan="2" style="text-align: center">
+								<p:inplace widgetVar="manDay" disabled="#{!custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+									<p:ajax event="save"
+										listener="#{statisticBean.updateAvailableManDayStatistic}"
+										global="false"
+										oncomplete="handleSaveStatistic(xhr, status, args);" />
+									<p:ajax event="cancel" global="false"
+										listener="#{statisticBean.cancelUpdate}" />
+									<p:inputText style="max-width: 68px;"
+										value="#{statisticBean.statistic.availableManDay}"
+										onkeyup="if(event.keyCode == 27){manDay.cancel()}"
+										onkeypress="if(event.keyCode == 13){manDay.save();return false;}"
+										label="text"
+										title="#{component.valid ? '' : 'Available man day is number between 0 and 9999999'}">
+										<f:validateLongRange minimum="0" maximum="9999999" />
+									</p:inputText>
+								</p:inplace>
+							</p:column>
+							<p:column>
+								<p:inplace widgetVar="unitManDay" disabled="#{!custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+									<p:ajax event="save" listener="#{statisticBean.updateUnitManDay}" global="false" />
+									<p:ajax event="cancel" global="false" listener="#{statisticBean.cancelUpdate}" />
+									<p:inputText style="max-width: 180px;" 
+										id="unitManDay"
+										value="#{statisticBean.statistic.unitManDay}"
+										onkeyup="if(event.keyCode == 27){unitManDay.cancel()}"
+										onkeypress="if(event.keyCode == 13){unitManDay.save(); unitManDay.hide();return false;}" />
+								</p:inplace>
+							</p:column>
+							<p:column rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+								<p:commandLink onclick="manDay.show();">
+									<span class="ui-icon ui-icon-pencil" />
+								</p:commandLink>
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column styleClass="title"></p:column>
+							<p:column>
+								<h:outputText value="Estimated" style="color: #45a1de; font-weight:bold;" />
+							</p:column>
+							<p:column>
+								<h:outputText value="Delivered" style="color: #45a1de; font-weight:bold;" />
+							</p:column>
+							<p:column styleClass="title">
+							</p:column>
+							<p:column rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<h:outputText value="Point: " style="font-weight:bold;" />
+							</p:column>
+							<p:column>
+								<h:outputText value="#{statisticBean.statistic.pointPlan}" />
+							</p:column>
+							<p:column>
+								<h:outputText value="#{statisticBean.statistic.pointDelivered}" />
+							</p:column>
+							<p:column>
+								<p:inplace widgetVar="unitPoint" disabled="#{!custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+									<p:ajax event="save"
+										listener="#{statisticBean.updateUnitPoint}" 
+										global="false"
+										oncomplete="handleSaveStatistic(xhr, status, args);" />
+									<p:ajax event="cancel" global="false" listener="#{statisticBean.cancelUpdate}" />
+									<p:inputText style="max-width: 180px;" 
+										id="unitPoint"
+										value="#{statisticBean.statistic.unitPoint}"
+										onkeyup="if(event.keyCode == 27){unitPoint.cancel()}"
+										onkeypress="if(event.keyCode == 13){unitPoint.save(); unitPoint.hide();return false;}" />
+								</p:inplace>
+							</p:column>
+							<p:column rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<h:outputText value="User Story: " style="font-weight:bold;" />
+							</p:column>
+							<p:column>
+								<h:outputText value="#{statisticBean.statistic.userStoryPlan}" />
+							</p:column>
+							<p:column>
+								<h:outputText value="#{statisticBean.statistic.userStoryDelivered}" />
+							</p:column>
+							<p:column>
+								<p:inplace widgetVar="unitStory" disabled="#{!custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+									<p:ajax event="save"
+										listener="#{statisticBean.updateUnitStory}" 
+										global="false"
+										oncomplete="handleSaveStatistic(xhr, status, args);" />
+									<p:ajax event="cancel" global="false" listener="#{statisticBean.cancelUpdate}" />
+									<p:inputText style="max-width: 180px;" 
+										id="unitStory"
+										value="#{statisticBean.statistic.unitStory}"
+										onkeyup="if(event.keyCode == 27){unitStory.cancel()}"
+										onkeypress="if(event.keyCode == 13){unitStory.save(); unitStory.hide();return false;}" />
+								</p:inplace>
+							</p:column>
+							<p:column rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+								<h:outputText />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<h:outputText value="Velocity of sprint:" style="font-weight: bold;" />
+							</p:column>
+							<p:column>
+								<h:outputText value="#{statisticBean.statistic.velocityOfSprintPlan}">
+									<f:convertNumber maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+							<p:column>
+								<h:outputText value="#{statisticBean.statistic.velocityOfSprintDelivered}">
+									<f:convertNumber maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+							<p:column>
+								<h:outputText value="#{statisticBean.statistic.unitVelocity}" />
+							</p:column>
+							<p:column rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+								<h:outputText />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<h:outputText value="Note: " style="font-weight:bold;" />
+							</p:column>
+							<p:column colspan="3">
+								<p:inplace widgetVar="note" disabled="#{!custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+									<p:ajax event="save" listener="#{statisticBean.updateNoteStatistic}" global="false" />
+									<p:ajax event="cancel" global="false" listener="#{statisticBean.cancelUpdate}" />
+									<p:inputTextarea style="width: 98%"
+										value="#{statisticBean.statistic.note}"
+										onkeyup="if(event.keyCode == 27){note.cancel()}"
+										onkeypress="if(event.shiftKey){return true;}else if(event.keyCode == 13){note.save();return false;}"
+										label="text"
+										title="#{component.valid ? '' : 'Note maximum length is 1000 characters'}">
+										<f:validateLength maximum="1000" />
+									</p:inputTextarea>
+								</p:inplace>
+							</p:column>
+							<p:column rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+								<p:commandLink onclick="note.show();" title="Writes note for this statistics (Press 'Shift-Enter' to break line)">
+									<span class="ui-icon ui-icon-pencil" />
+								</p:commandLink>
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</h:form>
+			</h:panelGroup>
+		</h:panelGrid>
+	</p:fieldset>
+	<p:fieldset id="fieldsetHoliday" style="margin-bottom: 10px" styleClass="span12">
+		<h:outputText value="Day Off" style="font-weight: bold; margin-left: 17px; color: #45a1de; float: left;" />
+		<center>
+			<h:panelGroup style="width: 100%; margin-bottom: 12px" >
+				<h:form id="holidayForm" >
+				<h:outputText 
+				style="display: block; padding-top: 20px; text-align: left" 
+				value="There is no day off for this sprint. "
+				rendered="#{!(statisticBean.selectedDropDownTeamId != -1 and statisticBean.selectedDropDownSprintId != -1)}"/>
+				<h:panelGrid rendered="#{statisticBean.selectedDropDownTeamId != -1 and statisticBean.selectedDropDownSprintId != -1}">
+					<script>
+						jQuery(document).ready(function() {
+							window.setTimeout('bindEventsHighlights(#{statisticBean.holidayListOfMember})',0);
+						});
+					</script>
+					<br/>
+					<p:messages></p:messages>
+					<h:panelGrid  columns="2" styleClass="column-calendar" columnClasses="column1,column2">
+						<p:column>
+							<p:calendar mode="inline" 
+								id="holidayCalendar"
+								value="#{statisticBean.selectedHoliday}"
+								mindate="#{statisticBean.sprint.dateStart}"
+								maxdate="#{statisticBean.sprint.dateEnd}" 
+								pattern="MM/dd/yyyy"
+								widgetVar="calendarWidget" 
+								required="true"
+								requiredMessage="#{msg['myagile.statistic.NullDate']}">
+								<p:ajax listener="#{statisticBean.handleChangeHoliday}" event="dateSelect" global="true" update="holidayForm"  />
+							</p:calendar>
+						</p:column>
+						<p:column rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+							<h:selectOneRadio id="leaveType" 
+								required="true"
+								requiredMessage="#{msg['myagile.statistic.NullType']}"
+								value="#{statisticBean.selectedLeaveType}">
+								<f:selectItem itemLabel="Morning" itemValue="MORNING" />
+								<f:selectItem itemLabel="Afternoon" itemValue="AFTERNOON" />
+								<f:selectItem itemLabel="Fullday" itemValue="FULLDAY" />
+							</h:selectOneRadio>
+							<h:outputLabel for="reason" value="Reason:" />
+							<br />
+							<p:inputTextarea id="reason" value="#{statisticBean.reasonLeave}"  style="width: 100%" rows="8"></p:inputTextarea>
+						</p:column>
+					</h:panelGrid>
+					
+					<h:panelGroup layout="block" style="text-align: center;margin-bottom:10px" rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', statisticBean.selectedDropDownTeamId)}">
+						<p:commandButton value="Save" 
+							icon="icon-save"
+							actionListener="#{statisticBean.saveHoliday}"
+							update=":holidayForm,:listHolidays">
+						</p:commandButton>
+						<p:commandButton value="Remove" 
+							icon="icon-trash"
+							onclick="removeHolidayWidget.show();"
+							rendered="#{statisticBean.selectedLeaveType!=null}">
+						</p:commandButton>
+					</h:panelGroup>
+
+					<p:confirmDialog widgetVar="removeHolidayWidget" 
+						id="removeHoliday"
+						width="400" 
+						modal="true" 
+						closable="false"
+						severity="alert" >
+						<f:facet name="header">
+							<h:outputFormat style="float:left" value="#{msg['myagile.statistic.HeaderRemoveHoliday']}"> </h:outputFormat>
+						</f:facet>
+						<f:facet name="message">
+							<h:outputFormat value="#{msg['myagile.statistic.RemoveHoliday']}">
+								<f:param value="#{statisticBean.selectedHoliday}" />
+							</h:outputFormat>
+						</f:facet>
+						<h:panelGroup layout="block" style="text-align: right">
+							<p:commandButton value="Yes"
+								action="#{statisticBean.removeHoliday}"
+								oncomplete="removeHolidayWidget.hide();"
+								update=":holidayForm,:listHolidays" />
+							<p:commandButton value="No" oncomplete="removeHolidayWidget.hide();" />
+						</h:panelGroup>
+					</p:confirmDialog>
+					</h:panelGrid>
+				</h:form>
+
+				<h:form id="listHolidays">
+					<p:dataTable var="holiday" value="#{statisticBean.holidayList}" 
+						rendered="#{statisticBean.selectedDropDownTeamId != -1 and statisticBean.selectedDropDownSprintId != -1}"
+						styleClass="ui-widget-header"
+						style="width: 100%; margin: 0px auto;">
+						<p:column headerText="Full name"
+							sortBy="#{holiday.member.firstName}" 
+							width="30%"
+							style="text-transform: capitalize;">
+							<h:outputText value="#{holiday.member.lastName}" />
+							<h:outputText value=" " escape="false" />
+							<h:outputText value="#{holiday.member.firstName} " />
+						</p:column>
+						<p:column headerText="Date" sortBy="#{holiday.leaveDate}" width="10%">
+							<h:outputText value="#{holiday.leaveDate}">
+								<f:convertDateTime pattern="MM/dd/yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Type of leave" width="10%" style="text-transform: capitalize;">
+							<h:outputText value="#{holiday.leaveType.toString().toLowerCase()}">
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Reason" style="white-space:normal">
+							<h:outputText value="#{holiday.reason}" />
+						</p:column>
+						
+						  <p:columnGroup type="footer">  
+					            <p:row>  
+					                <p:column colspan="2" footerText="Totals:" style="text-align:right;font-weight:bold;"  />  
+					                <p:column colspan="2"  footerText=" #{statisticBean.totalHoliday} day(s)" style="text-align:left;font-weight:bold;"/>  
+					            </p:row>  
+					        </p:columnGroup>  
+					</p:dataTable>
+				</h:form>
+			</h:panelGroup>
+		</center>
+	</p:fieldset>
+</ui:composition>

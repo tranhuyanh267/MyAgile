@@ -1,0 +1,104 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+		xmlns:ui="http://java.sun.com/jsf/facelets" 
+		xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui" template="/WEB-INF/layouts/template.xhtml"
+		xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="layoutTitle">
+        Myagile User Guide
+    </ui:define>
+	<ui:define name="layoutHead">
+	</ui:define>
+	<ui:define name="layoutBody">
+		<c:set value="#{request.contextPath}/resources/img/help/product_backlog" var="pbacklogSourcePath"></c:set>
+		<div class="content-section">
+			<div class="heading">
+				<h4>Product Backlog Overview</h4>
+				<a id="pbacklogOverview"></a>
+			</div>
+			<div class="content-block">
+				<div class="content-block-nav">
+					<p class="content-block-nav-back">
+						<a href="#{request.contextPath}/help"><i class="icon-double-angle-left"></i> Guide</a>
+						<a href="#{request.contextPath}/help/wizard"><i class="icon-double-angle-left"></i> Previous</a>
+					</p>
+					<p class="content-block-nav-forward">
+						<a href="#{request.contextPath}/help/sprint-backlog">Next <i class="icon-double-angle-right"></i></a>
+					</p>
+				</div>
+				<div class="content-block-main">
+				
+					<p>Click the “My Project/Product Backlog” path to come into product backlog page</p>
+					<img alt="pbacklog_guide.picture" src="#{pbacklogSourcePath}/pbacklog_go_to_page.png" />
+					<dl>
+						<dt><a id="create">1. Create user story</a></dt>
+						<dd>
+							<p>Click the “New” button. Fill in the form information and upload attachment(s).</p>
+							<img alt="pbacklog_guide.picture" src="#{pbacklogSourcePath}/pbacklog_create.png" />
+							<p>
+								<strong>Name (*)</strong>: name of the user story.<br/>
+								<strong>Priority</strong>: accepted values are “Must”, “Should”, “Could” and “Wont”.<br/>
+								<strong>Value</strong>: value of the user story.<br/>
+								<strong>Risk</strong>: risk value of the user story.<br/>
+								<strong>Description</strong>: description of the user story.<br/>
+								<strong>ID (-)</strong>: a number which is used to identify a user story of a project.<br/>
+								<strong>Project</strong>: the project the user story is belong to.<br/>
+								<strong>Status</strong>: status of the user story.<br/>
+								<strong>Issues</strong>: issues belong to the user story.<br/>
+								<br/>	
+								Note: <i>(*) required field, (-) read only</i>
+							</p>
+							<p>Click the “Save” button to finish. The created user story will be added to table of your user stories.</p>
+							<img alt="pbacklog_guide.picture" src="#{pbacklogSourcePath}/pbacklog_done_create.png" />
+							<div><strong>Note: </strong><p style="display: inline;">"Showing 2 of 2 Entries": when there are more then 15 user stories, roll down the mouse to see more (lazy loading). </p></div>
+							<div class="backToTop"><a href="#pbacklogOverview">BACK TO TOP <i class="icon-hand-up"></i></a></div>
+						</dd>
+						<dt><a id="update">2. Edit user story</a></dt>
+						<dd>
+							<p>From the user stories list, click the Edit icon to show edit form </p>
+							<p>Fill in the information likely to create a user story</p>
+							<img alt="pbacklog_guide.picture" src="#{pbacklogSourcePath}/pbacklog_edit.png" />
+							<p>
+								You can set status of the user story to “void” status by clicking the “Set Void”.
+								<br/>
+								Click the “Save” button to finish.
+							</p>
+							<div class="backToTop"><a href="#pbacklogOverview">BACK TO TOP <i class="icon-hand-up"></i></a></div>
+							<br/>
+						</dd>
+						<dt><a id="delete">3. Delete user story</a></dt>
+						<dd>
+							<p>From the table of user stories, click the delete button (waste basket symbol). You will get a confirm message and system also send an email noticed to other members of your team</p>
+							<img alt="pbacklog_guide.picture" src="#{pbacklogSourcePath}/pbacklog_delete.png" />
+							<p>Member can check the email to know what has been happened.</p>
+							<img alt="pbacklog_guide.picture" src="#{pbacklogSourcePath}/pbacklog_delete_email_noticed.png" />
+							<div class="backToTop"><a href="#pbacklogOverview">BACK TO TOP <i class="icon-hand-up"></i></a></div>
+						</dd>
+						<dt><a id="import">4. Import user story from excel file</a></dt>
+						<dd>
+							<p>Click the “Import Excel File' button</p>
+							<img alt="pbacklog_guide.picture" src="#{pbacklogSourcePath}/import.png" />
+							<p> Choose the excel file to upload.</p>
+							<img alt="pbacklog_guide.picture" src="#{pbacklogSourcePath}/pbaclog_choose_file_to_upload.png" />
+							<p>The user stories are created from the excel file will be added to table of user stories</p>
+							<img alt="pbacklog_guide.picture" src="#{pbacklogSourcePath}/pbacklog_done_upload.png" />
+							<p>The accepted excel file format with five columns are “name”, “description”, “value”, “risk” and “priority” (you can change the name of these columns). 
+							   The extension of these files are “.xls” and “.xlsx”. For example:</p>
+							<img alt="pbacklog_guide.picture" src="#{pbacklogSourcePath}/pbacklog_excel_file.png" />
+						</dd>
+						<dt><a id="export">5. Export user story to excel file</a></dt>
+						<dd>
+							<p>Click the “Export Excel File' button </p>
+							<img alt="pbacklog_guide.picture" src="#{pbacklogSourcePath}/pbacklog_export_excel.png" />
+							<p>and the result: </p>
+							<img alt="pbacklog_guide.picture" src="#{pbacklogSourcePath}/pbacklog_export_excel_file.png" />
+							
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+	<ui:define name="layoutFooter">
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,40 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+				<div class="requirements">
+					<div id="req-error" class="ui-message-error ui-widget ui-corner-all" style="display: none; margin: auto 0px auto 0px; padding-right: 8px !important; font-size: 13px !important;">
+						<span class="ui-message-error-icon"></span> <span class="ui-message-error-detail">Your browser is out of date</span> <span><a class="details" href="#">Details</a></span>
+					</div>
+
+					<div id="req-warn" class="ui-message-warn ui-widget ui-corner-all" style="display: none; margin: auto 0px auto 0px; padding-right: 8px !important; font-size: 13px !important;">
+						<span class="ui-message-warn-icon"></span> <span class="ui-message-warn-detail">Your browser is partial compatible with our app.</span> <span><a class="details" href="#">Details</a></span>
+					</div>
+
+					<div id="req-info" style="display: none;" class="ui-widget ui-corner-all">
+						<table cellspacing="5" cellpadding="5">
+							<tr>
+								<th></th>
+								<th>Your System</th>
+								<th>Min Requirements</th>
+								<th>Best Support</th>
+							</tr>
+							<tr>
+								<th style="text-align: right;">Device:</th>
+								<td id="your-device"></td>
+								<td id="min-device"></td>
+								<td id="best-device" class="no-border"></td>
+							</tr>
+							<tr>
+								<th style="text-align: right;">Browser:</th>
+								<td id="your-browser"></td>
+								<td id="min-browser"></td>
+								<td id="best-browser" class="no-border"></td>
+							</tr>
+							<tr>
+								<th style="text-align: right;">Tips:</th>
+								<td id="tip" class="no-border" colspan="3" style="text-align: justify;"></td>
+							</tr>
+						</table>
+					</div>
+		</div>
+</ui:composition>

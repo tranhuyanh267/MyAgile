@@ -1,0 +1,41 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<h:form id="form-search" class="form-search" prependId="false">
+	  <h:panelGroup layout="block" styleClass="pull-left" style="margin-right:10px">
+		<h:outputLabel value="Search " for="keyword" style="width: 50px;" />
+		<p:inputText id="keyword" onkeyup="ajaxDelay()" value="#{sprintBacklogBean.searchedKeyWord}" style="width:185px;">
+		</p:inputText>
+		<p:watermark id="watermark" for="keyword" value="Please enter id or subject" />
+		<p:remoteCommand name="searchUS" update=":form2" />
+		<script type="text/javascript">
+		    var delay = (function() {
+		        var timer = 0;
+		        return function(callback, ms) {
+		            clearTimeout(timer);
+		            timer = setTimeout(callback, ms);
+		        };
+		    })();
+		
+		    function ajaxDelay() {
+		        delay( function() {
+		        	searchUS();
+		        }, 300);
+		    };
+		</script>
+	  </h:panelGroup>
+	  <span style="border: 0;border-left: 1px solid #ecf0f1;border-right: 1px solid #ffffff; float:left; height:2.3em; margin-right: 10px;"></span>
+		<p:selectManyCheckbox id="filterCheckbox" label="Filters Status"
+			value="#{sprintBacklogBean.selectedFilter}"
+			style="margin-top: 0px; width:300px;">
+			<f:selectItem itemLabel="To do" itemValue="TODO" />
+			<f:selectItem itemLabel="In-progress" itemValue="IN_PROGRESS" />
+			<f:selectItem itemLabel="Done" itemValue="DONE" />
+			<f:selectItem itemLabel="Void" itemValue="VOID" />
+			<p:ajax global="true" update=":form2" />
+		</p:selectManyCheckbox>
+     </h:form>
+</ui:composition>

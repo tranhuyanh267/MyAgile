@@ -1,0 +1,80 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:custom="http://myagile.com/custom">
+<style>
+	.teaminfo-column{
+		vertical-align: top;
+	}
+	
+	.projectlist > div{
+		border:0;
+		margin-left: -6px;
+	}
+	fieldset{
+		margin-left: -21px;
+		width: 1162px;
+	}
+	#teamInfoFieldset .ui-fieldset-content{
+		margin: -20px auto;
+	}
+</style>
+
+<p:fieldset legend="Team Info" id="teamInfoFieldset" styleClass="span12">
+    <h:panelGrid columns="2" cellpadding="10" columnClasses="teaminfo-column,teaminfo-column" rendered="#{teamBean.team.teamId != null and teamBean.team.teamId != 0}">
+		<h:panelGroup layout="block" style="padding:10px; margin:0 auto; width:200px;position: relative;">
+	    	<h:graphicImage alt="team-logo" rendered="#{teamBean.team.logo != null}" value="/file/?type=team-logo&amp;t=#{teamBean.team.teamId}&amp;filename=#{teamBean.team.logo}" 
+						styleClass="img-rounded img-polaroid input-block-level"/>
+			<h:graphicImage alt="team-logo" rendered="#{teamBean.team.logo == null}" value="/resources/img/team.jpg" 
+				styleClass="img-rounded img-polaroid input-block-level" />
+	    </h:panelGroup>
+	    
+	    <h:panelGroup>	  
+	    <h:form>  
+		    <h:panelGrid columns="2" cellpadding="3"> 
+		    	<h:outputText value="Team Name: " style="font-weight:bold;"/>  
+	            <h:outputText id="inputname" value="#{teamBean.team.teamName}"/>
+	            	            
+	            <h:outputText value="Mail Group: " style="font-weight:bold;"/>
+				<h:outputText value="#{teamBean.team.mailGroup}"/>
+				
+				<h:outputText value="Establish Date: " style="font-weight:bold;margin-right:10px"/>
+				<h:outputText value="#{teamBean.team.establishedDate}">
+					<f:convertDateTime pattern="MMMM dd yyyy" locale="en"/>
+				</h:outputText>
+				
+				<h:outputText value="Description: " style="font-weight:bold;"/>
+				<h:outputText value="#{teamBean.team.description}"/>	
+				
+				<h:outputText value="Owner: " style="font-weight:bold;"/>
+				<h:outputText value="#{teamBean.getProductOwner(teamBean.team.getOwner())}"/>	
+				
+				<h:outputText value="Project: " style="font-weight:bold;"/>
+				<ui:repeat var="p" value="#{teamBean.findProjectAssignedToTeam()}" varStatus="status">
+					<h:commandLink value="#{p.projectName}" styleClass="project-link" actionListener="#{teamBean.linkToProductBacklogPage()}" target="_blank">
+						<f:setPropertyActionListener target="#{productBacklogBean.projectId}" value="#{p.projectId}"></f:setPropertyActionListener>
+					</h:commandLink>
+					<h:outputText rendered="#{!status.last}" value="; "/>
+				</ui:repeat>			
+		    </h:panelGrid>
+		    </h:form>
+		    <h:form id="emailDetail" rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', teamBean.team.teamId)}" style="margin-left: 8px;">
+			    <h:panelGrid  columns="1" columnClasses="column" cellpadding="5">		    
+					<h:outputText for="emailList" value="Send email to invite: (each mail is divided by semicolon) " style="font-weight:bold"/> 		   	
+			   	<h:panelGrid columns="2" cellpadding="5" styleClass="form-inline">
+			   		<h:inputTextarea id="emailList" autoResize="true" value="#{teamBean.mailActive}" />		   		
+			   		<p:commandButton id="sendEmailBt" value="Send Mail" icon="icon-envelope-alt" 
+			   				update="emailDetail,:memberForm" actionListener="#{teamBean.sendMailToNewUser}"/>   		
+			   	</h:panelGrid>	
+			   	<p:messages id="msgs"/>		 		
+				</h:panelGrid> 		
+			</h:form>	
+		</h:panelGroup> 
+			
+    </h:panelGrid>  
+</p:fieldset> 
+</ui:composition>

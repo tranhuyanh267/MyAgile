@@ -1,0 +1,56 @@
+<ui:composition	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+<p:fieldset style=" margin-bottom:5px; float:none;" styleClass="span12">
+	<h:form id="form" styleClass="form-inline text-center" prependId="false" style="margin-bottom: 5px;">
+        <p:messages for="msgs" id="msgs" showDetail="true" closable="true"
+                    showSummary="false"/>
+        <h:panelGroup styleClass="selector-wrapper  pull-left">
+            <h:outputText value="Select Team: " style="margin-right:10px"/>
+            <p:selectOneMenu value="#{statisticBean.selectedDropDownTeamId}"
+                             style="margin-right:5px"
+                             rendered="#{empty statisticBean.teamList}"
+                             styleClass="text-left">
+                <f:selectItem noSelectionOption="true" itemValue="-1" itemLabel="No team"/>
+            </p:selectOneMenu>
+            <p:selectOneMenu id="teamSelect"
+                             value="#{statisticBean.selectedDropDownTeamId}" style="margin-right:5px"
+                             rendered="#{not empty statisticBean.teamList}"
+                             styleClass="text-left">
+                <f:selectItems value="#{statisticBean.teamList}" var="t"
+                               itemValue="#{t.teamId}" itemLabel="#{t.teamName}"/>
+                <p:ajax listener="#{statisticBean.handleChangeTeamFromStatisticsPage}"
+                        update="msgs, :statisticForm, selectSprintPanel, :feedbackForm,:holidayForm,:listHolidays"
+                        event="change"/>
+            </p:selectOneMenu>
+        </h:panelGroup>
+        <h:panelGroup id="selectSprintPanel" styleClass="selector-wrapper pull-left">
+            <h:outputText value="Select Sprint: " style="margin-right:5px"/>
+            <p:selectOneMenu value="#{statisticBean.selectedDropDownSprintId}"
+                             style="margin-right:5px" rendered="#{empty statisticBean.sprintList}" styleClass="text-left">
+                <f:selectItem noSelectionOption="true" itemValue="-1" itemLabel="No sprint"/>
+            </p:selectOneMenu>
+            <p:selectOneMenu id="sprintSelect"
+                             value="#{statisticBean.selectedDropDownSprintId}"
+                             style="margin-right:5px"
+                             rendered="#{not empty statisticBean.sprintList}"
+                             styleClass="text-left">
+                <f:selectItems value="#{statisticBean.sprintList}" var="t"
+                               itemValue="#{t.sprintId}" itemLabel="#{t.status == 'open' ? t.sprintName : ''.concat(t.sprintName).concat(' (Closed)')}" />
+                <p:ajax listener="#{statisticBean.handleChangeSprintDropDownFromStatisticsPage}"
+                        event="change" update=":statisticForm, :feedbackForm,:holidayForm,:listHolidays"/>
+            </p:selectOneMenu>
+        </h:panelGroup>
+        
+        <p:commandButton icon="icon-search" rendered="#{statisticBean.sprintList.size()>0}" 
+        value="View all sprints" action="#{statisticBean.redirectToAllSprintStatisticPage}"
+        styleClass="pull-right"/>
+
+	</h:form>
+</p:fieldset>
+
+</ui:composition>

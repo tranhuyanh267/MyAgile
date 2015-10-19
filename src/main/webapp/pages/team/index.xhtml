@@ -1,0 +1,65 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	template="/WEB-INF/layouts/template.xhtml"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:custom="http://myagile.com/custom">
+	<ui:define name="layoutTitle">My Team</ui:define>
+	<ui:define name="layoutHead">
+        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/css/team.css"/>
+		<script type="text/javascript" src="#{request.contextPath}/resources/assets/js/team.js" />
+	</ui:define>
+	<ui:define name="metadata">
+		<f:metadata>
+	    	<f:event listener="#{teamBean.initPreview}" type="preRenderView"/>
+		</f:metadata>
+	</ui:define>
+	<ui:define name="layoutBody">
+		<div class="row">
+			<h:panelGroup layout="block" id="selectTeamForm">
+				<p:fieldset styleClass="team-members span12" rendered="#{profileMB.member.active}">
+						<h:form styleClass="form-inline" id="form-selectTeam" style="margin:0 10px;">
+							<h:outputLabel for="selectTeam" value="Select a Team:" style="margin-right:5px"/>
+							<p:selectOneMenu style="margin-right:5px" rendered="#{empty teamBean.listTeamsForSelection}" styleClass="text-left">
+						               <f:selectItem  noSelectionOption="true" itemLabel="No team"/>
+						    </p:selectOneMenu>
+							<p:selectOneMenu id="selectTeam" value="#{teamBean.team.teamId}" rendered="#{!empty teamBean.listTeamsForSelection}" styleClass="text-left">
+								<f:selectItems value="#{teamBean.findTeamsByUser()}" var="t" itemLabel="${t.teamName}" itemValue="${t.teamId}" />
+								<p:ajax event="change" listener="#{teamBean.handleTeamChange}" update="customEditTeam,:memberDetail,:teamDetail,:teamInfoFieldset"/>
+							</p:selectOneMenu>
+								<p:commandButton style="margin-left:5px" id="addTeamBtn" process="@this"
+												value="New Team" action="#{teamBean.toAddTeamPage}" icon="icon-plus"/>
+							<h:panelGroup id="customEditTeam">
+								<p:commandButton style="margin-left:5px" id="editTeamBtn" icon="icon-pencil" process="@this" rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', teamBean.team.teamId)}"
+												value="Edit Team" action="#{teamBean.toEditTeamPage}"/>
+							</h:panelGroup>
+						</h:form>  
+				</p:fieldset>
+			</h:panelGroup>
+			<h:panelGroup layout="block" id="teamDetail">
+				<ui:include src="_teamDetail.xhtml"/>
+			</h:panelGroup>
+		
+			<h:panelGroup layout="block" id="memberDetail">
+				<ui:include src="_members.xhtml"/>
+			</h:panelGroup>
+		</div>
+	</ui:define>
+	<ui:define name="layoutFooter">
+		<p:ajaxStatus>
+			<f:facet name="start">
+				<h:panelGroup styleClass="ajaxPopUp">
+					<p:graphicImage alt="ajax loader" styleClass="imgAjax"
+						value="resources/img/ajax_loader/ajax_loader.gif" />
+				</h:panelGroup>
+			</f:facet>
+			
+			<f:facet name="complete">
+				<h:outputText value="" />
+			</f:facet>
+		</p:ajaxStatus>
+	</ui:define>
+</ui:composition>

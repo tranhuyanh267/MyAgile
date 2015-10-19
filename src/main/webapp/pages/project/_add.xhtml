@@ -1,0 +1,91 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:t="http://myfaces.apache.org/tomahawk">
+	<p:fieldset styleClass="span12" style="margin-bottom: 10px" rendered="#{profileMB.member.active}">
+		<h:form id="formParentSlide" style="overflow: auto;">
+			<p:remoteCommand name="resetMessage" actionListener="#{wizardBean.removeProjectMessage()}" autoRun="true" immediate="true" />
+			<p:remoteCommand name="resetMessage_" actionListener="#{projectBean.removeProjectMessage()}" autoRun="true" immediate="true" />
+			<!--  		Message add project successfully -->
+			<h:panelGroup rendered="#{wizardBean.projectSavedSuccessful == true}" style="display: inline-block;">
+				<div class="ui-messages ui-widget" aria-live="polite" style="display: inline-block;">
+					<div class="ui-messages-info ui-corner-all" style="margin-top: 0px">
+						<a href="#" class="ui-messages-close" style="margin-top: 5px;" onclick="$(this).parent().slideUp();return false;"> <span class="ui-icon ui-icon-close" />
+						</a> <span class="ui-messages-info-icon" style="margin-top: 0px;"/>
+						<ul>
+							<li><span class="ui-messages-info-detail"> Project <strong><h:outputText value="#{wizardBean.projectName} " /></strong>was created successfully!
+							</span></li>
+						</ul>
+					</div>
+				</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{projectBean.projectSavedSuccessful == true}" style="display: inline-block;">
+				<div class="ui-messages ui-widget" aria-live="polite" style="display: inline-block;">
+					<div class="ui-messages-info ui-corner-all" style="margin-top: 0px">
+						<a href="#" class="ui-messages-close" style="margin-top: 5px;" onclick="$(this).parent().slideUp();return false;"> <span class="ui-icon ui-icon-close" />
+						</a> <span class="ui-messages-info-icon" style="margin-top: 0px;"/>
+						<ul>
+							<li><span class="ui-messages-info-detail"> 
+							     Project <strong><h:outputText value="#{projectBean.projectNameOld} " /></strong>was created successfully!
+							</span></li>
+						</ul>
+					</div>
+				</div>
+			</h:panelGroup>
+			<h:panelGroup styleClass="text-right" layout="right" style="float:right">
+				<p:commandButton icon="icon-exchange" style="margin-right: 5px;" value="Create Project by Wizard" actionListener="#{projectBean.newProjectInit}" onclick="window.location = 'wizard'" />
+				<p:commandButton icon="icon-plus" update=":list-update-project" id="slideFormNew" value="New Project" actionListener="#{projectBean.newProjectInit}" oncomplete="showPanel()" />
+			</h:panelGroup>
+		</h:form>
+	</p:fieldset>
+	<p:fieldset id="panelAddProject" styleClass="span12" style="display:none;margin-bottom:5px">
+		<h:form id="add-project" enctype="multipart/form-data">
+			<div class="media">
+				<div class="pull-left media-action">
+					<h:panelGroup layout="block" id="project-logo-new" class="project-logo-new">
+						<h:panelGroup id="project-logo-sub-new" layout="block">
+							<h:graphicImage alt="No Image" rendered="#{empty projectBean.nameLogoUpdated}" value="/resources/img/no_image_available.png" styleClass="img-rounded img-polaroid input-block-level" style="width:200px;height:200px" />
+							<h:graphicImage alt="No Image" rendered="#{not empty projectBean.nameLogoUpdated}" value="/file/?type=project-logo&amp;filename=#{projectBean.nameLogoUpdated}&amp;pId=#{projectBean.projectId}" styleClass="img-rounded img-polaroid input-block-level" style="width:200px;height:200px" />
+							<div id="upload-add-alert" class="ui-message-error ui-widget ui-corner-all" style="margin-bottom: 5px; margin-top: 5px; display: none">
+								<span id="upload-add-alert-icon" class="ui-message-error-icon"></span> <span id="upload-add-alert-message" class="ui-message-error-detail"></span>
+							</div>
+						</h:panelGroup>
+						<button type="button" id="btnChangeLogoNew" style="margin-top: 10px;" class="btn btn-small btn-info input-block-level">
+							<i class="icon-picture"></i> Choose Logo
+						</button>
+					</h:panelGroup>
+					<p:blockUI block="project-logo-new" widgetVar="projectLogoBlockNew">
+							Uploading... (<span class="upload-progress-new">0%</span>)
+						</p:blockUI>
+				</div>
+				<div class="media-body">
+					<h:panelGrid id="projectGrid" columns="3">
+						<h:outputText value="Project Name: " />
+						<p:inputText id="projectName" value="#{projectBean.projectName}" required="true" style=" width: 300px" requiredMessage="#{msg['myagile.project.NameEmpty']}" validator="#{projectBean.checkExistProject}" styleClass="removeHTMLanControlCharacters remove-html-control-character">
+							<f:validateLength minimum="6" maximum="255" />
+							<p:ajax event="keyup" update="projectMessages" />
+						</p:inputText>
+						<p:message for="projectName" id="projectMessages" display="default" />
+						<h:outputText value="Description: " />
+						<p:inputTextarea id="description" value="#{projectBean.description}" rows="6" cols="33" style=" width: 300px" styleClass="remove-html-control-character">
+							<f:validateLength minimum="0" maximum="500" />
+							<p:ajax event="keyup" update="projectDesc" />
+						</p:inputTextarea>
+						<p:message for="description" id="projectDesc" display="default" />
+						<h:outputText value="Public: " />
+						<p:selectBooleanCheckbox label="Public:" id="isPublic" value="#{projectBean.isPublic}" />
+						<h:inputHidden />
+						<h:outputText value="Team: " />
+						<p:selectCheckboxMenu id="checkTeams" value="#{projectBean.selectedTeams}" label="Teams" filter="true" filterText="Filter" filterMatchMode="startsWith">
+							<f:selectItems value="#{projectBean.teams}" var="t" itemLabel="#{t.teamName}" itemValue="#{t.teamId}" />
+						</p:selectCheckboxMenu>
+						<h:inputHidden />
+					</h:panelGrid>
+					<div class="offset2">
+						<p:commandButton id="addProject" value="Save" icon="icon-save" style="margin-right: 5px;" update=":list-update-project, projectGrid, project-logo-sub-new, :formParentSlide" actionListener="#{projectBean.addProject}" oncomplete="handleComplete(xhr, status, args)" />
+						<p:commandButton id="hideFormNew" value="Cancel" update="projectGrid, project-logo-sub-new" actionListener="#{projectBean.reset}" oncomplete="hidePanel()" styleClass="secondary" process="@this" />
+					</div>
+					<p:remoteCommand name="updateLogoNew" actionListener="#{projectBean.newProjectLogo}" update="project-logo-sub-new" process="@this" />
+				</div>
+			</div>
+		</h:form>
+	</p:fieldset>
+	<div style="display:none;" id="hidden" value="#{request.contextPath}"></div>
+</ui:composition>

@@ -1,0 +1,52 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+		xmlns:ui="http://java.sun.com/jsf/facelets" 
+		xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui" template="/WEB-INF/layouts/template.xhtml"
+		xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="layoutTitle">
+        Myagile User Guide
+    </ui:define>
+	<ui:define name="layoutHead">
+	</ui:define>
+	<ui:define name="layoutBody">
+		<c:set value="#{request.contextPath}/resources/img/help/remainingtask" var="remainingTaskSourcePath"></c:set>
+		<div class="content-section">
+			<div class="heading">
+				<h4>Remaining Task Overview</h4>
+				<a id="remainingTaskOverview"></a>
+			</div>
+			<div class="content-block">
+				<div class="content-block-nav">
+					<p class="content-block-nav-back">
+						<a href="#{request.contextPath}/help"><i class="icon-double-angle-left"></i> Guide</a>
+						<a href="#{request.contextPath}/help/sprint-backlog"><i class="icon-double-angle-left"></i> Previous</a>
+					</p>
+					<p class="content-block-nav-forward">
+						<a href="#{request.contextPath}/help/scrumboard">Next <i class="icon-double-angle-right"></i></a>
+					</p>
+				</div>
+				<div class="content-block-main">
+					<dl>
+						<dt><a id="createTeam">1. Navigate to Remaining Task</a></dt>
+						<dd>
+							<p>In “Backlog” tab, choose “Remaining Task”</p>
+							<img alt="team_guide.picture" src="#{remainingTaskSourcePath}/remain_navigate.png" />
+							<p>The second last column will show the new sprint. The third last sprint will show the sprint that the task is not done.</p>
+							<img alt="team_guide.picture" src="#{remainingTaskSourcePath}/remain_currentsprint.png" />
+							<p>Click "Create New Sprint" to create new sprint if you have not created new sprint yet.</p>
+							<img alt="team_guide.picture" src="#{remainingTaskSourcePath}/new_sprint.png" />
+						</dd>
+						<dt><a id="editTeam">2. Add/Remove the task to new sprint</a></dt>
+						<dd>
+							<p>To add to new sprint check the checkbox then apply. To remove from new sprint uncheck the checkbox then apply</p>
+							<img alt="team_guide.picture" src="#{remainingTaskSourcePath}/remain_move_to_new_sprint.png" />
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+	<ui:define name="layoutFooter">
+	</ui:define>
+</ui:composition>

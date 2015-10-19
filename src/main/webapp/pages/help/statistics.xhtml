@@ -1,0 +1,87 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+		xmlns:ui="http://java.sun.com/jsf/facelets" 
+		xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui" template="/WEB-INF/layouts/template.xhtml"
+		xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="layoutTitle">
+        Myagile User Guide
+    </ui:define>
+	<ui:define name="layoutHead">
+	</ui:define>
+	<ui:define name="layoutBody">
+		<c:set value="#{request.contextPath}/resources/img/help/statistics" var="statisticsSourcePath"></c:set>
+		<div class="content-section">
+			<div class="heading">
+				<h4>Statistics &#38; Feedbacks Overview</h4>
+				<a id="teamOverview"></a>
+			</div>
+			<div class="content-block">
+				<div class="content-block-nav">
+					<p class="content-block-nav-back">
+						<a href="#{request.contextPath}/help"><i class="icon-double-angle-left"></i> Guide</a>
+						<a href="#{request.contextPath}/help/issue"><i class="icon-double-angle-left"></i> Previous</a>
+					</p>
+					<p class="content-block-nav-forward">
+						<a href="#{request.contextPath}/help/wiki">Next <i class="icon-double-angle-right"></i></a>
+					</p>
+				</div>
+				<div class="content-block-main">
+				<p>Choose “Statistics &#38; Feedbacks” in menu to go to Statistics &#38; Feedbacks page </p>
+				<img alt="statistics_guide.picture" src="#{statisticsSourcePath}/menu.png" />
+					<dl>
+						<dt><a id="view">1. View statistics information in sprint</a></dt>
+						<dd>
+							<p>Choose the sprint you want to view statistics</p>
+							<p>And generate (if the sprint have no statistics) </p>
+							<img alt="statistics_guide.picture" src="#{statisticsSourcePath}/firstGenarate.png" />
+							<p>or re-generate the statistics (if you want come back to default statistics)</p>
+							<img alt="statistics_guide.picture" src="#{statisticsSourcePath}/regenerate.png" />
+							<p>This is a statistics of sprint</p>
+							<img alt="statistics_guide.picture" src="#{statisticsSourcePath}/formEdit.png" />
+							<p>
+								You have a lot of fields (automatically figure out by system) and you can also change red rectangle field (Team size, sprint size ans available man day), green rectangle field (unit of field) and blue  field (note for statistics)
+								<ul>
+									<li>Team size : all of members in team</li>
+									<li>Sprint size : total day of sprint (from start date to end date except Saturday and Sunday)</li>
+									<li>Available man day : team size * sprint size</li>
+									<li>Point : total point of all issues belong to sprint</li>
+									<li>User story : all issues belong to sprint</li>
+									<li>Velocity of sprint : total point / available man day</li>
+									<li>Note : note for sprint</li>
+								</ul>
+							</p>
+							<p>
+									* We have two types : Estimated (planed by team) and Delivered (accepted by PO)
+							</p>
+							<p>
+									You can update field by click on field, and the textbox is shown later. Press “Enter” to accept this update content.
+							</p>
+							<div class="backToTop"><a href="#teamOverview">BACK TO TOP <i class="icon-hand-up"></i></a></div>
+						</dd>
+						
+						<dt><a id="viewAll">2. View statistics of all sprints</a></dt>
+						<dd>
+							<p>Click “View all sprints” button to view it</p>
+							<img alt="statistics_guide.picture" src="#{statisticsSourcePath}/clickAllSprints.png" />
+							<p>In this page, you can not only  see statistics table but also statistics chart of all sprint (we support three type of chart :  Velocity Chart, Story Chart and Point Chart)</p>
+							<img alt="statistics_guide.picture" src="#{statisticsSourcePath}/allSprints.png" />
+							<div class="backToTop"><a href="#teamOverview">BACK TO TOP <i class="icon-hand-up"></i></a></div>
+							<br/>
+						</dd>
+						<dt><a id="feedbacks">3. Give feedback</a></dt>
+						<dd>
+							<p>Only PO of project have a role to create a feedback for team. He need choose the project to update and give their opinions about it.</p>
+							<img alt="statistics_guide.picture" src="#{statisticsSourcePath}/feedback.png" />
+							<p>They are also update or remove their feedbacks</p>
+							<img alt="statistics_guide.picture" src="#{statisticsSourcePath}/editFeedbacks.png" />
+							<div class="backToTop"><a href="#teamOverview">BACK TO TOP <i class="icon-hand-up"></i></a></div>
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+	<ui:define name="layoutFooter">
+	</ui:define>
+</ui:composition>

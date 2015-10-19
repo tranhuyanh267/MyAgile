@@ -1,0 +1,121 @@
+<ui:composition template="/WEB-INF/layouts/template.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="layoutTitle">
+		Wizard
+	</ui:define>
+	<ui:define name="layoutHead">
+		<link rel="stylesheet" type="text/css" href="#{request.contextPath}/bundles/mCustomScrollbar.css" />
+		<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/css/wizard.css" />
+		<script type="text/javascript" src="#{request.contextPath}/bundles/plupload.js" />
+		<script type="text/javascript" src="#{request.contextPath}/bundles/mCustomScrollbar.js" />
+		<script type="text/javascript" src="#{request.contextPath}/resources/assets/js/wizard.js" />
+		<script type="text/javascript" src="#{request.contextPath}/resources/assets/libs/blockUI/jquery.blockUI.js" />
+		<style>
+.ui-progressbar {
+	height: 1.2em;
+	text-align: left;
+	position: relative;
+	margin-right: 25px;
+	margin-bottom: 10px;
+}
+
+.ui-progressbar .ui-progressbar-value {
+	margin: 0px !important;
+}
+</style>
+	</ui:define>
+	<ui:define name="layoutBody">
+		<div id="wizardDiv">
+			<h:form enctype="multipart/form-data" id="wizardForm" style="margin-top: 30px" prependId="false">
+				<div class="container row-fluid">
+					<div class="nav span3">
+						<ul class="list">
+							<li>
+								<div class="div-nav">
+									<i class="icon-hand-right"> STEP 1: CREATE A PROJECT</i>
+								</div>
+							</li>
+							<li>
+								<div class="div-nav">
+									<i class="icon-hand-right"> STEP 2: ASSIGN TEAM</i>
+								</div>
+							</li>
+							<li>
+								<div class="div-nav">
+									<i class="icon-hand-right"> STEP 3: CREATE SPRINT</i>
+								</div>
+							</li>
+							<li>
+								<div class="div-nav">
+									<i class="icon-hand-right"> STEP 4: RESULT</i>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="contain-wizard span8" style="position: relative">
+						<p:wizard flowListener="#{wizardBean.onFlowProcess}" showStepStatus="false" widgetVar="wiz" id="wizard">
+							<p:tab id="project" title="Project">
+								<ui:insert name="addProject">
+									<ui:include src="_project.xhtml"></ui:include>
+								</ui:insert>
+							</p:tab>
+							<p:tab id="team" title="Team">
+								<ui:insert name="addProject">
+									<ui:include src="_team.xhtml"></ui:include>
+								</ui:insert>
+							</p:tab>
+							<p:tab id="sprint" title="Sprint">
+								<ui:insert name="addProject">
+									<ui:include src="_sprint.xhtml"></ui:include>
+								</ui:insert>
+							</p:tab>
+							<p:tab id="result" title="Fianl result">
+								<ui:insert name="addProject">
+									<ui:include src="_result.xhtml"></ui:include>
+								</ui:insert>
+
+							</p:tab>
+
+						</p:wizard>
+						<p:commandButton value="Save" id="saveBtn" icon="icon-save" actionListener="#{wizardBean.save}" style="float: right; top: -30px; display: none" />
+						<p:commandButton value="" onclick="resetBean();" style="float: right; position: absolute; top: 10px; right: 10px; width: 25px; height: 22px; margin-top: 6px;" icon="icon-remove" />
+					</div>
+				</div>
+			</h:form>
+		</div>
+		<h:form id="sprintCommand">
+			<p:remoteCommand update="@([id$=pgSprint])" name="createNewSprint" actionListener="#{wizardBean.initSprint}" oncomplete="showAddForm(xhr, status, args);" />
+			<p:remoteCommand name="resetBean" actionListener="#{wizardBean.resetWizard}" />
+		</h:form>
+		<p:confirmDialog widgetVar="cfSkip" id="confirmSkip" header="Redirect to last step" message="" width="400" modal="true" closable="false" severity="alert">
+			<f:facet name="message">
+				<h:outputText styleClass="msgWithIdPlaceHolder" value="#{msg['myagile.project.GotoLastStepWizard']}" />
+				<br />
+				<span class="ui-icon ui-icon-none ui-confirm-dialog-severity"></span>
+			</f:facet>
+			<h:panelGroup layout="block" style="text-align: right">
+				<p:commandButton value="Go to last step" onclick="wiz.loadStep(wiz.cfg.steps[3], true);" oncomplete="cfSkip.hide();">
+				</p:commandButton>
+				<p:commandButton value="Assign team again" onclick="wiz.loadStep(wiz.cfg.steps[1], true);" oncomplete="cfSkip.hide();" />
+			</h:panelGroup>
+		</p:confirmDialog>
+	</ui:define>
+	<ui:define name="layoutFooter">
+		<script type="text/javascript">
+			//<![CDATA[		 
+			$.fn.blockUI = function() {
+				this.block({
+					message : null,
+					overlayCSS : {
+						backgroundColor : 'rgb(255, 255, 255)',
+						cursor : 'default'
+					}
+				});
+			};
+			$('.navbar').blockUI();
+			$('#footer').blockUI();
+
+			//]]>
+		</script>
+	</ui:define>
+</ui:composition>

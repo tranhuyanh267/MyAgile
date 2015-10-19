@@ -1,0 +1,109 @@
+.selector-wrapper {
+    display: inline-block;
+    width: 330px;
+    height: 35px;
+}
+
+.selector-wrapper > div {
+    text-align: left;
+}
+
+#list-form .issue-id-column {
+    min-width: 70px;
+}
+@media screen and (max-width:1024px){
+	#list-form .issue-id-column {
+	    min-width: 90px;
+	}
+}
+
+/* increate issue id column min width in firefox */
+@-moz-document url-prefix() {
+    #list-form .issue-id-column {
+	    min-width: 90px;
+	}
+}
+
+#footer {
+    margin-bottom: -20px;
+}
+
+@media (max-width: 655px) {
+    body {
+        min-width: 600px;
+    }
+    #body-div.container {
+        min-width: 600px;
+    }
+}
+
+.ui-treetable thead th {
+	border: 1px solid #b2b2b2 !important;
+}
+/* style for issue list*/
+#add-form_header {
+	background-color: #297DB6 !important;
+}
+
+.parent-issue {
+	background-color: #ECECEC;
+	border-color: #b2b2b2 !important;
+}
+
+.child-issue {
+	background-color: white;
+	border-color: #b2b2b2 !important;
+}
+
+.id_header {
+	color: #297DB6 !important;
+	font-weight: bold;
+}
+
+.id_header:hover {
+	text-decoration: underline !important;
+}
+
+.ui-dialog {
+	z-index: 16000 !important;
+}
+
+.ui-editor {
+	width: 100% !important;
+	height:110px !important;
+}
+.ui-editor iframe{
+	height:80px !important;
+}
+
+.ui-button-icon-only .ui-icon {
+	left: 50%;
+	margin-left: -5px;
+}
+
+.ui-message-error {
+	margin: 0 !important;
+}
+#loadSpinnerImage {
+	top: 12px;
+	left: 350px;
+}
+
+.move-child-task{
+	color:black !important;
+	margin-right:2px;
+	position:relative;
+	top:-2px;
+	font-size:0.8em;
+	cursor: pointer;
+}
+#footer{
+	margin-top:40px;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0){
+	.ui-treetable-footer{
+		border-top:1px solid #ccc !important;
+	}
+}
+

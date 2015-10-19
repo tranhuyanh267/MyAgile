@@ -1,0 +1,704 @@
+form{
+	margin-bottom:0px !important;
+}
+.ui-overlaypanel.ui-widget.ui-widget-content.ui-overlay-hidden.ui-corner-all.ui-shadow.pointremain-selector{
+	height:0px !important;
+}
+/* --------------------------------------global css------------------ */
+.margin-top-5{
+	margin-top:5px;
+}
+.margin-left-12{
+	margin-left:12px;
+}
+
+.width-269{
+	width:269px !important;
+}
+.width-91-percent{
+	width:91% !important;
+}
+.background-yellow{
+	background:rgb(253,243,177) !important;
+	width:85% !important;
+	max-width:253px !important;
+}
+.text-indent-10{
+	text-indent:10px;
+}
+.visibility-hidden{
+	visibility: hidden;
+}
+.height-0-overflow-hidden{
+	height:0px;
+	overflow: hidden;
+}
+.overflow-hidden{
+	overflow: hidden;
+}
+.cursor-pointer{
+	cursor:pointer;
+}
+.margin-right-10{
+	margin-right:10px;
+}
+.margin-bottom-10{
+	margin-bottom:10px;
+}
+.margin-10{
+	margin:10px;
+}
+.padding-10{
+	padding:10px;
+}
+
+.margin-top-3-left-10{
+	margin-top:3px;
+	margin-left:10px;
+}
+.clear-both {
+	clear: both;
+}
+
+.float-right {
+	float: right;
+}
+
+.relative-top-15 {
+	position: relative;
+	top: 15px;
+}
+
+.relative-top-8 {
+	position: relative;
+	top: 8px;
+}
+
+.relative-top-5 {
+	position: relative;
+	top: 5px;
+}
+
+.padding-5 {
+	padding: 5px;
+}
+
+.position-ralative {
+	position: relative;
+}
+.margin-top-10 {
+	margin-top: 10px;
+}
+
+.display-none {
+	display: none;
+}
+.float-right {
+	float: right;
+}
+.margin-left-60{
+	margin-left:60px;
+}
+.no-italic{
+	font-style: normal;
+}
+.margin-right-80{
+	margin-right:80px;
+}
+.float-left {
+	float: left;
+}
+
+.cursor-default {
+	cursor: default;
+}
+/* --------------------------hide footer and push*/
+
+#footer {
+	display: none;
+}
+
+#push {
+	display: none;
+}
+
+#wrap {
+	margin: 0px !important;
+}
+
+.content.container {
+	margin-bottom: 0px
+}
+
+#form-kanban {
+	margin-top: 5px;
+	margin-bottom: 0px !important;
+	background: white;
+	height: calc(100vh - 150px);
+	overflow: auto;
+	position: relative;
+}
+/*---------------------------------------style on selector*/
+#fieldset-selector {
+	margin-top: 5px;
+	padding: 0.6em 0em 0em !important;
+	border: none;
+}
+/* min width for select */
+.select-project,.select-team,.select-sprint {
+	min-width: 170px;
+}
+
+.cl-select-max-width {
+	max-width: 170px;
+}
+
+@media screen and (min-width:1000px) {
+	.div-list-team-member {
+		width: calc(100% - 360px);
+	}
+}
+
+.content.container {
+	margin: 0;
+	padding: 0;
+	width: inherit;
+}
+
+/* ----------------------------------------settubg style */
+#setting-form {
+	position: fixed;
+	right: 0;
+	z-index: 1000;
+	width: 600px;
+	padding:0px;
+}
+#setting-form .form-inline{
+	margin-bottom:10px
+}
+#setting-form input{
+	max-width: 150px;
+}
+#setting-form .ui-chkbox .ui-chkbox-label {
+	float: left;
+}
+
+#setting-form .ui-chkbox {
+	vertical-align: middle;
+	height: 20px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+#setting-form .mySpinner{
+	vertical-align: middle;
+}
+
+#setting-form .mySpinner > span {
+	margin-bottom: 3px;
+}
+
+#setting-form .ui-widget-content{
+	border:none;
+}
+.ui-chkbox-box .ui-chkbox-icon{
+	position: relative;
+}
+/* ---------------------------------------style on view kanban */
+.placeholder {
+	border-color: red;
+	border-style: dashed;
+	height: 35px;
+	text-align: center;
+	margin: 5px 10px;
+	display: flex;
+	justify-content: center;
+	align-items : center;
+}
+
+.placeholder:after {
+	color: red;
+	font-weight: bold;
+	content : 'DROP HERE';
+	flex: 1
+}
+
+.delete-issue:after {
+	content : 'Delete issue';
+}
+.kanban-column{
+	height: 100%;
+}
+
+
+/* -----------------------------header table */
+.tb-header-kanban {
+	border-collapse: collapse;
+	border: 1px solid #ccc;
+	position: absolute;
+	z-index: 2;
+	height: 40px;
+}
+
+.tb-header-kanban th {
+	border-right: 1px solid #ccc;
+	background: white;
+}
+
+.tb-header-kanban th.th-backlog {
+	width: 322px !important;
+	padding-right: 0px;
+	padding-left: 0px;
+}
+
+.tb-header-kanban-content {
+	margin-top: 43px;
+	height: 100%;
+}
+
+.tb-header-kanban-content td > form {
+	height: 100%;
+	margin-bottom:0px;
+}
+
+.middle-vertical {
+	display: table-cell;
+	vertical-align: middle;	
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0){
+	.tb-header-kanban-content td {
+		height:213px;
+	}
+}
+
+.tb-header-kanban-content td {
+	border: 1px solid #ccc;
+	vertical-align: top;
+}
+
+/* ---------------------------------------css for header */
+
+.tb-header-kanban-content .td-content-backlog {
+	vertical-align: top;
+	width: 322px !important;
+	padding-left: 0px !important;
+	padding-right: 0px !important;
+	border-left: none;
+}
+
+.fix-padding-when-show-form {
+	border: 0px !important;
+	padding-right: 1px !important;
+}
+
+.th-fixed {
+	position: fixed;
+	height: 33px;
+	width: 314px;
+	margin-top: -22px !important;
+	padding-top: 12px;
+	background-color: white;
+	border-right: 1px solid #ccc;
+}
+
+.td-scrollable {
+	position: fixed;
+	width: 314px;
+	background-color: white;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	z-index: 1; 
+	border-right: 1px solid #ccc;
+}
+
+@media screen and (min-width: 768px) {
+    .td-scrollable {
+        height: calc(100vh - 210px);
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .td-scrollable {
+        height: calc(100vh - 237px);
+    }
+}
+
+/* -----------------------------------------form add backlog */
+.info-msg{
+	background: #d9edf7;
+	color:#31708f;
+	border-color:#bce8f1;
+	text-indent: 10px;
+	padding:7px 0px 7px 7px;
+	border-radius:4px;
+	width:265px;
+	margin-bottom:3px;
+}
+.icon-add-backlog {
+	position: absolute;
+	top: 19px;
+	left: 12px;
+	padding: 4px 5.25px 2.5px 4.75px;
+	background-color: #0096d6;
+}
+
+.icon-add-backlog a {
+	text-decoration: none;
+	color: white;
+}
+
+#add-backlog-form,#edit-backlog-form,#delete-backlog-form {
+	width: 95% !important;
+	margin-left: 12px;
+	padding-top: 10px;
+}
+
+.no-userstory {
+	width: 86%;
+	background: #f2dede;
+	border: 1px solid #eed3d7;
+	padding: 7px;
+	margin: 10px auto;
+	box-shadow: 5px 5px 5px rgba(21, 21, 21, 0.5);
+	cursor: default;
+}
+
+#add-backlog-form label,
+#add-backlog-form input[id="add-backlog-form:usNameTxt"],
+#add-backlog-form .ui-editor,
+.add-task-form .ui-editor,
+.add-task-form .add-task,
+#edit-backlog-form label,
+#edit-backlog-form input[id="edit-backlog-form:usEditNameTxt"],
+#edit-backlog-form .ui-editor,
+.edit-task-form .ui-editor
+{
+	width: 95% !important;
+	margin: 0px 0px 3px !important;
+}
+
+.add-task-form .add-task,
+.edit-task-form .edit-task{
+	width:91.5% !important;
+}
+
+div[id ="add-backlog-form:usDescriptionTxt"],
+div[id="edit-backlog-form:usEditDescriptionTxt"]{
+	margin-bottom:13px !important;
+}
+
+#add-backlog-form input,#edit-backlog-form input {
+	padding-left: 0px;
+	padding-right: 0px;
+	text-indent: 4px;
+}
+
+
+.msg {
+	width: 96%;
+}
+
+.msg>div {
+	padding: 5px 0px 5px 5px !important;
+}
+/* ----------------------------------------end style on view kanban */
+/* style for producbacklog items */
+.box-product-backlog {
+	width: 91%;
+	margin: 10px auto;
+	background: rgb(160, 207, 238);
+	box-shadow: 5px 5px 5px rgba(21, 21, 21, 0.5);
+	cursor: default;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	position: relative;
+}
+
+.process_bar_us{
+	position: absolute;
+	z-index:0;
+	background: rgb(126,189,231);
+	height: 40px;
+}
+
+.title-product-backlog {
+	padding: 5px;
+	border-bottom: 1px solid #555;
+	position: relative;
+	overflow: hidden;
+	height: 36px;
+}
+
+.title-content-product-backlog {
+	width: 210px;
+	display: table;
+	margin-left: 5px;
+ 	height: 36px;
+	line-height: 20px;
+}
+
+.content-product-backlog {
+	
+}
+
+
+
+.footer-product-backlog {
+	border-top: 1px dashed #555;
+}
+
+
+/* -----------------------------add product backlog */
+#filterCheckbox {
+	margin: auto;
+}
+
+#filterCheckbox td {
+	padding: 0px;
+}
+
+#filterCheckbox td:nth-child(even) {
+	padding-right: 5px;
+}
+
+#filterCheckbox .ui-icon-check {
+	margin-left: -8px;
+}
+/* delete userstory form */
+#delete-backlog-form {
+	margin-top: 10px;
+}
+/* -------------style for kanban table---------- */
+.tb-header-kanban .border-top{
+	border-top: 1px solid #ccc;
+}
+/*------------- box issue -----------------------*/
+.box-issue{
+	width:95%;
+	background:rgb(253,243,177);
+	position:relative;
+	margin:10px auto 0px auto;
+	box-shadow: 5px 5px 5px rgba(21, 21, 21, 0.5);
+	cursor: default;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	
+}
+.process_bar
+{
+	position: absolute;
+	background-color:  #FAEB83; 
+	position: absolute;
+	left: 0px;
+	top: 0px; 
+	width: 100%;
+	height: 40px;
+}
+.box-issue .box-issue-title{
+	height:40px;
+	line-height: 40px;
+	position: relative;
+	border-bottom:1px solid #555;
+}
+/* chia ra de style */
+.column-progress-done .box-issue .box-issue-title-content{
+	width:78%;
+	text-indent:10px;
+	height: inherit;
+	overflow: hidden;
+}
+
+.column-progress .box-issue .box-issue-title-content,
+.column-done .box-issue .box-issue-title-content{
+	width:56%;
+	text-indent:3px;
+	height: inherit;
+	overflow: hidden;
+}
+
+.box-issue .title-avatar{
+	float: right;
+	margin-top:-35px;
+	margin-right:5px;
+	cursor:pointer;
+}
+
+div.avatar-group {
+	float: right;
+	height: 0px;
+	margin-top: -6px;
+}
+
+
+.ui-overlaypanel {
+	/* position: fixed !important; */
+}
+
+.box-issue .title-relationship-issue{
+	float: right;
+	margin-right:37px;
+	margin-top:-40px;
+}
+.box-issue .title-relationship-issue img{
+	width:16px;
+}
+
+.box-issue .border-dashed{
+	border-top:1px dashed #555;
+}
+
+/* progress column and done column*/
+.column-progress{
+	float:left;
+	height:100%;
+	width:49%;
+	
+}
+.column-done{
+	height:100%;
+	width:49.7%;
+	float:right;
+	border-left:1px dashed #ccc;
+}
+.background-white{
+	background: white;
+}
+.warning-column {
+	background-image: url('../../img/warning-background.png');
+}
+/* -end box issue */
+
+/* -------------------------------------style for angle color */
+.angle-color-project{
+	position: absolute;
+	border:7px solid;
+	border-right-color: transparent;
+	border-bottom-color:transparent;
+	box-shadow:-1px -1px 0px #ccc;
+/* 	z-index:1; */
+}
+
+/* -------------hack firefox ------------------- */
+@-moz-document url-prefix() { 
+/* 	.tb-header-kanban, */
+/* 	.tb-header-kanban-content{ */
+/* 		min-width: 1500px; */
+/* 	} */
+	
+	.tb-header-kanban th {
+		min-width: 395px;
+	}
+
+	.tb-header-kanban th.th-backlog {
+		min-width: 302px !important;
+	}
+	
+	.tb-header-kanban-content td{
+		min-width:395px;
+	}
+	
+	.tb-header-kanban-content .td-content-backlog{
+		min-width:302px !important;
+	}
+	/* css when table have 3 colum */
+	.firefox-table-3-column tr:first-child(){
+		min-width:358px;
+	}
+	#panel-edit-backlog-form form{height:initial !important;}
+	.initial-height{height:initial !important;}
+}
+
+
+
+/* hack chorm */
+@media screen and (min-height:600px){
+		body{
+			 overflow:hidden;
+		}
+}
+
+/* Drag drop member */
+.image-placehoder {
+	border: 1px solid red;
+	background-color: lightblue;
+}
+
+.items {
+	cursor: pointer;
+	position: relative;
+	z-index: 102;
+}
+
+.icon-remove-member {
+	float: right;
+	vertical-align: middle;
+	color: black;
+	cursor: pointer;
+	font-size: 20px;
+	margin-top: 4px;
+	
+}
+
+.icon-remove-member:hover{
+	color: white;
+}
+
+.mySpinner .ui-spinner-input {
+	width: 20px;
+}
+
+.mySpinner .ui-spinner {
+	width: 50px;
+}
+.fixColorPicker .ui-colorpicker button{
+	width: 40px !important;	
+}
+
+.pointremain-selector {
+	background: #2C3E50;
+	width: 90px;
+	color: white;
+	padding: 0;
+	max-height: 300px;
+	overflow: hidden;
+	z-index: 200;
+}
+.pointremain-selector .pointremain-list {
+	color: white;
+	list-style-type: none;
+	margin: 0
+}
+.pointremain-selector .pointremain-list li {
+	padding: 5px 10px;
+	
+}
+.pointremain-selector .pointremain-list li a {
+	color: white;
+	text-decoration: none
+}
+
+.pointremain-selector .pointremain-list li:hover {
+	background: #0094D3;
+	background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #0094d3),
+		color-stop(100%, #0082b9));
+	background-image: -webkit-linear-gradient(#0094d3, #0082b9);
+	background-image: -moz-linear-gradient(#0094d3, #0082b9);
+	background-image: -o-linear-gradient(#0094d3, #0082b9);
+	background-image: linear-gradient(#0094d3, #0082b9)
+}
+/* ---------------------------style for form add task */
+.frm-add-task,
+.frm-edit-task{
+	background: white !important;
+}
+
+.user-text {
+	margin-left: 5px;
+}
+
+.msg{
+	margin-bottom:10px;
+}

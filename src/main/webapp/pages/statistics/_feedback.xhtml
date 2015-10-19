@@ -1,0 +1,256 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	<style>
+.ui-editor {
+	width: 100%;
+	margin: 0 auto;
+}
+
+hr {
+	border-radius: none;
+}
+
+.ui-messages-info-icon,.ui-messages-error-icon {
+	margin-top: 0;
+}
+
+.ui-messages-error-summary,.ui-messages-info-summary {
+	margin-left: 0;
+}
+
+.bubble {
+	position: relative;
+	width: 77.6%;
+	min-height: 50px;
+	background: #D7E4ED;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	color: #555555;
+	padding: 10px;
+	word-wrap: break-word;
+}
+
+.bubble:after {
+	content: '';
+	position: absolute;
+	border-style: solid;
+	border-width: 15px 15px 15px 0;
+	border-color: transparent #D7E4ED;
+	display: block;
+	width: 0;
+	z-index: 1;
+	left: -15px;
+	top: 22px;
+}
+
+.fb_content_wrapper {
+	width: 100%;
+	margin: 10px 0 50px 0;
+}
+
+.fb_content_wrapper .fb_avatar_wrapper {
+	width: 150px;
+	float: left;
+	margin-top: 50px;
+}
+
+.fb_content_wrapper .fb_avatar_wrapper img {
+	margin: 0 auto;
+}
+
+.meta {
+	color: #757575;
+}
+
+.fb_meta {
+	padding-left: 150px;
+}
+
+.fb_button_group {
+	position: absolute;
+	right: 0;
+	top: 5px;
+}
+
+/* 		.fb_button_group a:hover { */
+/* 			text-decoration: none; */
+/* 		} */
+.bubble .ui-editor {
+	width: 99.5% !important;
+}
+</style>
+	<p:fieldset style="margin-bottom: 10px" styleClass="span12">
+		<h:form id="feedbackForm">
+			<h:outputText value="#{feedbackBean.reset()}" style="display: none;"></h:outputText>
+
+			<h:panelGroup style="width: 100%; float: left; margin-bottom: 12px;">
+				<h:outputText value="Feedbacks"
+					style="font-weight: bold; margin-left: 5px; color: #45a1de; float: left;" />
+				<div class="select-project-wrapper pull-right form-inline">
+					Select Project:
+						<p:selectOneMenu
+							rendered="#{not empty feedbackBean.loadProjectByTeamIdAndMemberId(statisticBean.selectedDropDownTeamId)}"
+							value="#{feedbackBean.selectedProjectId}"
+							style="margin-right:5px;" styleClass="text-left">
+							<f:selectItems value="#{feedbackBean.projectList}" var="p"
+								itemValue="#{p.projectId}" itemLabel="#{p.projectName}" />
+							<p:ajax listener="#{feedbackBean.handleProjectChange}"
+								event="change" update="feedbackContainer, feedBackMsg" />
+						</p:selectOneMenu>
+						<p:selectOneMenu value="#{feedbackBean.selectedProjectId}"
+							style="margin-right: 5px"
+							rendered="#{empty feedbackBean.projectList}"
+							styleClass="text-left">
+							<f:selectItem noSelectionOption="true" itemValue="-1"
+								itemLabel="No Project" />
+						</p:selectOneMenu>
+				</div>
+			</h:panelGroup>
+			<p:separator style="margin:5px" />
+			<h:panelGroup id="feedbackContainer" layout="block"
+				style="width: 100%;">
+				<h:outputText rendered="#{empty feedbackBean.feedbackList}"
+					value="There is no feedbacks for this sprint. " />
+				<h:panelGroup id="fbWrapperOuter" layout="block"
+					rendered="#{not empty feedbackBean.feedbackList}"
+					style="width: 77.5%; margin: 0 auto;">
+					<ui:repeat var="feedback" value="#{feedbackBean.feedbackList}">
+						<div class="fb_content_wrapper">
+							<div class="fb_avatar_wrapper">
+								<h:graphicImage alt="member avatar"
+									rendered="#{not empty feedback.member.avatar}"
+									value="/file/?type=small-member-logo&amp;filename=#{feedback.member.avatar}"
+									styleClass="img-circle input-block-level"
+									style="width:100px;height: 100px;" />
+								<h:graphicImage alt="member avatar default"
+									rendered="#{empty feedback.member.avatar}"
+									value="resources/img/user.png"
+									styleClass="img-circle input-block-level"
+									style="width:100px;height: 100px;" />
+							</div>
+							<div class="fb_meta">
+								<span class="meta"> #<h:outputText
+										value="#{feedback.feedbackId} - " /> <h:outputText
+										value="#{feedback.createdDate}">
+										<f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+									</h:outputText>
+								</span>
+								<h:panelGroup layout="block"
+									style="width: 80%; position: relative;">
+									<h4>
+										<h:outputText
+											value="#{dashboardBean.showUserName(feedback.member)}" />
+										says...
+									</h4>
+									<h:panelGroup layout="block"
+										rendered="#{feedbackBean.PO and feedbackBean.checkFeedbackOwner(feedback)}"
+										styleClass="fb_button_group">
+										<p:commandLink global="false" id="btnEditFeedback"
+											action="#{feedbackBean.handleFeedbackEdit(feedback)}"
+											update=":feedbackForm:fbWrapperOuter">
+											<i class="icon-edit"></i>
+										</p:commandLink>
+										<p:commandLink global="false" id="btnDeleteFeedback"
+											onclick="deleteDlg#{feedback.feedbackId}.show()">
+											<i class="icon-trash"></i>
+										</p:commandLink>
+									</h:panelGroup>
+								</h:panelGroup>
+								<h:panelGroup layout="block" id="fbContent" class="bubble">
+									<h:outputText
+										rendered="#{empty feedbackBean.feedbackEdit or feedbackBean.feedbackEdit.feedbackId != feedback.feedbackId}"
+										value="#{feedback.feedbackContent}" escape="false" />
+									<h:panelGroup
+										rendered="#{not empty feedbackBean.feedbackEdit and feedbackBean.feedbackEdit.feedbackId == feedback.feedbackId}"
+										style="width: 100%; margin: 5px auto;">
+										<p:messages id="feedBackMsg" />
+										<p:editor value="#{feedbackBean.feedbackEdit.feedbackContent}"
+											maxlength="2000" style="margin-bottom: 5px;"
+											id="feedbackTextArea" height="200"
+											controls="bold italic underline | bullets numbering | link unlink | undo redo" />
+										<p:commandButton id="btnSubmitEditFeedback" global="false"
+											onclick="editDlg#{feedback.feedbackId}.show()"
+											value="Change Your Feedback" />
+										<p:spacer width="5px"></p:spacer>
+										<p:commandLink id="btnCancelEditFeedback" global="false"
+											update="fbContent"
+											action="#{feedbackBean.handleFeedbackEdit(null)}"
+											value="Cancel"></p:commandLink>
+										<p:confirmDialog widgetVar="editDlg#{feedback.feedbackId}"
+											id="editDialog" width="400" modal="true" closable="false"
+											severity="alert">
+											<f:facet name="header">
+												<h:outputFormat value="#{msg['myagile.ChangeDialog']}">
+													<f:param value="content of Feedback" />
+												</h:outputFormat>
+											</f:facet>
+											<f:facet name="message">
+												<h:outputFormat
+													value="#{msg['myagile.sprint.EditFeedback']}">
+													<f:param value="##{feedback.feedbackId}" />
+												</h:outputFormat>
+											</f:facet>
+											<h:panelGroup layout="block" style="text-align: right">
+												<p:commandButton value="Yes"
+													action="#{feedbackBean.editFeedback(feedback)}"
+													oncomplete="editDlg#{feedback.feedbackId}.hide()"
+													update="fbContent,feedBackMsg" />
+												<p:commandButton global="false" value="No"
+													oncomplete="editDlg#{feedback.feedbackId}.hide();" />
+											</h:panelGroup>
+										</p:confirmDialog>
+									</h:panelGroup>
+								</h:panelGroup>
+							</div>
+						</div>
+						<p:confirmDialog widgetVar="deleteDlg#{feedback.feedbackId}"
+							id="deleteDialog" width="400" modal="true" closable="false"
+							severity="alert">
+							<f:facet name="header">
+								<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+									<f:param value="Feedback" />
+								</h:outputFormat>
+							</f:facet>
+							<f:facet name="message">
+								<h:outputFormat value="#{msg['myagile.sprint.DeleteFeedback']}">
+									<f:param value="##{feedback.feedbackId}" />
+								</h:outputFormat>
+							</f:facet>
+							<h:panelGroup layout="block" style="text-align: right">
+								<p:commandButton value="Yes"
+									action="#{feedbackBean.deleteFeedback(feedback)}"
+									oncomplete="deleteDlg#{feedback.feedbackId}.hide();"
+									update=":feedbackForm:feedbackContainer" />
+								<p:commandButton value="No" global="false"
+									oncomplete="deleteDlg#{feedback.feedbackId}.hide();" />
+							</h:panelGroup>
+						</p:confirmDialog>
+					</ui:repeat>
+				</h:panelGroup>
+			</h:panelGroup>
+
+			<h:panelGroup
+				rendered="#{feedbackBean.PO and statisticBean.selectedDropDownSprintId != -1 and feedbackBean.selectedProjectId != -1}"
+				id="feedbackInputWrapper" layout="block" style="width: 100%;">
+				<p:separator style="margin:5px" />
+				<div style="width: 600px; margin: 5px auto;">
+					<p:messages id="feedBackMsg" />
+					<p:editor value="#{feedbackBean.feedbackContent}"
+						style="margin-bottom: 5px;" width="600" id="feedbackTextArea"
+						height="200"
+						controls="bold italic underline | bullets numbering | link unlink | undo redo" />
+					<p:commandButton update=":feedbackForm" id="btnSubmitFeedback"
+						actionListener="#{feedbackBean.addNewFeedback}"
+						value="Submit Your Feedback">
+						<f:param name="sprintId"
+							value="#{statisticBean.selectedDropDownSprintId}" />
+					</p:commandButton>
+				</div>
+			</h:panelGroup>
+		</h:form>
+	</p:fieldset>
+</ui:composition>

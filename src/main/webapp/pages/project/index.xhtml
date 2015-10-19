@@ -1,0 +1,31 @@
+<ui:composition template="/WEB-INF/layouts/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	>
+	<ui:define name="layoutTitle">
+		Project Management
+	</ui:define>
+	<ui:define name="layoutHead">
+		<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/css/project.css" />
+	</ui:define>
+
+	<ui:define name="layoutBody">	
+	<h:panelGroup layout="block" styleClass="row">
+		<ui:insert name="addProject">
+			<ui:include src="_add.xhtml"></ui:include>
+		</ui:insert>
+		<ui:insert name="listEditProject">
+			<ui:include src="_listEdit.xhtml"></ui:include>
+		</ui:insert>
+	</h:panelGroup>
+	</ui:define>
+	<ui:define name="layoutFooter">
+		<script type="text/javascript" src="#{request.contextPath}/bundles/plupload.js" />
+		<script type="text/javascript" src="#{request.contextPath}/resources/assets/js/project.js" />	
+	</ui:define>
+</ui:composition>	

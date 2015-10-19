@@ -1,0 +1,261 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/layouts/template.xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="layoutTitle">
+        Myagile User Guide
+    </ui:define>
+	<ui:define name="layoutHead">
+	</ui:define>
+	<ui:define name="layoutBody">
+		<c:set value="#{request.contextPath}/resources/img/help/threeBacklogs"
+			var="threeBacklogSourcePath"></c:set>
+		<div class="content-section">
+			<div class="heading">
+				<h4>Three Backlogs Overview</h4>
+				<a id="teamOverview"></a>
+			</div>
+			<div class="content-block">
+
+				<div class="content-block-nav">
+					<p class="content-block-nav-back">
+						<a href="#{request.contextPath}/help"><i
+							class="icon-double-angle-left"></i> Guide</a> <a
+							href="#{request.contextPath}/help/account"><i
+							class="icon-double-angle-left"></i> Previous</a>
+					</p>
+					<p class="content-block-nav-forward">
+						<a href="#{request.contextPath}/help/team">Next <i
+							class="icon-double-angle-right"></i></a>
+					</p>
+				</div>
+				<div class="content-block-main">
+					<ol>
+						<li>
+							<p>
+								<strong><a id="productBackLogA">Product backlog</a></strong>
+							</p>
+
+							<ol start="1" class="index">
+								<li>
+									<p>
+										<a id="productBackLogNewA"><strong>Create a new
+												user story</strong></a>
+									</p>
+									<p>
+										<u>Step 1: </u> Click "New" button
+									</p> <img alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/productBacklog/clickNewButton.png" />
+									<p>
+										<u>Step 2:</u> Fill in the form
+									</p> <img alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/productBacklog/fieldNew.png" />
+									<p>
+										<u>Step 3:</u> Click "Save" button to finish.
+									</p>
+								</li>
+							</ol>
+
+							<ol start="2">
+								<li>
+									<p>
+										<a id="productBackLogUpdateA"><strong>Update
+												user story</strong></a>
+									</p>
+									<p>
+										<u>Step 1: </u> Choose user story to update information
+										and click the pencil button to show the update form
+									</p> <img alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/productBacklog/clickEditButton.png" />
+									<p>
+										<u>Step 2:</u> Fill in the update form
+									</p> <img alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/productBacklog/updateForm.png" />
+									<p>
+										<u>Step 3:</u> Click “Save” button to finish.
+									</p>
+								</li>
+							</ol>
+
+
+							<ol start="3">
+								<li>
+									<p>
+										<a id="productBackLogRemoveA"><strong>Remove
+												user story</strong></a>
+									</p>
+									<p>
+										<u>Step 1: </u> Choose user story to update information
+										and click the waste basket button
+									</p> <img alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/productBacklog/clickRemoveButton.png" />
+									<p>
+										<u>Step 2:</u> Confirm message before delete
+									</p> <img alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/productBacklog/confirmDelete.png" />
+								</li>
+							</ol>
+
+							<ol start="4">
+								<li>
+									<p>
+										<a id="productBackLogViewA"><strong> View
+												information </strong></a>
+									</p>
+									<p>
+										<strong> </strong> In left column on homepage you can see all
+										information about user story
+									</p> <img alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/productBacklog/viewFirst.png" />
+									<p>By pagination, you can show 5, 10, 15, 30, 15 or all of
+										user stories</p> <img alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/productBacklog/pagination.png" />
+									<p>Click button to view detail</p> <img
+									alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/productBacklog/viewDetailInformation.png" />
+									<p>or click the link</p> <img
+									alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/productBacklog/linkToProductBacklog.png" />
+									<p>Click this button to collapse or expand all user stories
+									</p> <img alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/productBacklog/collapseAll.png" />
+								</li>
+							</ol>
+							<ol start="5">
+								<li>
+									<p>
+										<a id="productBackLogFilterA"><strong>Filter
+												user story </strong></a>
+									</p>
+									<p>You can filter user story by status (To do,
+										In-Progress, Done, Void) or sort by create date, value, name
+										(descend or ascend)</p> <img alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/productBacklog/filter.png" />
+								</li>
+							</ol>
+							<ol start="6">
+								<li>
+									<p>
+										<a id="productBackLogSearchA"><strong>Search
+												user story </strong></a>
+									</p>
+									<p>Enter ID or subject of user story</p> <img
+									alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/productBacklog/search.png" />
+								</li>
+							</ol>
+
+						</li>
+						<li>
+							<p>
+								<strong><a id="sprintBackLogA">Sprint backlog</a></strong>
+							</p>
+							<ol style="list-style-type: none">
+								<li><img alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/sprintBacklog/AprintBacklogView.png" />
+									<p>In center column on homepage, choose sprint and date to
+										see all information about sprint backlog.</p> <img
+									alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/sprintBacklog/combobox.png" />
+									<p>You can watch the video, upload a new video for selected
+										date</p> <img alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/sprintBacklog/video.png" />
+									<p>And the burndown chart</p> <img
+									alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/sprintBacklog/burndownchart.png" />
+
+							</li>
+							</ol>
+
+						</li>
+						
+						<li>
+							<p>
+								<strong><a id="impedimentBackLogA">Impediment
+										backlog </a></strong>
+							</p>
+							<ol style="list-style-type: none">
+								<li>
+									<p>In right column on homepage you can see all impediment
+										of team</p> <img alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/impediment/impeView.png" />
+									<table>
+										<tr>
+											<td><img alt="three_Backlogs_guide.picture"
+												src="#{threeBacklogSourcePath}/impediment/Unsolve.png" /></td>
+											<td>Unsolved impediment</td>
+										</tr>
+										<tr>
+											<td><img alt="three_Backlogs_guide.picture"
+												src="#{threeBacklogSourcePath}/impediment/solve.png" /></td>
+											<td>Solved impediment</td>
+										</tr>
+									</table>
+									<p>
+										With creating, updating and deleting you can refer to <a
+											href="#productBackLogViewA"> Product backlog usage </a> to do
+										it.
+									</p>
+									<p>And you can solve the impediment by click this icon</p> <img
+									alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/impediment/solveIcon.png" />
+								</li>
+							</ol>
+						</li>
+						<li>
+							<p>
+								<strong><a id="historyA">History</a></strong>
+							</p>
+							<ol style="list-style-type: none">
+								<li>
+									<p>Another function is History on home page. You can see
+										the History which consists of three tabs. There are Project,
+										Team and Issue.</p> <img alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/history/historyFunction.png" />
+									<p>In Project tab of History, you can see all history of a
+										team, which is chosen in the drop down list above. They show
+										in 5 records, and whenever clicking Show more button, it will
+										show more 5.</p>
+									<p>In Team tab, there are all history about team and
+										sprint, and all of its is chosen above too. About team, it
+										shows all changes about team's and members' information. With
+										sprint, all information about changes of sprint is displayed.
+										Besides, there is a Show more button, and it works same, too.</p>
+									<p>Finally, all history of issues in sprint is shown in
+										Issue tab. Moreover, there are two date selectors for being
+										easy to choose date start and date end for showing. Beside
+										that, the Show more button is available and it works in the
+										same way.</p>
+
+								</li>
+							</ol>
+						</li>
+						<li>
+							<p>
+								<strong><a id="feedbackA">Feedback</a></strong>
+							</p>
+
+							<ol style="list-style-type: none">
+								<li>
+									<p>Click on "Feedback" button to send your feedback.</p> <img
+									alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/feedback/01.png" />
+									<p>Input your idea.</p> <img alt="three_Backlogs_guide.picture"
+									src="#{threeBacklogSourcePath}/feedback/02.png" />
+									<p>Click "Post idea" button to post your idea.</p>
+
+								</li>
+							</ol>
+						</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+	<ui:define name="layoutFooter">
+	</ui:define>
+</ui:composition>

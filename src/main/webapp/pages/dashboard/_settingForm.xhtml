@@ -1,0 +1,78 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:custom="http://myagile.com/custom">
+<style>
+	.test{
+		position: relative;
+	}
+</style>
+
+<p:panel id="setting-form" style="display:none;" header="Dashboard Setting">		
+	<h:form id="setting-kanban" style="margin-bottom: 2px;">
+			<h:panelGroup rendered="#{dashboardBean.sprint.status=='open' and custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', dashboardBean.sprint.team.teamId)}">
+				<button type="button" class="btn btn-info" id="addMoreFieldBtn" onclick="addMoreFieldReCom()" style="margin:5px;padding: 7px 14px;s">Add more Field</button>
+			</h:panelGroup>
+			<p:remoteCommand name="addMoreFieldReCom" action="#{dashboardBean.addMoreField}" update="setting-kanban" global="false" immediate="true"></p:remoteCommand>
+			<p:separator style="margin:0"/>
+			<p:scrollPanel style="height:250px;padding:10px" mode="native">
+					<ui:repeat var="status" value="#{dashboardBean.statusTempList}">
+						<h:panelGroup rendered="#{status.type!='ACCEPTED_HIDE' and status.type!='ACCEPTED_SHOW'}">
+							<div class="form-inline">
+								<p:inputText value="#{status.name}" required="true" requiredMessage="#{msg['myagile.dashboard.ErrorEmptyField']}" maxlength="30"/>
+								<p:colorPicker value="#{status.color}"/>
+								<p:commandButton type="button" icon="icon-remove" update=":setting-kanban" rendered="#{status.type=='IN_PROGRESS' and dashboardBean.sprint.status=='open' and custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER', dashboardBean.sprint.team.teamId)}" 
+										 immediate="true" global="false" onclick="deleteColumn([{name: 'statusId', value: '#{status.statusId}'}])"> 	
+								</p:commandButton>
+							</div>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{status.type=='ACCEPTED_HIDE'}">
+							<div class="form-inline">
+								<p:inputText value="#{status.name}" styleClass="acceptedStatusText" required="true" requiredMessage="#{msg['myagile.dashboard.ErrorEmptyField']}" maxlength="30"/>
+								<p:colorPicker value="#{status.color}"/>
+								<h:panelGroup>
+								<button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" onclick="toggleShowAcceptedStatus(this)" type="button">
+									<span class="ui-button-icon-left ui-icon ui-c icon-eye-close"></span><span class="ui-button-text ui-c">ui-button</span>
+								</button>
+								</h:panelGroup>
+								<p:selectBooleanCheckbox widgetVar="showAcceptedStatus" style="display: none"
+										 immediate="true" global="false" value="#{dashboardBean.showAcceptedStatus}">
+								</p:selectBooleanCheckbox>
+								<script>
+									$('.acceptedStatusText').prop('disabled', true);
+								</script>
+							</div>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{status.type=='ACCEPTED_SHOW'}">
+							<div class="form-inline">
+								<p:inputText value="#{status.name}" styleClass="acceptedStatusText" required="true" requiredMessage="#{msg['myagile.dashboard.ErrorEmptyField']}" maxlength="30"/>
+								<p:colorPicker value="#{status.color}"/><button 
+								class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" onclick="toggleShowAcceptedStatus(this)" type="button">
+									<span class="ui-button-icon-left ui-icon ui-c icon-eye-open"></span><span class="ui-button-text ui-c">ui-button</span>
+								</button>
+							</div>
+						</h:panelGroup>
+					</ui:repeat>
+					<p:selectBooleanCheckbox widgetVar="showAcceptedStatus" style="display: none"
+						 immediate="true" global="false" value="#{dashboardBean.showAcceptedStatus}">
+					</p:selectBooleanCheckbox>
+					<p:remoteCommand name="deleteColumn" action="#{dashboardBean.removeStatus}" update=":setting-kanban" global="false" immediate="true"></p:remoteCommand>
+					<!-- add swim line -->
+					<h:panelGroup layout="block" styleClass="form-inline test" >
+            			<p:outputLabel value = "Add swimline" for = "chkAddSwimLine" style = "width:175px;"></p:outputLabel>
+            			<p:selectBooleanCheckbox value="#{dashboardBean.addSwimLine}" id="chkAddSwimLine"/> 
+            		</h:panelGroup>
+			</p:scrollPanel>
+			<p:separator style="margin:0"/>
+			<p:commandButton id="saveBtn" value="Save" style="margin:5px;" action="#{dashboardBean.handleSaveSettingForm}" 
+				update="setting-kanban, @(.kanban_wrapper)" oncomplete="handleSaveRequestFormSetting(xhr, status, args)"
+				rendered="#{dashboardBean.sprint.status=='open'}"/> 
+			<p:commandButton id="closeBtn" value="Close" global="false" styleClass="secondary" onclick="hideSettingForm()"/>			
+	</h:form>
+</p:panel>
+</ui:composition>

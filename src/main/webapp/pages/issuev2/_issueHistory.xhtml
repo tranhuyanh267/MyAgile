@@ -1,0 +1,90 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	>		
+		<style>
+		.ui-scrollpanel-content{
+			width: 100% !important;
+		}
+		.ui-widget-header{
+			background: #D0CFDA;
+		}
+		</style>
+		
+		<br/>
+		<p:fieldset legend="History" style="margin-top: -40px; padding-left: 15px !important;" styleClass="span12"> 
+		<p:scrollPanel style="border: none; width: 100%; margin-bottom: 10px; margin-top: -10px;" mode="native">
+		<h:outputText value="No history to be showed" rendered="#{empty historyBean.historyOfIssue}"/>
+		<ui:repeat var="history" value="#{historyBean.historyOfIssue}">	
+			<div style="color: #297DB6; width: 100%;">
+			<h:graphicImage alt="user avatar" value="/file/?type=small-member-logo&amp;filename=#{history.author.avatar}"  rendered="#{!empty history.author.avatar}" atl="#{history.author.memberId}" styleClass="avatar img-circle"/>	
+			<h:graphicImage alt="user avatar default" value="/#{request.contextPath}/resources/img/user.png" rendered="#{empty history.author.avatar}" atl="#{history.author.memberId}" styleClass="avatar img-circle"/>		
+			<h:outputText value="&#160;&#160;"/>
+			<h:outputText value="Updated by " rendered="#{history.actionType == 'Update' or history.actionType == 'Add' or history.actionType == 'Remove'}"/>
+			<h:outputText value="Created by " rendered="#{history.actionType == 'Create'}"/>			
+			<h:outputText value="#{history.author.lastName} #{history.author.firstName}" style="font-weight: bold; font-size: 15px;"/>
+			<h:outputText value=" on "/>
+			<h:outputText value="#{history.createdOn}">
+				<f:convertDateTime pattern="MM/dd/yyyy"/>
+			</h:outputText>
+			<h:outputText value="&#160;at "/>	
+			<h:outputText value="#{history.createdOn}">
+				<f:convertDateTime pattern="HH:mm"/>
+			</h:outputText>		
+			</div>
+			<p:panel rendered="#{history.actionType == 'Update'}" style="margin: 0px 0px; padding: 0px 0px; border: none;">
+			<ul style="margin:0 0 0px 25px">
+			<ui:repeat var="change" value="#{history.historyFieldChanges}">
+			  <p:panel rendered="#{change.fieldName != 'Description'}" style="margin: 0px 0px; padding: 0px 0px; border: none;">
+				<li style="margin-left: 30px;">			
+					<h:outputText value="#{change.fieldName}" style="font-weight: bold;"/>
+					<h:outputText value=" changed from "/>
+					<h:outputText value="#{change.oldValue}" style="font-style: italic;"/>
+					<h:outputText value="&#160;&#160;to " style="font-weight: bold;"/>
+					<h:outputText value="#{change.newValue}" style="font-style: italic;" escape="false"/>
+				</li>
+			  </p:panel>
+			  <p:panel rendered="#{change.fieldName == 'Description'}" style="margin: 0px 0px; padding: 0px 0px; border: none;">
+					<h:outputText value="#{change.fieldName}" style="font-weight: bold;"/>
+					<br />
+					<h:outputText value="#{change.newValue}" style="font-style: italic;" escape="false"/>
+			  </p:panel>
+			</ui:repeat>
+			</ul>
+			</p:panel>
+			
+			<p:panel rendered="#{history.actionType == 'Add'}" style="margin: 0px 0px; padding: 0px 0px; border: none;">
+			<ul>
+			<ui:repeat var="change" value="#{history.historyFieldChanges}">		
+				<li style="margin-left: 30px;">			
+					<h:outputText value="#{change.fieldName}" style="font-weight: bold;"/>	
+					<h:outputText value="&#160;&#160;"/>				
+					<h:outputText value="#{change.newValue}" style="font-style: italic;"/>
+					<h:outputText value="&#160;&#160;was " style="font-weight: bold;"/>
+					<h:outputText value="Added" style="font-style: italic;"/>
+				</li>			
+			</ui:repeat>			
+			</ul>
+			</p:panel>
+			
+			<p:panel rendered="#{history.actionType == 'Remove'}" style="margin: 0px 0px; padding: 0px 0px; border: none;">
+			<ul>
+			<ui:repeat var="change" value="#{history.historyFieldChanges}">		
+				<li style="margin-left: 30px;">			
+					<h:outputText value="#{change.fieldName}" style="font-weight: bold;"/>	
+					<h:outputText value="&#160;&#160;"/>				
+					<h:outputText value="#{change.oldValue}" style="font-style: italic;"/>
+					<h:outputText value="&#160;&#160;was " style="font-weight: bold;"/>
+					<h:outputText value="Removed" style="font-style: italic;"/>
+				</li>			
+			</ui:repeat>			
+			</ul>
+			</p:panel>
+			<p:separator style="border-width: 2px; margin: 4px 4px;"/>
+		</ui:repeat>
+		</p:scrollPanel>		
+		</p:fieldset>
+</ui:composition>

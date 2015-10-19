@@ -1,0 +1,40 @@
+<ui:composition	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+<p:fieldset styleClass="span12 fieldset-selector">
+	<h:form id="selectProjectAndTeam" styleClass="form-inline" prependId="false">
+		<h:outputText styleClass="title-margin-right-combobox" value="Select Project:"/>
+		<p:selectOneMenu styleClass="combo-box-modify text-left" value="#{remainingTasksBean.selectedProjectIdInDropdownList}"
+		 			rendered="#{not empty remainingTasksBean.allProjectsForDropdownList}">
+			<f:selectItems value="#{remainingTasksBean.allProjectsForDropdownList}" var="project"
+							itemValue="#{project.projectId}" itemLabel="#{project.projectName}" />
+			<p:ajax update="selectProjectAndTeam, :frmBacklogRemain"
+					listener="#{remainingTasksBean.updateTeamsDropDownListWhenProjectChanges}"
+					event="change"/>
+		</p:selectOneMenu>
+		
+		<p:selectOneMenu rendered="#{empty remainingTasksBean.allProjectsForDropdownList}" styleClass="combo-box-modify">
+			<f:selectItem noSelectionOption="true" itemLabel="No Project" />
+		</p:selectOneMenu>
+		
+		
+		
+		<h:outputText styleClass="title-margin-right-combobox" value="Select Team:"/>
+		<p:selectOneMenu styleClass="text-left" value="#{remainingTasksBean.selectedTeamIdInDropdownList}"
+					 rendered="#{not empty remainingTasksBean.allTeamsForDropdownList}">
+			<f:selectItems value="#{remainingTasksBean.allTeamsForDropdownList}" var="team"
+							itemValue="#{team.teamId}" itemLabel="#{team.teamName}" />
+			<p:ajax	listener="#{remainingTasksBean.setSprintWhenChangingTeam}"
+					event="change" update=":frmBacklogRemain"/>
+		</p:selectOneMenu>
+		
+		<p:selectOneMenu rendered="#{empty remainingTasksBean.allTeamsForDropdownList}" styleClass="combo-box-modify">
+			<f:selectItem noSelectionOption="true" itemLabel="No Team" />
+		</p:selectOneMenu>
+	</h:form>
+</p:fieldset>
+</ui:composition>

@@ -1,0 +1,239 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/layouts/template.xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="layoutTitle">
+        Myagile User Guide
+    </ui:define>
+
+	<ui:define name="layoutBody">
+		<c:set value="#{request.contextPath}/resources/img/help/kanbanboard"
+			var="kanbanboardSourcePath"></c:set>
+		<div class="content-section">
+			<div class="heading">
+				<h4>Kanban Board Overview</h4>
+				<a id="wizardOverview"></a>
+			</div>
+			<div class="content-block">
+				<div class="content-block-nav">
+					<p class="content-block-nav-back">
+						<a href="#{request.contextPath}/help"><i
+							class="icon-double-angle-left"></i> Guide</a> <a
+							href="#{request.contextPath}/help/scrumboard"><i
+							class="icon-double-angle-left"></i> Previous</a>
+					</p>
+					<p class="content-block-nav-forward">
+						<a href="#{request.contextPath}/help/manage-sprint">Next <i
+							class="icon-double-angle-right"></i></a>
+					</p>
+				</div>
+				<div class="content-block-main">
+
+					<p>Choose the “Kanban Board” to come the Kanban Board page</p>
+					<p>Kanban board:</p>
+					<ul>
+						<li>Do not have limit time(2 weeks/Sprint) like in Scrum.</li>
+						<li>User/Team does not count total points for all Issues.</li>
+						<li>Issues are added to Kanban whenever user wants (such as urgent Issue).</li>
+						<li>Kanban has maximum Issues(WIP) for each field.</li>
+					</ul>
+					<img alt="kanbanboard" src="#{kanbanboardSourcePath}/01.png" />
+					<dl>
+						<dt>Product backlog column:</dt>
+					</dl>
+					<dl>
+						<p>Gray user story: this user story has been moved to the
+							kanban board</p>
+						<p>Blue user story: this user story has not been moved to the
+							kanban board</p>
+						<p>Yellow task: this task is a subtask of user story</p>
+					</dl>
+
+
+					<dl>
+						<dt>
+							<a>1. User story</a>
+						</dt>
+						<dd>
+							<dl>
+								<dt>
+									<a id="create">a. Create user story</a>
+								</dt>
+								<dd>
+									<p>Click on "New" button and fill in the name, description, value and attachment of user story.</p>
+									<img alt="kanbanboard.picture"
+										src="#{kanbanboardSourcePath}/02.png" />
+									<p>Click “Save”.</p>
+								</dd>
+							</dl>
+							<dl>
+								<dt>
+									<a>b. Update user story</a>
+								</dt>
+								<dd>
+									<p>Click on pencil icon to show the update form</p>
+									<img alt="kanbanboard.picture"
+										src="#{kanbanboardSourcePath}/03.png" />
+									<p>Edit the name, description, value and attachment of user story.</p>
+									<img alt="kanbanboard.picture"
+										src="#{kanbanboardSourcePath}/04.png" />
+									<p>Click “Update”.</p>
+								</dd>
+							</dl>
+
+							<dl>
+								<dt>
+									<a>c. Delete user story</a>
+								</dt>
+								<dd>
+									<p>Click on basket icon to delete this user story.</p>
+									<img alt="kanbanboard.picture"
+										src="#{kanbanboardSourcePath}/05.png" />
+									<p>Confirm message before delete.</p>
+									<img alt="kanbanboard.picture"
+										src="#{kanbanboardSourcePath}/06.png" />
+								</dd>
+							</dl>
+
+							<dl>
+								<dt>
+									<a>d. Create subtask for user story</a>
+								</dt>
+								<dd>
+									<p>Click on plus icon to show the adding form.</p>
+									<img alt="kanbanboard.picture"
+										src="#{kanbanboardSourcePath}/07.png" />
+									<p>Fill in the subject, description and note of subtask.</p>
+									<img alt="kanbanboard.picture"
+										src="#{kanbanboardSourcePath}/08.png" />
+									<p>Click “Save”.</p>
+								</dd>
+							</dl>
+							<dl>
+								<dt>
+									<a>e. Overview user story</a>
+								</dt>
+								<dd>
+									<p>Double click on user story tag.</p>
+									<img alt="kanbanboard.picture"
+										src="#{kanbanboardSourcePath}/10.png" />
+								</dd>
+							</dl>
+
+							<dl>
+								<dt>
+									<a>f. View details of user story</a>
+								</dt>
+								<dd>
+									<p>Click on the id of user story to view/edit details.</p>
+									<img alt="kanbanboard.picture"
+										src="#{kanbanboardSourcePath}/09.png" />
+								</dd>
+							</dl>
+						</dd>
+						<dt>
+							<a id="update">2. Subtask of user story</a>
+						</dt>
+						<dd>
+							<dl>
+								<dt>
+									<a>a. View details</a>
+								</dt>
+								<dd>
+									<p>Click on the link (Parent ID | SubTask ID) to view/edit
+										details.</p>
+									<img alt="kanbanboard.picture"
+										src="#{kanbanboardSourcePath}/11.png" />
+								</dd>
+							</dl>
+							<dl>
+								<dt>
+									<a>b. Update subtask</a>
+								</dt>
+								<dd>
+									<p>Click on pencil icon to show the update form.</p>
+									<img alt="kanbanboard.picture"
+										src="#{kanbanboardSourcePath}/12.png" />
+									<p>Edit the subject, description and note of subtask.</p>
+									<img alt="kanbanboard.picture"
+										src="#{kanbanboardSourcePath}/14.png" />
+								</dd>
+							</dl>
+
+							<dl>
+								<dt>
+									<a>c. Delete subtask</a>
+								</dt>
+								<dd>
+									<p>Click on basket icon to delete this subtask.</p>
+									<img alt="kanbanboard.picture"
+										src="#{kanbanboardSourcePath}/13.png" />
+									<p>Confirm message before delete.</p>
+									<img alt="kanbanboard.picture"
+										src="#{kanbanboardSourcePath}/15.png" />
+								</dd>
+							</dl>
+						</dd>
+						<dt><a>3. Assign task</a></dt>
+						<dd>
+							<p>Drag and drop member image to assign one or more team member to do a task.</p>
+							<img alt="kanbanboard" src="#{kanbanboardSourcePath}/assign.png" />
+							<p>1. List team member</p>
+							<p>2. People do this task</p>
+							<p>3. The task is did by more than 3 people.</p>
+						</dd>
+						<dt>
+							<a>4. Setting</a>
+						</dt>
+						<dd>
+							<p>Click "Setting" button to open the setting panel</p>
+							<img alt="kanbanboard" src="#{kanbanboardSourcePath}/16.png" />
+							<img alt="kanbanboard" src="#{kanbanboardSourcePath}/18.png" />
+							<img alt="kanbanboard" src="#{kanbanboardSourcePath}/17.png" />
+							<p>1. Check the box: separate column to two sub columns
+								(progress and done).</p>
+							<p>2. WIP (work in progress limit): maximum user story in a
+								field.</p>
+							<p>3. Change the color of column header.</p>
+							<p>4. Delete column.</p>
+							<p>5. Hidden tasks in accepted column after some weeks.</p>
+							<p>6. Show/hide column.</p>
+							<p>7. Task limitation in a swimline. If this value is zero,
+								the swimline WIP will be WIP value of each column.</p>
+							<p>8. Change color of swimline.</p>
+						
+							<dl>
+
+								<dt>
+									<a>a. Add more column for kanban board</a>
+								</dt>
+								<dd>
+									<p>Click "Add More Field" button and fill in a name of
+										column.</p>
+									<img alt="kanbanboard.picture"
+										src="#{kanbanboardSourcePath}/19.png" />
+								</dd>
+							</dl>
+							<dl>
+								<dt>
+									<a>b. Add more Swimline</a>
+								</dt>
+								<dd>
+									<p>Click "Add More Swimline" button and fill in a name of
+										swimline.</p>
+									<img alt="kanbanboard.picture"
+										src="#{kanbanboardSourcePath}/20.png" />
+								</dd>
+							</dl>
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+
+</ui:composition>

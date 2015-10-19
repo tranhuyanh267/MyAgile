@@ -1,0 +1,136 @@
+@CHARSET "UTF-8";
+
+form{
+	margin:0 10px;
+}
+
+.user-story-table-fixed {
+	width: 80%;
+}
+
+.user-story-fieldset-fixed {
+	margin-left: -21px;
+}
+
+.noborder,.noborder tr,.noborder th,.noborder td {
+	border: none;
+}
+
+.us-data-fixed-col {
+	width: 340px;
+}
+
+.us-label-fixed-col {
+	width: 45px;
+}
+
+#userStoryForm\:usNameMsgs ,#userStoryForm\:usNameEditMsgs{
+	width: 250px;
+	margin:0;
+}
+
+.userStoryList .ui-progressbar .ui-progressbar-value, #userStoryForm .ui-progressbar .ui-progressbar-value {
+	margin: 0px;
+}
+.userStoryList .ui-progressbar-label, #userStoryForm .ui-progressbar-label {
+	bottom: 1px;
+}
+
+.relatedIssue{
+	-webkit-box-shadow: 0px 0px 10px 2px #888 !important;
+	box-shadow: 0px 0px 10px 2px #888 !important;
+	-moz-box-shadow: 0px 0px 10px 2px #888 !important;	
+}
+
+.ui-editor textarea, .ui-editor iframe {
+    width: 100% !important;
+}
+
+.fix-max-width .ui-editor {
+    width: 731px;
+}
+
+@media (max-width: 980px) {
+    .fix-max-width .ui-editor {
+        width: 577px !important;
+    }
+    body {
+        min-width: 718px;
+    }
+    #body-div.container {
+        min-width: 724px;
+    }
+}
+/*style for custom data table*/
+#tb-userstory {
+	border: 1px solid #d9d9d9;
+	width:100%;
+}
+
+#tb-userstory th{
+	text-align: center;
+	cursor: default;
+	background: #38A8B1;
+	height: 20px;
+	padding:4px 10px;
+	border-color:#ccc;
+	color:white;
+}
+.th-id, .th-subject, .th-value {
+	display: inline !important;
+	margin-left:3px;
+}
+
+.header-sort{
+	cursor: pointer !important;
+}
+
+.user-story-table-fixed td {
+	word-wrap: break-word;
+	white-space: normal;
+	word-break: break-all;
+}
+
+#tb-userstory td{
+	padding:4px 10px;
+	border-color:#ccc;
+	word-wrap: break-word;
+	white-space: normal;
+	word-break: break-all;
+}
+.td-id,
+.td-status,
+.td-progress,
+.td-value,
+.td-button-delete,
+.td-button-view, 
+.td-button-setVoid{
+	text-align: center;
+}
+
+.ui-progressbar-value{
+	margin:0px !important;
+}
+.ui-progressbar-label {
+	margin-top:-1px;
+}
+
+.tb-userstory-button-delete .ui-button-icon-left{
+	margin-left:-5px !important;
+}
+.wrap-search-filter{margin-bottom:10px;}
+/* style for filter */
+.wrap-search{float:left;padding-right:7px;border-right:1px solid #ccc;margin-right:7px;}
+.wrap-search label{display: inline;margin-right:3px;}
+.wrap-search input{padding:4px 6px;margin-bottom:0px;}
+
+.wrap-filter-status{float:left;margin-top:3px;}
+
+.td-id.box-issue-title-content-child.ellipsis-text a{
+	color: #297DB6 !important;
+	font-weight: bold;
+}
+.td-id.box-issue-title-content-child.ellipsis-text a:hover{
+	 text-decoration: underline !important;
+}
+

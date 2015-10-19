@@ -1,0 +1,93 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:composite="http://java.sun.com/jsf/composite">
+	<p:confirmDialog widgetVar="confirmDoneDlg" id="confirmDoneDialog" width="400" modal="true" closable="false" severity="alert">
+		<f:facet name="header">
+			<h:outputFormat value="#{msg['myagile.ChangeDialog']}" >
+				<f:param value="Status of Issue" />
+			</h:outputFormat>
+		</f:facet>
+		<f:facet name="message">
+			<h:outputFormat styleClass="msgWithIdPlaceHolder" value="#{msg['myagile.dashboard.ConfirmDone']}">
+				<f:param value="#ID_PLACEHOLDER" />
+			</h:outputFormat>
+			<br />
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes" onclick="handleDrop([{name : 'issueId', value: issueId},{name : 'statusId', value: statusId}, {name : 'senderId', value: sender}, {name : 'receiverId', value: receiver},{name : 'isSwimLine',value : isInSwimLine},{name : 'orderIssue',value : stringIssueOrder}])" oncomplete="confirmDoneDlg.hide();revertIdPlaceholder();">
+			</p:commandButton>
+			<p:commandButton value="No" oncomplete="revertIdPlaceholder();updateColumnSendAndRevice();" global="false"/>
+		</h:panelGroup>
+	</p:confirmDialog>
+
+	<p:confirmDialog widgetVar="deleteDlg" id="deleteDialog" width="400" modal="true" closable="false" severity="alert">
+		<f:facet name="header">
+					<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+						<f:param value="Issue" />
+					</h:outputFormat>
+		</f:facet>
+		<f:facet name="message">
+			<h:outputFormat styleClass="msgWithIdPlaceHolder" value="#{msg['myagile.home.Delete']}">
+				<f:param value="issue" />
+				<f:param value="#ID_PLACEHOLDER" />
+			</h:outputFormat>
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes" actionListener="#{dashboardBean.deleteIssue}" oncomplete="deleteDlg.hide();revertIdPlaceholder();" update="kanban:kanban_wrapper">
+			</p:commandButton>
+			<p:commandButton value="No" oncomplete="deleteDlg.hide();revertIdPlaceholder();" />
+		</h:panelGroup>
+	</p:confirmDialog>
+
+	<p:confirmDialog widgetVar="confirmChangeParentPointDlg" id="confirmChangeParentPoint" style="z-index:16000" message="" width="400" modal="true" closable="false"
+		severity="alert">
+		<f:facet name="header">
+					<h:outputFormat value="#{msg['myagile.ChangeDialog']}">
+						<f:param value="Estimate point of Issue parent" />
+					</h:outputFormat>
+		</f:facet>
+		<f:facet name="message">
+			<h:outputText styleClass="msgWithIdPlaceHolder" />
+			<br />
+			<span class="ui-icon ui-icon-none ui-confirm-dialog-severity"></span>
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes" onclick="updateParentPoint([{name: 'issueId', value: issueId},{name: 'newPoint', value: nonFormatPoint}])" global="false">
+			</p:commandButton>
+			<p:commandButton value="No" oncomplete="confirmChangeParentPointDlg.hide();" global="false" />
+		</h:panelGroup>
+	</p:confirmDialog>
+
+	<p:confirmDialog widgetVar="confirmCopyIssueToSprintDlg" id="confirmCopyIssueToSprint" style="z-index:16000" message="" width="400" modal="true" closable="false"
+		severity="alert">
+		<f:facet name="header">
+			<h:outputFormat value="#{msg['myagile.dashboard.CopyIssueToSprintHeader']}">
+			</h:outputFormat>
+		</f:facet>
+		<f:facet name="message">
+			<h:outputText styleClass="msgCopyIssueToSprint" />
+			<br />
+			<span class="ui-icon ui-icon-none ui-confirm-dialog-severity"></span>
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes" onclick="rmCopyIssueToSprint([ { name : 'issueId', value : window.issueId }, { name : 'sprintId', value : window.sprintId} ]);confirmCopyIssueToSprintDlg.hide();" global="false">
+			</p:commandButton>
+			<p:commandButton value="No" oncomplete="confirmCopyIssueToSprintDlg.hide();" global="false" />
+		</h:panelGroup>
+	</p:confirmDialog>
+	<p:confirmDialog widgetVar="deleteNotAddedFileDlg" id="deleteNotAddedFileDlgId" width="400" modal="true" closable="false" severity="alert">
+          <f:facet name="header">
+              <h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+                  <f:param value="Attachment" />
+              </h:outputFormat>
+          </f:facet>
+          <f:facet name="message">
+              <h:outputFormat styleClass="msgWithIdPlaceHolder" value="#{msg['myagile.project.DeleteFile']}">
+                  <f:param value="ID_PLACEHOLDER" />
+              </h:outputFormat>
+          </f:facet>
+          <h:panelGroup layout="block" style="text-align: right">
+              <p:commandButton value="Yes" action="#{dashboardBean.deleteNotAddedAttachment}" update="userStoryForm:us-attachment-list" oncomplete="deleteNotAddedFileDlg.hide();revertIdPlaceholder();" />
+              <p:commandButton value="No" oncomplete="deleteNotAddedFileDlg.hide();revertIdPlaceholder();" />
+          </h:panelGroup>
+      </p:confirmDialog>
+</ui:composition>

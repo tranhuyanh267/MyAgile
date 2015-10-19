@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:custom="http://myagile.com/custom">
+<style>
+	a:hover, a:focus {
+		text-decoration: none;
+	}
+</style>
+<script type="text/javascript"
+	src="#{request.contextPath}/bundles/plupload.js" />
+<script type="text/javascript" src="#{request.contextPath}/resources/assets/libs/ZeroClipboard/ZeroClipboard.js" />
+<h:form id="topic-attachments">
+	<h:outputLabel value="Attachments:"></h:outputLabel>
+	<td colspan="3"><ui:repeat
+			value="#{sharingTopicBean.listAttachments}" var="attachment">
+			<p:commandLink styleClass="ui-panel-titlebar-icon ui-corner-all"
+				action="#{downloadBean.downloadTopicAttachment}" ajax="false">
+				<h:outputText styleClass="ui-icon icon-download-alt"
+					style="margin-right: 5px;" />
+				<f:setPropertyActionListener value="#{attachment.diskFilename}"
+					target="#{downloadBean.fileName}" />
+				<f:setPropertyActionListener
+					value="#{sharingTopicBean.currentWiki.wikiId}"
+					target="#{downloadBean.wikiId}" />
+				<f:setPropertyActionListener
+					value="#{sharingTopicBean.currentTopic.topicId}"
+					target="#{downloadBean.topicId}" />
+				<h:outputText value="#{attachment.filename}" />
+			</p:commandLink>
+			<small>
+				<h:outputText value=" (Created by: #{attachment.author.lastName} #{attachment.author.firstName}, " />
+				<h:outputText value="#{attachment.createdOn}">
+					<f:convertDateTime pattern="MMM-dd-yyyy HH:mm" />
+				</h:outputText>
+				<h:outputText value=")"/>
+			</small>
+			
+			<label id="link-#{attachment.attachmentId}"
+				data-wiki-id="#{sharingTopicBean.currentWiki.wikiId}"
+				data-topic-id="#{sharingTopicBean.currentTopic.topicId}"
+				data-attachment="#{attachment.diskFilename}"
+				data-context-path="#{request.contextPath}" class="hidden"></label>
+			<br />
+		</ui:repeat> 
+		<h:panelGroup layout="block"
+			rendered="#{empty sharingTopicBean.listAttachments}">
+			<label> No attachments are added.</label>
+		</h:panelGroup>
+		<div>
+			<p:messages for="downloadMsgs" id="downloadMsgs" showDetail="true"
+				closable="true" showSummary="false" />
+		</div></td>
+</h:form>
+</html>

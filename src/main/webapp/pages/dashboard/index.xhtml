@@ -1,0 +1,73 @@
+<ui:composition template="/WEB-INF/layouts/template.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:composite="http://java.sun.com/jsf/composite"
+    >
+    <ui:define name="layoutTitle">
+        Scrum Board
+    </ui:define>    
+    <ui:define name="layoutHead">
+        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/css/kanban.css" />
+        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/bundles/mCustomScrollbar.css" />
+        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/css/jOrgChart.css" />
+        <h:outputStylesheet library="primefaces-extensions" name="tooltip/tooltip.css"/>
+        <script type="text/javascript" src="#{request.contextPath}/bundles/mCustomScrollbar.js" />
+        <script type="text/javascript" src="#{request.contextPath}/bundles/plupload.js" />
+        <script type="text/javascript" src="#{request.contextPath}/resources/assets/libs/jOrgChart/jquery.jOrgChart.js" />
+        <script type="text/javascript" src="#{request.contextPath}/resources/assets/js/kanban.js" />                        
+        <script type="text/javascript" src="#{request.contextPath}/resources/assets/js/fixbugInplaceDashboard.js"/> 
+        <script type="text/javascript" src="#{request.contextPath}/resources/assets/js/fixbugDuplicateContextMenuOnKanban.js"/>
+        <script type="text/javascript" src="#{request.contextPath}/resources/assets/js/swinline.js" />
+        <script type="text/javascript" src="#{request.contextPath}/resources/assets/js/dialogOverlay.js" /> 
+        <script type="text/javascript" src="#{request.contextPath}/resources/assets/js/scrumBoardAddFile.js" />
+        <h:outputScript library ="primefaces-extensions" name="primefaces-extensions.js" />
+        <h:outputScript library ="primefaces-extensions" name="tooltip/tooltip.js" />
+    </ui:define>
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event listener="#{dashboardBean.initPreview}" type="preRenderView"/>
+        </f:metadata>
+    </ui:define> 
+    <ui:define name="layoutBody">
+    <script>
+    //<![CDATA[
+        getScrollWidth();
+        window.mgs = new Array();
+        window.mgs['myagile.dashboard.CopyIssueToSprint'] = "#{msg['myagile.dashboard.CopyIssueToSprint']}";
+    //]]>
+    </script>
+    <h:panelGroup layout="block" styleClass="row" style="margin-bottom:0px">
+        <ui:include src="_selector.xhtml"></ui:include>
+        <center><ui:include src="_view.xhtml"/></center>
+        <ui:include src="_settingForm.xhtml"></ui:include>
+        <h:panelGroup rendered="#{dashboardBean.scrumTeamMember == true and dashboardBean.sprint.dateEnd != null}">
+                <ui:include src="_kanban.xhtml"></ui:include>
+        </h:panelGroup>
+        <ui:include src="_relationshipChart.xhtml"></ui:include>
+        <h:panelGroup rendered="#{dashboardBean.scrumTeamMember == true and dashboardBean.sprint.dateEnd != null}">
+          <ui:include src="_confirmDialog.xhtml"></ui:include>
+        </h:panelGroup>
+    </h:panelGroup>
+    </ui:define>
+    
+    <ui:define name="layoutFooter">
+        <h:form style="margin:0">           
+            <p:remoteCommand name="calculateProgressRemote" actionListener="#{dashboardBean.calculateProgress}" oncomplete="handleListComplete(xhr, status, args)" global="false"/>
+            <p:remoteCommand id="drop" name="handleDrop" actionListener="#{dashboardBean.onDrop}"/>
+            <p:remoteCommand name="updateInit" update="@(.kanban_wrapper)" global="false"/>
+            <p:remoteCommand name="rmCopyIssueToSprint" action="#{dashboardBean.copyIssueToSprint}"/>
+            <p:remoteCommand name="redirectToMeetingPage" action="#{meetingBean.redirectToMeetingPage}"/>
+            <p:remoteCommand name="updateParentPoint" actionListener="#{dashboardBean.updateParentPoint}" update=":relationshipChart:pnRelationshipChart" oncomplete="confirmChangeParentPointDlg.hide()"/>
+            <p:remoteCommand name="rc_assignTaskToMember" actionListener="#{dashboardBean.assignTaskToMember}"/>
+            <p:remoteCommand name="updateAllIssue" actionListener="#{dashboardBean.refeshIssueList}" global="false"/> 
+            <p:remoteCommand name="updateStatusList" actionListener="#{dashboardBean.refreshStatusList}" global="false"/>               
+        </h:form>
+        <p:ajaxStatus>  
+            <f:facet name="start"> <h:panelGroup styleClass="ajaxPopUp" ><p:graphicImage alt="ajax loader" styleClass="imgAjax" value="resources/img/ajax_loader/ajax_loader.gif" /></h:panelGroup></f:facet>  
+            <f:facet name="complete"><h:outputText value="" /></f:facet>                
+        </p:ajaxStatus>
+    </ui:define>
+</ui:composition>

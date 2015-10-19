@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/layouts/template.xhtml">
+	
+	<ui:define name="layoutTitle">
+		Wiki
+	</ui:define>
+	<ui:define name="layoutHead">
+		<link rel="stylesheet" type="text/css"
+			href="#{request.contextPath}/resources/assets/css/wiki.css" />
+		<script type="text/javascript"
+			src="#{request.contextPath}/resources/assets/js/wiki.js" />
+		<script type="text/javascript"
+			src="#{request.contextPath}/resources/assets/js/main.js" />
+		<script type="text/javascript"
+			src="#{request.contextPath}/resources/assets/js/main.js" />
+		<script type="text/javascript" src="#{request.contextPath}/bundles/plupload.js" />
+	</ui:define>
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:event listener="#{wikiBean.initPreview}" type="preRenderView" />
+		</f:metadata>
+	</ui:define>
+	<ui:define name="layoutBody">
+		<div class="row">
+			<h:panelGroup layout="block" id="selectTeamForm">
+				<p:fieldset styleClass="team-members span12">
+					<h:form styleClass="form-inline" id="form-wiki-select-team"
+						style="margin:0 10px;">
+						
+						<h:outputLabel for="wiki-select-team" value="Select a Team:"
+							style="margin-right:5px" />
+						<p:selectOneMenu style="margin-right:5px"
+							rendered="#{empty wikiBean.teamList}" styleClass="text-left">
+							<f:selectItem noSelectionOption="true" itemLabel="No team" />
+						</p:selectOneMenu>
+						<p:selectOneMenu id="wiki-select-team" value="#{wikiBean.team.teamId}"
+							rendered="#{!empty wikiBean.teamList}" styleClass="text-left">
+							<f:selectItems value="#{wikiBean.findTeamsByUser()}" var="t"
+								itemLabel="${t.teamName}" itemValue="${t.teamId}" />
+							<p:ajax event="change" listener="#{wikiBean.handleTeamChange}" 
+								update=":main-wiki,form-wiki-select-team" />
+						</p:selectOneMenu>
+						<span style = "margin-left:5px;"></span>
+						
+						<p:commandButton value="New Wiki" actionListener = "#{wikiBean.addNewWiki}" rendered="#{empty wikiBean.wiki}">
+							<f:setPropertyActionListener  value="false" target="#{wikiBean.preventAccessFromUrl}" />
+						</p:commandButton>
+						
+						<p:commandButton id="edit-button" value="Edit Wiki" rendered="#{not empty wikiBean.wiki}" action="#{wikiBean.setData}"></p:commandButton>
+					</h:form>
+				</p:fieldset>
+			</h:panelGroup>
+			
+			<h:panelGroup id="main-wiki" layout="block">
+				<h:panelGroup rendered="#{not empty wikiBean.wiki}">
+				<ui:include src="_topics.xhtml" />
+				</h:panelGroup>
+				<h:panelGroup layout="block" rendered="#{empty wikiBean.wiki}">
+					<p:fieldset styleClass="index-wiki-fieldset-margin-top"> No wiki in this team </p:fieldset>
+				</h:panelGroup>
+			</h:panelGroup>
+			<ui:include src="_confirmDialog.xhtml" />
+		</div>
+		
+	</ui:define>
+	<ui:define name="layoutFooter">
+		<h:form>
+			<p:remoteCommand name="resetForm"
+				actionListener="#{productBacklogBean.resetForm}" global="false" />
+			<h:commandLink style="display:none" />
+		</h:form>
+		<p:ajaxStatus>
+			<f:facet name="start">
+				<h:panelGroup styleClass="ajaxPopUp">
+					<p:graphicImage alt="ajax loader" styleClass="imgAjax"
+						value="resources/img/ajax_loader/ajax_loader.gif" />
+				</h:panelGroup>
+			</f:facet>
+			<f:facet name="complete">
+				<h:outputText value="" />
+			</f:facet>
+		</p:ajaxStatus>
+	</ui:define>
+</ui:composition>
+</html>

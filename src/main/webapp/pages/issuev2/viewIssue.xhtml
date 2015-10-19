@@ -1,0 +1,118 @@
+<ui:composition template="/WEB-INF/layouts/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:custom="http://myagile.com/custom">
+	<ui:define name="layoutTitle">
+		<h:outputText value="##{issueBeanV2.getId(issueBeanV2.viewIssue.issueId)} #{issueBeanV2.viewIssue.subject}"></h:outputText>
+	</ui:define>
+	<ui:define name="layoutHead">
+        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/css/viewissue.css"/>
+    </ui:define>
+	<ui:define name="layoutBody">
+		<h:panelGroup layout="block" styleClass="row">
+			<p:fieldset legend="Issue Detail" 
+				id="show-issue-form"
+				style="margin-bottom: 20px; padding-left: 15px !important;"
+				styleClass="span12">
+				<h:form id="viewIssueForm">
+					<table columns="4" style="margin-bottom: 10px;" cellpadding="5" id = "table-view-issue">
+						<tr>
+							<td><h:outputLabel for="issueId" value="ID:" /></td>
+							<td><h:outputText id="issueId" value="##{issueBeanV2.getId(issueBeanV2.viewIssue.issueId)}" /></td>
+							<td><h:outputLabel for="subject" value="Subject:" /></td>
+							<td><h:outputText id="subject" value="#{issueBeanV2.viewIssue.subject}" /></td>
+						</tr>
+						<tr>
+							<td width="150px"><h:outputText value="Project:" /></td>
+							<td width="380px"><h:outputText value="#{issueBeanV2.viewProject.projectName}" /></td>
+							<td width="150px"><h:outputLabel for="sprintName" value="Sprint Name:" /></td>
+							<td><h:outputText id="sprintName" value="#{issueBeanV2.viewIssue.sprint.sprintName}" /></td>
+						</tr>
+						<tr>
+							<h:panelGroup rendered="#{issueBeanV2.viewIssue.parent != null}">
+								<td><h:outputText value="Sprint Backlog:" style="margin-right:5px" /></td>
+								<td><h:outputText value="#{issueBeanV2.viewIssue.parent.subject}" /></td>
+							</h:panelGroup>
+							<h:panelGroup rendered="#{!empty issueBeanV2.viewIssue.assigned}">
+								<td width="150px"><h:outputText value="Assign To:" style="margin-right:5px" /></td>
+								<td><h:outputText value="#{issueBeanV2.viewIssue.assigned.lastName} #{issueBeanV2.viewIssue.assigned.firstName}" /></td>
+							</h:panelGroup>
+							<h:panelGroup rendered="#{empty issueBeanV2.viewIssue.assigned}">
+								<td width="150px"><h:outputText value="Assign To:" style="margin-right:5px" /></td>
+								<td><h:outputText value="None" /></td>
+							</h:panelGroup>
+						</tr>
+						<tr>
+							<td><h:outputText value="Priority:" style="margin-right:5px" /></td>
+							<td><h:outputText rendered="#{issueBeanV2.viewIssue.priority == 'NONE'}" value="_" />
+								<h:outputText rendered="#{issueBeanV2.viewIssue.priority == 'MUST'}" value="Must" /> 
+								<h:outputText rendered="#{issueBeanV2.viewIssue.priority == 'COULD'}" value="Could" /> 
+								<h:outputText rendered="#{issueBeanV2.viewIssue.priority == 'SHOULD'}" value="Should" /> 
+								<h:outputText rendered="#{issueBeanV2.viewIssue.priority == 'WONT'}" value="Wont" />
+							</td>
+							<td><h:outputLabel for="estimate" value="Estimate:" /></td>
+							<td><h:outputText id="estimate" value="#{issueBeanV2.viewIssue.estimate}" /></td>
+						</tr>
+						<tr>
+							<td><h:outputText value="Type:" style="margin-right:5px" /></td>
+							<td><h:outputText value="#{issueBeanV2.viewIssue.type}" /></td>
+							<td><h:outputLabel for="remain" value="Remain:" /></td>
+							<td><h:outputText id="remain" value="#{issueBeanV2.viewIssue.remain}" /></td>
+						</tr>
+
+						<tr>
+							<td><h:outputText value="Status:" style="margin-right:5px" /></td>
+							<td><h:outputText value="#{issueBeanV2.viewIssue.status.name}" /></td>
+						</tr>
+						<tr>
+							<td colspan="4"><p:separator style="border-width: 2px; margin: 4px 4px;" /></td>
+						</tr>
+						<tr>
+							<td><h:outputLabel for="description" value="Description:" /></td>
+							<td colspan="3"><h:outputText id="description" escape="false" value="#{issueBeanV2.viewIssue.description}" /></td>
+						</tr>
+
+						<tr>
+							<td><h:outputLabel for="note" value="Note:" /></td>
+							<td colspan="3"><h:outputText id="note" escape="false" value="#{issueBeanV2.viewIssue.note}" /></td>
+						</tr>
+
+						<tr>
+							<td><h:outputText value="File:" /></td>
+							<td colspan="3">
+							     <ui:repeat value="#{issueBeanV2.attachmentListByIssue}" var="attachment">
+									<p:commandLink
+										rendered="#{attachment.diskFilename != null and attachment.filename != null}"
+										styleClass="ui-panel-titlebar-icon ui-corner-all link-attachment-file"
+										action="#{downloadBean.download}" 
+										ajax="false">
+										<h:outputText styleClass="ui-icon icon-download-alt" style="margin-right: 10px;" />
+										<f:setPropertyActionListener value="#{attachment.diskFilename}" target="#{downloadBean.fileName}" />
+										<f:setPropertyActionListener value="#{issueBeanV2.viewProject.projectId}" target="#{downloadBean.projectId}" />
+										<h:outputText value=" #{attachment.filename}" />
+									</p:commandLink>
+									<br />
+								</ui:repeat>
+								<div>
+									<p:messages for="downloadMsgs" id="downloadMsgs" showDetail="true" closable="true" showSummary="false" />
+								</div></td>
+						</tr>
+					</table>
+					<p:commandButton id="Edit" value="Edit"
+						action="#{issueBeanV2.backToAddIssuePage}"
+						style="background-color: #45A1DE; margin-bottom: 5px; margin-left: 5px;"
+						rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', issueBeanV2.viewIssue.sprint.team.teamId)}" />
+				</h:form>
+				<h:form>
+					<p:remoteCommand name ="refreshCurrentIssue" action="#{issueBeanV2.refreshViewIssuePage}" autoRun="true" update=":viewIssueForm"/>
+				</h:form>
+			</p:fieldset>
+			<ui:include src="_issueHistory.xhtml"></ui:include>
+		</h:panelGroup>
+	</ui:define>
+	<ui:define name="layoutFooter">
+	</ui:define>
+</ui:composition>

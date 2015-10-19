@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:custom="http://myagile.com/custom">
+
+	<p:fieldset legend="Remaining Task">
+		<h:form id="frmBacklogRemain" prependId="false">
+		<p:dataTable id="remainingTasksList" var="task" value="#{remainingTasksV2Bean.remainingTasks}"
+				
+				paginator="true" rows="10" paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15,30,50" styleClass="ui-widget-header dtUserList"
+				rowStyleClass="#{empty task.parent? 'parent-issue':'child-issue parent-'.concat(task.parent.issueId)} "
+				widgetVar="remainingTasksListTableVar" emptyMessage="No task remains."
+				paginatorAlwaysVisible="true"
+				sortOrder="descending">
+				<p:ajax event="page" oncomplete="removeIconTriangle()"/>
+				<p:ajax event="filter" global="false" oncomplete="removeIconTriangle()"/>
+				<p:ajax event="sort" oncomplete="removeIconTriangle()"/>
+				<f:facet name="header">
+					<h:panelGroup layout="block" styleClass="form-inline"
+						style="padding:5px 0;text-align:left">
+						<h:outputLabel value="Search: " for="globalFilter"
+							style="margin-right:5px" />
+						<p:inputText id="globalFilter"
+							onkeyup="remainingTasksListTableVar.filter();"
+							onkeypress="if(event.keyCode == 13) return false;">
+						</p:inputText>
+						<p:watermark value="Please enter a keyword" for="globalFilter" />
+					</h:panelGroup>
+				</f:facet>
+				
+				<!--  Subject -->
+				<p:column headerText="Subject" sortBy="#{task.subject}"
+					filterBy="#{task.subject}" filterMatchMode="contains"
+					filterStyle="display:none"
+					styleClass="td-subject">
+					<h:panelGroup styleClass="ui-icon ui-icon-triangle-1-s td-icon-expand" rendered="#{empty task.parent}"></h:panelGroup>
+					<h:panelGroup styleClass="display-none task-id">#{task.issueId}</h:panelGroup>
+					<h:outputText value="#{task.subject}" rendered="#{not task.isParent}" />
+					<h:outputText value="#{task.subject}" rendered="#{task.isParent}" />
+				</p:column>
+
+				<!-- Status -->
+				<p:column headerText="Status" sortBy="#{task.status.name}"
+					filterBy="#{task.status.name}" filterMatchMode="contains"
+					filterStyle="display:none" style="text-align: center; width: 80px;">
+					<h:outputText value="#{task.status.name}"></h:outputText>
+				</p:column>
+
+				<!-- Progress -->
+				<p:column headerText="Done (%)" 
+					filterStyle="display:none" style="width: 100px;">
+					<script type="text/javascript">
+	            		fillZeroTextInProgressBar();
+	            	</script>
+	            	
+					<p:progressBar rendered="#{task.status.type == 'IN_PROGRESS'}" value="#{remainingTasksV2Bean.findProgressOfIssue(task.issueId)}" labelTemplate="{value}%" displayOnly="true"></p:progressBar>
+					<p:progressBar rendered="#{task.status.type == 'DONE'}" value="100" labelTemplate="{value}%" displayOnly="true"></p:progressBar>
+					<p:progressBar rendered="#{task.status.type == 'START'}" value="0" labelTemplate="{value}%" displayOnly="true"></p:progressBar>
+				</p:column>
+
+				<!-- not finish in -->
+				<p:column headerText="Not Finished In"
+					filterStyle="display:none" style="text-align: center; width: 90px;">
+					<h:outputText value = "#{remainingTasksV2Bean.getSprintNameIssueNotFinishInOldSprint(task)}"></h:outputText>
+				</p:column>
+				<!-- check sprint -->
+				<p:column styleClass="td-sprint" style="width: 150px;">
+					<f:facet name="header">
+						<h:outputText value="#{remainingTasksV2Bean.nextSprint.sprintName}" rendered="#{remainingTasksV2Bean.nextSprint != null}"></h:outputText>
+						<h:outputLink value="#{request.contextPath}/sprint/managesprint" rendered="#{remainingTasksV2Bean.nextSprint == null}" title="Click to create new sprint" target="_blank" style="text-decoration:underline !important;">Create New Sprint</h:outputLink>
+					</f:facet>
+					<h:panelGroup
+						styleClass="assignButton"
+						rendered="#{remainingTasksV2Bean.nextSprint != null and !remainingTasksV2Bean.checkIssueInSelectedTask(task.issueId) and remainingTasksV2Bean.checkEmptyChildsInParentIssue(task)}"
+						id="assignButton" title="Assign to new sprint">
+						<i class="icon icon-check-empty"></i>
+					</h:panelGroup>
+					<h:panelGroup 
+						styleClass="assignButton"
+						rendered="#{remainingTasksV2Bean.nextSprint != null and remainingTasksV2Bean.checkIssueInSelectedTask(task.issueId) and remainingTasksV2Bean.checkEmptyChildsInParentIssue(task)}"
+						id="unassignButton" title="Unassign from new sprint">
+						<i class="icon icon-check"></i>
+					</h:panelGroup>
+					<h:panelGroup styleClass="display-none task-id">#{task.issueId}</h:panelGroup>
+				</p:column>
+				<!-- Set Void -->
+				<p:column headerText="Set Void" style="text-align:center; width: 60px;">
+					<p:commandButton title="Set void" icon="icon-ok-sign" styleClass="set-void-button" actionListener="#{remainingTasksV2Bean.confirmSetVoidAndInformation(task.issueId)}">
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+			<h:panelGroup id="remainingScript">
+				<script>
+					$(document).ready(function(){
+						removeTextInPagination();
+						removeIconTriangle();
+					});
+					function removeIconTriangle(){
+						$(".td-icon-expand").each(function(index,val){
+							var dataIdParent = $(val).parent().find(".task-id").text().trim();
+							console.log(dataIdParent)
+							//find data-id-parent if exist;
+							if($(".parent-"+dataIdParent).length ==0){
+								$(val).remove();
+							}
+						});
+					}
+				</script>
+		</h:panelGroup>
+		<span style="float: right; margin-top: 15px;">
+			<p:commandButton disabled="#{remainingTasksV2Bean.nextSprint == null ? 'true' : 'false'}" value="Apply" styleClass="applyButton" action="#{remainingTasksV2Bean.confirmMoveTaskToSprint}"></p:commandButton>
+		</span>
+		</h:form>	
+	</p:fieldset>
+	
+	<p:confirmDialog widgetVar="confirmAssignTaskToNewSprint" id="idConfirmAssignTaskToNewSprint"
+		width="400" modal="true" closable="false" severity="alert"
+		type="hidden">
+		<f:facet name="header">
+			Confirm
+		</f:facet>
+		<f:facet name="message">
+			<h:outputFormat value="#{remainingTasksV2Bean.assignConfirmMessage}" id="msgConfirm">
+			</h:outputFormat>
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes"
+				action="#{remainingTasksV2Bean.applyChanges}"
+				oncomplete="confirmAssignTaskToNewSprint.hide();remainingTasksListTableVar.filter();"
+				update=":frmBacklogRemain"/>
+			<p:commandButton value="No" actionListener="#{remainingTasksV2Bean.refreshBeanData}" update=":frmBacklogRemain" oncomplete="confirmAssignTaskToNewSprint.hide()" />
+		</h:panelGroup>
+	</p:confirmDialog>
+	
+	<p:confirmDialog widgetVar="informMessage" id="idInformMessage"
+		width="400" modal="true" closable="false" severity="alert"
+		type="hidden">
+		<f:facet name="header">
+			Inform
+		</f:facet>
+		<f:facet name="message">
+			<h:outputFormat value="#{remainingTasksV2Bean.msgInform}" id="msgInform">
+			</h:outputFormat>
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Close" actionListener="#{remainingTasksV2Bean.undoSelection}" update=":frmBacklogRemain" oncomplete="informMessage.hide()" />
+		</h:panelGroup>
+	</p:confirmDialog>
+	
+	<p:confirmDialog widgetVar="confirmSetVoid" id="idConfirmSetVoid"
+		width="400" modal="true" closable="false" severity="alert"
+		type="hidden">
+		<f:facet name="header">
+			Confirm
+		</f:facet>
+		<f:facet name="message">
+			<h:outputText value="Would you like to set void for this task?" />
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes"
+				action="#{remainingTasksV2Bean.setVoid}"
+				oncomplete="confirmSetVoid.hide(); remainingTasksListTableVar.filter();"
+				update=":frmBacklogRemain"/>
+			<p:commandButton value="No" oncomplete="confirmSetVoid.hide()" />
+		</h:panelGroup>
+	</p:confirmDialog>
+	
+	<p:confirmDialog widgetVar="informCannotSerVoid"
+		width="400" modal="true" closable="false" severity="alert"
+		type="hidden">
+		<f:facet name="header">
+			Inform
+		</f:facet>
+		<f:facet name="message">
+			<h:outputText value="You cannot set void for this sub-task." />
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Close" oncomplete="informCannotSerVoid.hide()" />
+		</h:panelGroup>
+	</p:confirmDialog>
+	
+	<p:confirmDialog widgetVar="informDialog"
+		width="400" modal="true" closable="false" severity="alert"
+		type="hidden">
+		<f:facet name="header">
+			Inform
+		</f:facet>
+		<f:facet name="message">
+			<h:outputText value="You did not select or unselect task." />
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Close" oncomplete="informDialog.hide()" />
+		</h:panelGroup>
+	</p:confirmDialog>
+	
+</ui:composition>

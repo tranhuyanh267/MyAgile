@@ -1,0 +1,57 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:custom="http://myagile.com/custom">
+	<p:fieldset id="fieldset-selector">
+		<h:form id="form-selector" styleClass="row">
+			
+			
+			<h:panelGroup styleClass="span3 select-team">
+				<label>Select Team</label>
+				<p:selectOneMenu id="teamSelect"
+					value="#{kanbanBean.currentTeamId}"
+					styleClass="text-left" >
+					<f:selectItems value="#{kanbanBean.listTeams}" var="t"
+						itemValue="#{t.teamId}" itemLabel="#{t.teamName}" />
+					<p:ajax listener="#{kanbanBean.handleChangeTeam}"
+						update=":fieldset-selector,:form-kanban,:setting-form"/>
+				</p:selectOneMenu>
+			</h:panelGroup>
+			
+
+			<h:panelGroup styleClass="span8 div-list-team-member">
+			
+			
+				<label>Team Member</label>
+				<h:panelGroup id="avatar-logo-img" styleClass="avatar-list">
+					<ui:repeat var="teammember" value="#{kanbanBean.listTeamMembers}">
+						<h:panelGroup styleClass="items">
+							<input type="hidden" class="hidden-member-id"
+								value="#{teammember.memberId}" />
+							<h:graphicImage alt="member-logo"
+								rendered="#{not empty teammember.avatar}"
+								value="/file/?type=small-member-logo&amp;filename=#{teammember.avatar}"
+								styleClass="avatar img-circle" title="#{teammember.lastName} #{teammember.firstName}" />
+							<h:graphicImage alt="member-logo"
+								rendered="#{empty teammember.avatar}"
+								value="/resources/img/no_image_available.png"
+								styleClass="avatar img-circle" />
+						</h:panelGroup>
+					</ui:repeat>
+					<p:commandButton id="settingBtn" value="Setting" icon="icon-cogs"
+						global="false" style="float:right"
+						actionListener="#{kanbanBean.refreshStatusTempList}"
+						onclick="toggleSettingForm()" async="false"
+						update=":setting-kanban">
+						<f:ajax render="@none" execute="@none" />
+					</p:commandButton>
+				</h:panelGroup>
+			</h:panelGroup>
+			
+		</h:form>
+		<!-- remove class container in body -->
+	</p:fieldset>
+</ui:composition>

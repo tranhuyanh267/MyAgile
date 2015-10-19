@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:custom="http://myagile.com/custom">
+
+<style>
+.ui-datatable tbody td {
+	white-space: normal !important;
+}
+
+.filter-export-data a {
+/* 	text-decoration: none; */
+	font-size: 13px;
+	font-weight: bold;
+}
+
+.ui-chkbox-all {
+margin: 0px 0px !important;
+}
+
+#listIssueForm\:ExcelDialog #listIssueForm\:options td input,label{
+	display: inline;
+}
+
+#listIssueFieldSet .ui-fieldset-content{
+	margin-top: -16px;
+}
+</style>
+
+<script type="text/javascript" src="resources/assets/js/fixbugPrimefacesDataTable.js"/>
+
+	<p:fieldset legend="List Issues" id="listIssueFieldSet">
+		<h:form id="listIssueForm">
+		<h:panelGroup id="issueToolbar" rendered="#{not empty issueBean.sprintList}" layout="block" styleClass="filter-export-data" style="margin: 10px 0 10px 0;">
+			<div class="row-fluid form-inline">
+				<h:panelGroup layout="block" styleClass="pull-left">
+				<span class="title-margin-right-combobox">Filter Options:</span>
+				<p:selectOneMenu style="width: 100px;" value="#{issueBean.filterIssueType}" styleClass="text-left">
+						<p:ajax listener="#{issueBean.filterIssues}" update="listIssues, export-pdf" />
+						<f:selectItem itemLabel="Any Type" itemValue="Any" />
+						<f:selectItem itemLabel="Task" itemValue="Task" />
+						<f:selectItem itemLabel="Bug" itemValue="Bug" />
+					</p:selectOneMenu>
+					<p:spacer width="10"></p:spacer>
+					<p:selectOneMenu style="width: 100px;" value="#{issueBean.filterIssueStatus}" styleClass="text-left">
+						<p:ajax listener="#{issueBean.filterIssues}" update="listIssues, export-pdf" />
+						<f:selectItem itemLabel="Any Status" itemValue="Any" />
+						<f:selectItems value="#{issueBean.statusList}" var="s" itemValue="#{s.name}" itemLabel="#{s.name}" />
+					</p:selectOneMenu>
+					<p:spacer width="10"></p:spacer>
+					<p:selectOneMenu style="width: 110px;" value="#{issueBean.filterIssuePriority}" styleClass="text-left">
+						<p:ajax listener="#{issueBean.filterIssues}" update="listIssues, export-pdf" />
+						<f:selectItem itemLabel="Any Priority" itemValue="Any" />
+						<f:selectItem itemLabel="Must" itemValue="MUST" />
+						<f:selectItem itemLabel="Should" itemValue="SHOULD" />
+						<f:selectItem itemLabel="Could" itemValue="COULD" />
+						<f:selectItem itemLabel="Wont" itemValue="WONT" />
+					</p:selectOneMenu>
+				</h:panelGroup>
+				
+				<h:panelGroup id="export-pdf">
+					<h:panelGroup layout="block" styleClass="pull-right text-right" rendered="#{not empty issueBean.filteredIssues}">
+						<h:outputText>Export Issues </h:outputText>
+						<p:commandLink id="exportExcel" title="Export To Excel" onclick="isEmptySelectedIssueForExport([{name: 'exportType', value: 'Excel'}]);">
+								<h:graphicImage alt="excel icon" value="/#{request.contextPath}/resources/img/icons/excel.png"/>
+						</p:commandLink>
+						<p:commandButton ajax="false" id="exportExcelButton" style="display: none;" actionListener="#{issueBean.exportIssuesExcel}"></p:commandButton>
+						
+						<p:commandLink id="exportPDF" title="Export To PDF" onclick="isEmptySelectedIssueForExport([{name: 'exportType', value: 'PDF'}]);">
+								<h:graphicImage alt="pdf icon" value="/#{request.contextPath}/resources/img/icons/pdf.png" />
+						</p:commandLink>
+						<p:commandButton ajax="false" id="exportPDFButton" style="display: none;" actionListener="#{issueBean.exportIssuesPDF}"></p:commandButton>				
+					</h:panelGroup> 
+				</h:panelGroup>
+			</div>
+		</h:panelGroup>
+		<p:dataTable id="listIssues" var="issue" rowKey="#{issue.issueId}" selection="#{issueBean.selectedIssues}" value="#{issueBean.issueList}" styleClass="ui-widget-header"
+			style="width: 100%; margin-top: 20px;" editable="true" filteredValue="#{issueBean.filteredIssues}">
+			
+			<p:ajax event="rowSelect" global="false" />
+			<p:ajax event="rowSelectCheckbox" global="false" />
+			<p:ajax event="rowUnselect" global="false" />
+			<p:ajax event="rowUnselectCheckbox" global="false" />
+			<p:ajax event="toggleSelect" global="false" />
+			
+			<p:column selectionMode="multiple"/>
+			<p:column headerText="#ID" sortBy="#{issue.issueId}" style="width:10%;text-align:center;">
+				<h:outputText value="##{issue.displayIssueId}" styleClass="content-font-size"  />
+			</p:column>
+			<p:column headerText="Subject" sortBy="#{issue.subject}" style="width:83%; word-break: break-word;">
+				<h:outputText value="#{issue.subject}" styleClass="content-font-size" />
+			</p:column>
+			<p:column headerText="Type" sortBy="#{issue.type}" style="width:2%;text-align:center;">
+				<h:outputText value="#{issue.type}" />
+			</p:column>
+			<p:column headerText="Estimate" sortBy="#{issue.estimate}" style="width:1%;text-align:center;">
+				<h:outputText value="#{issueBean.estimatePointByFormat}" styleClass="content-font-size"  />
+			</p:column>
+			<p:column headerText="Remain" sortBy="#{issue.remain}" style="width:1%;text-align:center;">
+				<h:outputText value="#{issueBean.remainPointByFormat}" styleClass="content-font-size"  />
+			</p:column>
+			<p:column headerText="Edit" style="width:1%" rendered="#{issueBean.sprint.status == 'open' and custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER',issueBean.issue.sprint.team.teamId)}">
+				<center>
+					<p:commandButton id="editButton" title="Edit" icon="icon-edit" action="#{issueBean.editIssue}" oncomplete="handleEditRequest(xhr,status,args)" update=":issueForm">
+						<f:setPropertyActionListener value="#{issue}" target="#{issueBean.issue}" />
+					</p:commandButton>
+				</center>
+			</p:column>
+			<p:column headerText="Delete" style="width:1%" rendered="#{issueBean.sprint.status == 'open' and custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER',issueBean.issue.sprint.team.teamId)}">
+				<center>
+					<p:commandButton id="deleteButton" title="Delete" icon="icon-trash" onclick="deleteDlg#{issue.issueId}.show()" global="false">
+						<f:setPropertyActionListener value="#{issue}" target="#{issueBean.issue}" />
+					</p:commandButton>
+				</center>
+				<p:confirmDialog widgetVar="deleteDlg#{issue.issueId}" id="deleteDialog" width="400" modal="true" closable="false" severity="alert">
+					<f:facet name="header">
+						<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+							<f:param value="Issue" />
+						</h:outputFormat>
+					</f:facet>
+					<f:facet name="message">
+						<h:outputFormat styleClass="msgWithIdPlaceHolder" value="#{msg['myagile.home.Delete']}">
+							<f:param value="issue" />
+							<f:param value="##{issue.displayIssueId}"/>
+						</h:outputFormat>
+					</f:facet>
+					<h:panelGroup layout="block" style="text-align: right">
+						<p:commandButton value="Yes" action="#{issueBean.deleteIssue}" oncomplete="deleteDlg#{issue.issueId}.hide();" update=":listIssueForm:listIssues,:listIssueForm,:issueForm" />
+						<p:commandButton value="No" oncomplete="deleteDlg#{issue.issueId}.hide();" global="false"/>
+					</h:panelGroup>
+				</p:confirmDialog>
+			</p:column>
+			<p:column headerText="View" width="1%">
+				<center>
+					<h:commandLink id="viewbtn" title="View" action="#{issueBean.toViewIssuePage}" target="_new">
+						<i class="icon icon-search"></i>
+						<f:setPropertyActionListener  value="#{issue}" target="#{issueBean.viewIssue}" />
+					</h:commandLink>
+				</center>
+			</p:column>
+			<f:facet name="footer">
+				<strong>Total Estimate Points: <h:outputText value="#{issueBean.issuesTotalPoints}" /></strong>
+				<script type="text/javascript">
+					attachEventForDataTableSelection();
+					$('.plupload').hide();
+				</script>
+			</f:facet>
+		</p:dataTable>
+		</h:form>	
+	</p:fieldset>	
+</ui:composition>

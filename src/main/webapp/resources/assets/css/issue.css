@@ -1,0 +1,51 @@
+#footer {
+	margin-bottom: -20px;
+}
+
+#wrap,#footer {
+	min-width: 940px;
+}
+
+#body-div.container {
+	width: 940px;
+}
+
+.issue-desc-input {
+	margin-bottom: 10px;
+}
+
+.issue-desc-input .ui-editor {
+	width: 620px !important;
+}
+
+.issue-desc-input iframe {
+	width: 620px !important;
+}
+
+.sprint-backlog .ui-selectonemenu-label {
+	width: 195px !important;
+	text-overflow: ellipsis !important;
+}
+
+.ui-chkbox-icon {
+	position: relative !important;
+}
+
+@media ( min-width : 1200px) {
+	#body-div.container {
+		width: 1170px;
+	}
+	.issue-desc-input .ui-editor {
+		width: 735px !important;
+	}
+	.issue-desc-input iframe {
+		width: 735px !important;
+	}
+}
+
+@media ( min-width : 768px) and (max-width: 979px) {
+	.row {
+		padding-left: 25px !important;
+		padding-right: 25px !important;
+	}
+}

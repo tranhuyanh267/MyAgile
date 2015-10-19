@@ -1,0 +1,155 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:sec="http://www.springframework.org/security/tags" template="/WEB-INF/layouts/template_wizard.xhtml">
+	<ui:define name="layoutTitle">Login to My Agile</ui:define>
+	<ui:define name="layoutHead">
+		<sec:authorize ifAnyGranted="ROLE_USER">
+			<meta HTTP-EQUIV="refresh" CONTENT="0;URL=#{request.contextPath}/" />
+		</sec:authorize>
+		<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/css/login.css" />
+		<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/js/jquery-1.9.0.js" />
+		<script type="text/javascript" src="#{request.contextPath}/resources/assets/js/login.js" />
+		<script type="text/javascript" src="#{request.contextPath}/bundles/uaParser.js" />
+		<script>
+			$(document).ready(function() {
+				setTimeZoneToCookie();
+				prepareProcess();
+				handleLdap();
+				checkBrowserCompatibility();
+				$('#username').focus();
+				$('#invalidEmail').hide();
+				$('#errorNotExists').hide();
+				$('#lockedUser').hide();
+				$('#username').on("focus keyup paste", function() {
+					hideErrors();
+				})
+				$('#username').on("keyup paste", function(event) {
+					prepareProcess();
+					handleChanged(event);
+					$('#invalidEmail').hide();
+				})
+				$('#password').on("focus keyup paste", function() {
+					validateEmail();
+                })
+                
+			});
+			
+			function setTimeZoneToCookie(){
+				var myDate = new Date();
+				var offset = myDate.getTimezoneOffset();
+
+			    var now = new Date();
+				var time = now.getTime();
+				var expireTime = time + 60*60*10*365*24*1000;
+				now.setTime(expireTime);  
+
+				document.cookie ="TIMEZONE_COOKIE=" + offset+";expires="+now.toGMTString()+';path=/';
+				
+			}
+		</script>
+	</ui:define>
+	<ui:define name="layoutBody">
+		<p:button style="display: none;"></p:button>
+		<div id="showBlock" class="container">
+			<div id="login">
+				<div class="inner">
+					<div class='fheader'>
+						<a id="login-link" class="tab-menu highlight link-color" onclick="signup(); hideSignUpInputs();showLoginInputs(); showLdapButton();"> Login</a><a id="signup-link" class="tab-menu link-color" onclick="hideLoginInputs(); hideLdapButton();showSignUpInputs();">Sign up</a>
+					</div>
+					<br />
+					<form style="align: left" class="form-horizontal" action="#{request.contextPath}/j_spring_security_check" method='POST' id='loginForm' autocomplete="off">
+						<h:panelGroup layout="block" id="errorpage">
+							<ui:include src="_error.xhtml" />
+						</h:panelGroup>
+						<div id="foo"></div>
+						<div id="parentSpinner">
+							<input class="txtinput usernameicon" id="username" title="Enter username to login or new email to sign up." name='j_username' value="" placeholder="Email address" />
+							<input class="txtinput usernameicon" id="newusername" style="display: none" title="Enter username to login or new email to sign up."  placeholder="Email address" />
+							<span id="loadSpinnerImage"></span>
+							<input class="txtinput" type='password' name='j_password' id='password' placeholder="Password" size="5" value=""/>
+						    <input class="txtinput" style="display: none" type="password" id="newPassword" placeholder="Password" title="#{msg['myagile.PassAllow']}" data-toggle="tooltip" data-placement="left" onblur="validatePassword()"/>
+                            <input class="txtinput" style="display: none" type="password" id="newConfirmPassword" placeholder="Confirm password" onblur="validateConfirmPassword()" title="Enter your comfirm password"/>
+                            <input class="txtinput" style="display: none" type="text" id="firstName" placeholder="First name (Required)" onblur="validateFirstName()" title="Enter your first name"/>
+                            <input class="txtinput" style="display: none" type="text" id="lastName" placeholder="Last name (Required)" onblur="validateLastName()" title="Enter your last name"/>
+                            <a id="forgetPassword"  tabindex="-1">Forget Password?</a>
+                            <div id="rememberLogin" class="checkbox">
+								<input id="remember_me" type="checkbox" name="_spring_security_remember_me" value="1" class="checkbox_1" />
+								<label for="remember_me" class="checkbox_1" >Remember me</label>
+							</div>
+                        </div>
+						
+						<button id="submitLogin" name="submitLogin" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" onclick="document.getElementById('submitButton').click();"
+							type="submit">
+							<span class="ui-button-text ui-c"><span class="icon-signin" style="padding: 0px 7px 0px 0px"></span>Login</span>
+						</button>
+						<button id="signupBtn" name="signupBtn" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="display: none" onclick="callSetParams();return false;" type="submit">
+							<span class="ui-button-text ui-c"><span class="icon-check-sign" style="padding: 0px 7px 0px 0px"></span>Sign up</span>
+						</button>
+						<button id="loginLdap" name="loginLdap" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" type="submit" style="display: none" onclick="getLDapUsername(); return false;">
+							<span class="ui-button-text ui-c"><span class="icon-external-link-sign" style="padding: 0px 7px 0px 0px"></span>Login with Windows Account</span>
+						</button>
+						
+						<input type="submit" style="display: none" id="submitButton" />
+						<span id="urlLocal" class="hide" data-url-local=""></span>
+						<div id="showMessage" style="margin: 10px 0"></div>
+					</form>
+				</div>
+				<h:panelGroup layout="block" id="requirement">
+					<ui:include src="_requirement.xhtml" />
+				</h:panelGroup>
+			</div>
+		</div>
+		<h:form>
+			<p:remoteCommand name="checkMemberLocked" action="#{memberBean.checkLockedMember}" oncomplete="handleLock(xhr, status, args)"/>
+			<p:remoteCommand name="checkMember" action="#{memberBean.checkExistMember}" oncomplete="handleLogin(xhr, status, args)" />
+			<p:remoteCommand name="processParams" action="#{memberBean.sendMailRegister}" oncomplete="handleSignup(xhr, status, args)" />
+			<p:remoteCommand name="getLDapUsernameByEmail" action="#{memberBean.getLDapUsername}" oncomplete="handleRedirecLdapPage(xhr, status, args)"></p:remoteCommand>
+			<p:remoteCommand name="gotoForgotPassword" action="#{memberBean.goToForgotPassWord()}"></p:remoteCommand>
+		</h:form>
+		<script type='text/javascript'>
+			function doLogin(username, password) {
+				var path = '#{request.contextPath}/j_spring_security_check';
+				var params = {
+					'j_username' : username,
+					'j_password' : password,
+					'_spring_security_remember_me' : 'off'
+				};
+				var form = document.createElement("form");
+				form.setAttribute("method", "POST");
+				form.setAttribute("action", path);
+				for ( var key in params) {
+					var hiddenField = document.createElement("input");
+					hiddenField.setAttribute("type", "hidden");
+					hiddenField.setAttribute("name", key);
+					hiddenField.setAttribute("value", params[key]);
+					form.appendChild(hiddenField);
+				}
+				document.body.appendChild(form);
+				form.submit();
+			};
+			
+			function getLDapUsername(){
+				var username = $('#username').val();
+				var urlLocal = $('#urlLocal').attr('data-url-local');
+				if (username.indexOf('@axonactive.vn') != -1){
+					getLDapUsernameByEmail([{name:'username',value: username}]);
+				} else {
+					$('form').attr('action', 'https://myuser.axonactive.vn/index.php');
+					$('form').attr('method','POST');
+					$('form').submit();
+				}
+			
+			}
+			
+		</script>
+		<p:ajaxStatus id="blockUi">
+			<f:facet name="start">
+				<h:panelGroup styleClass="ajaxPopUp">
+					<p:graphicImage alt="ajax loader" styleClass="imgAjax" value="resources/img/ajax_loader/ajax_loader.gif" />
+				</h:panelGroup>
+			</f:facet>
+			<f:facet name="complete">
+				<h:outputText value="" />
+			</f:facet>
+		</p:ajaxStatus>
+	</ui:define>
+</ui:composition>

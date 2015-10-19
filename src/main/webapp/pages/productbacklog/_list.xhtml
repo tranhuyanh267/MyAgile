@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:custom="http://myagile.com/custom" 
+	>
+	<style>
+		.form-inline tbody td{
+			padding: 0px;
+ 	 		border: none !important;  
+		}
+	</style>
+	<p:fieldset styleClass="span12">
+		<h:form  id="form-userStoryTable" prependId="false">
+		<p:dataTable id="userStoryTable" var="userStory" tableStyleClass="userStoryList" value="#{productBacklogBean.userStoryList}"  
+                 paginator="true" rows="10" paginatorPosition="bottom" 
+                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                 rowsPerPageTemplate="5,10,15,30,50,#{productBacklogBean.userStoryList.size() + 30}" styleClass="ui-widget-header"
+                 widgetVar="userStoryTableVar" filteredValue="#{productBacklogBean.filteredUserStories}"
+                 emptyMessage="No product backlog found with given keyword" paginatorAlwaysVisible="false">
+            <p:ajax event="filter" global="false"/>
+            <f:facet name="header">
+            	<h:panelGroup layout="block" styleClass="form-inline" style="padding:5px 0;text-align:left">
+            		
+            		<h:panelGroup id="export-pdf" styleClass="pull-right" style="position:relative;top:5px;">
+						<h:panelGroup layout="block" styleClass=" text-right" rendered="#{not empty productBacklogBean.userStoryList}">
+							<h:outputText>Export UserStories </h:outputText>
+							<p:commandLink id="exportPDF" title="Export To PDF" actionListener="#{productBacklogBean.checkExportUserStoryPDF}">
+									<h:graphicImage alt="pdf icon" value="/#{request.contextPath}/resources/img/icons/pdf.png" />
+							</p:commandLink>
+							<p:commandButton ajax="false" id="exportPDFButton" style="display: none;" actionListener="#{productBacklogBean.exportUserStoryPDF}" />
+						</h:panelGroup> 
+					</h:panelGroup>
+					
+            		<h:panelGroup layout="block" styleClass="pull-left">
+		            	<h:outputLabel value="Search: " for="globalFilter" style="margin-right:5px"/>
+		            	<p:inputText id="globalFilter" onkeyup="ajaxDelay()" onkeypress="if(event.keyCode == 13) return false;">
+		            	</p:inputText>
+		            	<p:watermark value="Please enter id or subject or value" for="globalFilter"/>
+						<script type="text/javascript">
+						    var delay = (function() {
+						        var timer = 0;
+						        return function(callback, ms) {
+						            clearTimeout(timer);
+						            timer = setTimeout(callback, ms);
+						        };
+						    })();
+						
+						    function ajaxDelay() {
+						        delay( function() {
+						        	userStoryTableVar.filter();
+						        }, 250);
+						    };
+						</script>
+	            	</h:panelGroup>
+	            	<span style="border: 0;border-left: 1px solid #ecf0f1;border-right: 1px solid #ffffff; float:left; height:2.3em; margin-right: 10px;margin-left:10px;"></span>
+	            	<p:selectManyCheckbox id="filterCheckbox" label="Filters Status" value="#{productBacklogBean.selectedFilter}" style="width:300px; cellpadding: 0px;">
+						<f:selectItem itemLabel="To do" itemValue="TODO" />
+						<f:selectItem itemLabel="In-progress" itemValue="IN_PROGRESS" />
+						<f:selectItem itemLabel="Done" itemValue="DONE" />
+						<f:selectItem itemLabel="Void" itemValue="VOID" />
+						<p:ajax global="true" update=":form-userStoryTable" oncomplete="userStoryTableVar.filter();"/>
+					</p:selectManyCheckbox>
+            	</h:panelGroup>
+            	
+            </f:facet>
+            
+            <p:column width="10%" style="text-align:center">  
+            	<f:facet name="header">
+            		<h:panelGroup styleClass="select-or-unselect-all-userstory" style="cursor:pointer;" rendered="#{!productBacklogBean.selectedAllUserStory}">
+            			<i class="icon icon-check-empty icon-select-unselect-all" style="color:white;"></i>
+	            	</h:panelGroup>
+	            	<h:panelGroup styleClass="select-or-unselect-all-userstory" style="cursor:pointer;" rendered="#{productBacklogBean.selectedAllUserStory}">
+	            		<i class="icon icon-check icon-select-unselect-all" style="color:white;"></i>
+	            	</h:panelGroup>
+            	</f:facet>
+            		
+            	<h:panelGroup styleClass="icon-select-userstory" style="cursor:pointer;" rendered="#{!productBacklogBean.selectedUserStories.contains(userStory)}">
+            		<i class="icon icon-check-empty" data-id-userstory = "#{userStory.userStoryId}"></i>
+            	</h:panelGroup>
+            	<h:panelGroup styleClass="icon-select-userstory" style="cursor:pointer;" rendered="#{productBacklogBean.selectedUserStories.contains(userStory)}">
+            		<i class="icon icon-check" data-id-userstory = "#{userStory.userStoryId}"></i>
+            	</h:panelGroup>
+	        </p:column>
+	        
+            <p:column width="10%" headerText="#ID" sortBy="#{userStory.userStoryId}" filterBy="#{userStory.userStoryId}" filterMatchMode="contains" filterStyle="display:none" style="text-align:center">  
+	            <h:outputText value="##{userStory.userStoryId}" />  
+	        </p:column>  
+	  
+	        <p:column width="28%" headerText="Subject" sortBy="#{userStory.name}" filterBy="#{userStory.name}" filterMatchMode="contains" filterStyle="display:none">
+	            <h:outputText value="#{userStory.name}" />  
+	        </p:column>
+	        
+	        <p:column width="30%" headerText="Description">
+	            <h:outputText value="#{userStory.description}" escape="false" class="word-break-break-word"/>  
+	        </p:column> 
+	        
+	        <p:column width="10%" headerText="Status" style="text-align: center;">
+	        	<ui:param name="userStoryStatus" value="#{userStory.status}" />
+	            <h:outputText rendered="#{userStoryStatus == 'TODO'}" value="To do"></h:outputText>
+				<h:outputText rendered="#{userStoryStatus == 'IN_PROGRESS'}" value="In progress"></h:outputText>
+				<h:outputText rendered="#{userStoryStatus == 'DONE'}" value="Done"></h:outputText>
+				<h:outputText rendered="#{userStoryStatus == 'VOID'}" value="Void"></h:outputText>
+	        </p:column> 
+	        
+	         <p:column width="8%" headerText="Progress" style="text-align: center;">
+	         		<script type="text/javascript">
+	            		fillZeroTextInProgressBar();
+	            	</script>
+	            	
+					<p:progressBar rendered="#{userStoryStatus == 'IN_PROGRESS'}" value="#{productBacklogBean.calculateProgressOfUserStory(userStory)}" labelTemplate="{value}%" displayOnly="true"></p:progressBar>
+					<p:progressBar rendered="#{userStoryStatus == 'DONE'}" value="100" labelTemplate="{value}%" displayOnly="true"></p:progressBar>
+					<p:progressBar rendered="#{userStoryStatus == 'TODO'}" value="0" labelTemplate="{value}%" displayOnly="true"></p:progressBar>
+					<p:progressBar rendered="#{userStoryStatus == 'VOID'}" value="#{productBacklogBean.calculateProgressOfUserStory(userStory)}" labelTemplate="{value}%" displayOnly="true"></p:progressBar>
+	        </p:column> 
+	        
+	        <p:column width="5%" headerText="Value" sortBy="#{userStory.value}" filterBy="#{userStory.value}" filterMatchMode="contains" filterStyle="display:none" style="text-align:center">
+	            <h:outputText value="#{userStory.value}"/>  
+	        </p:column> 
+	        
+	        <p:column width="5%" headerText="Delete " style="text-align:center" rendered="#{!custom:isStackHolder(productBacklogBean.projectId)}">
+				<p:commandButton id="deleteButton" title="Delete" icon="icon-trash" 
+					onclick="changeIdPlaceholder('#{userStory.userStoryId}');deleteDlgUs.show()" global="false">
+					<f:setPropertyActionListener value="#{userStory}" target="#{productBacklogBean.userStory}" />
+					<f:setPropertyActionListener target="#{productBacklogBean.edit}" value="#{false}"/>
+				</p:commandButton>
+			</p:column>
+	        
+	        <p:column width="5%" headerText="View " style="text-align:center">
+				<p:commandLink id="viewButton" title="View" oncomplete="showUserStoryForm()" update=":userStoryForm" global="false" ajax="true">
+					<i class="icon icon-search"></i>
+					<f:setPropertyActionListener value="#{userStory}" target="#{productBacklogBean.userStory}" />
+					<f:setPropertyActionListener target="#{productBacklogBean.edit}" value="#{false}"/>
+				</p:commandLink>
+			</p:column>
+		</p:dataTable>	
+		<script>
+			removeTextInPagination();
+			setTextAllInPaginationSelect();
+		</script>	
+		</h:form>		
+	</p:fieldset>	
+</html>

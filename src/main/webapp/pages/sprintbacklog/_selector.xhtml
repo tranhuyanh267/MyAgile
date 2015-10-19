@@ -1,0 +1,288 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+			xmlns:f="http://java.sun.com/jsf/core"
+			xmlns:h="http://java.sun.com/jsf/html"
+			xmlns:ui="http://java.sun.com/jsf/facelets"
+			xmlns:p="http://primefaces.org/ui"
+			xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<center style="margin-bottom: 5px;">
+		<h:form id="sample" style="margin:0;" />
+		<p:fieldset styleClass="span12" style="text-align: center;">
+			<h:form styleClass="main-selector form-inline line1" id="selectProjectAndTeam" prependId="false">
+				<h:panelGroup styleClass="project-selector-wrapper text-right">
+					<h:outputText value="Select Project:" style="margin-right:5px" />
+					<p:selectOneMenu id="projectSelector"
+						value="#{sprintBacklogBean.projectId}" 
+						required="true"
+						rendered="#{not empty sprintBacklogBean.projects}"
+						styleClass="text-left">
+						<f:selectItems value="#{sprintBacklogBean.projects}" 
+							var="p"
+							itemValue="#{p.projectId}" 
+							itemLabel="#{p.projectName}" />
+						<p:ajax update="selectProjectAndTeam, sprintSelect,:form-add-bl"
+							listener="#{sprintBacklogBean.handleChangeProject}"
+							event="change" oncomplete="return update();" />
+					</p:selectOneMenu>
+					<p:selectOneMenu rendered="#{empty sprintBacklogBean.projects}" styleClass="text-left">
+						<f:selectItem noSelectionOption="true" itemLabel="No project" />
+					</p:selectOneMenu>
+				</h:panelGroup>
+				<h:panelGroup styleClass="team-selector-wrapper text-right">
+					<h:outputText value="Select Team:" style="margin-right: 5px" />
+					<p:selectOneMenu 
+						id="teamSelect"
+						value="#{sprintBacklogBean.teamId}" required="true"
+						rendered="#{not empty sprintBacklogBean.teams}"
+						styleClass="text-left">
+						<f:selectItems 
+							value="#{sprintBacklogBean.teams}" 
+							var="t"
+							itemValue="#{t.teamId}" itemLabel="#{t.teamName}" />
+						<p:ajax 
+							update="sprintSelect" event="change"
+							listener="#{sprintBacklogBean.handleChangeTeam}"
+							oncomplete="return update();" />
+					</p:selectOneMenu>
+					<p:selectOneMenu rendered="#{empty sprintBacklogBean.teams}" styleClass="text-left">
+						<f:selectItem noSelectionOption="true" itemLabel="No team" />
+					</p:selectOneMenu>
+				</h:panelGroup>
+				<br />
+				<h:panelGroup styleClass="sprint-selector-wrapper">
+					<h:outputText value="Select Sprint:" styleClass="lbSelectSprint" />
+					<p:selectOneMenu 
+						id="sprintSelect"
+						value="#{sprintBacklogBean.sprintId}" 
+						required="true"
+						rendered="#{not empty sprintBacklogBean.sprints}"
+						styleClass="text-left">
+						<f:selectItems 
+							value="#{sprintBacklogBean.sprints}" 
+							var="sp"
+							itemValue="#{sp.sprintId}"
+							itemLabel="#{sp.status == 'open' ? sp.sprintName : ''.concat(sp.sprintName).concat(' (Closed)')}" />
+						<p:ajax 
+							event="change" 
+							update=":sample"
+							listener="#{sprintBacklogBean.handleChangeSprint}"
+							oncomplete="return update();" />
+					</p:selectOneMenu>
+					
+					<p:selectOneMenu rendered="#{empty sprintBacklogBean.sprints}" styleClass="text-left">
+						<f:selectItem noSelectionOption="true" itemLabel="No sprint" />
+					</p:selectOneMenu>
+				</h:panelGroup>
+
+				<h:panelGroup
+					styleClass="sprint-selector-wrapper text-left text-indent-10">
+					<p:commandButton value="New Backlog Item" update=":form-add-bl" oncomplete="resetFormAdd()" action="#{sprintBacklogBean.getLastSortIdOfUS}">
+						<f:setPropertyActionListener value="#{true}" target="#{sprintBacklogBean.showFormAddBL}" />
+					</p:commandButton>
+				</h:panelGroup>
+			</h:form>
+		</p:fieldset>
+	</center>
+	
+	<!-- add bl immedately -->
+	<center class="margin-bottom-5">
+		<h:form id="form-add-bl" styleClass="margin-left-0" style="margin-top: 10px;">
+			<p:fieldset styleClass="span12" rendered="#{sprintBacklogBean.showFormAddBL}">
+				<c:set var="userStory" value="#{sprintBacklogBean.userStory}"></c:set>
+				<p:panelGrid id="userStoryPnl" styleClass="user-story-table-fixed noborder">
+					<p:row>
+						<p:column style="width: 100%" colspan="4">
+							<p:messages for="msgs" id="msgs" showDetail="true" closable="true" showSummary="false" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column style="width:10%">
+							<h:outputLabel for="usNameTxt" value="Name:" style="margin-bottom: 0px !important;" />
+						</p:column>
+						<p:column style="width:30%">
+							<p:inputText 
+								value="#{userStory.name}" 
+								id="usNameTxt"
+								style="width: 290px; margin-bottom: 0px !important;"
+								validator="#{sprintBacklogBean.validateUserStory}"
+								maxlength="255"
+								onkeyup="removeError('usNameTxt')"
+								requiredMessage="#{msg['myagile.backlog.NullName']}"
+								required="true" 
+								styleClass="remove-html-control-character">
+								<p:ajax event="keyup" update="usNameMsgs" global="false" />
+								<f:validateLength maximum="255" />
+							</p:inputText>
+						</p:column>
+						
+						<p:column style="width:10%">
+							<h:outputText value="ID:" />
+						</p:column>
+						<p:column style="width:30%">
+							<h:outputText value=" " />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column></p:column>
+						<p:column styleClass="msg-error">
+							<p:message for="usNameTxt" id="usNameMsgs" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column style="width:10%">
+							<h:outputText value="Priority:" style="margin-bottom: 0px !important;" />
+						</p:column>
+						<p:column style="width:30%">
+							<p:selectOneMenu
+								value="#{userStory.priority}"
+								style="width: 298px; margin-bottom: 0px !important;" 
+								widgetVar="selPriority">
+								<f:selectItem itemLabel="--Select a priority--" itemValue="NONE" />
+								<f:selectItem itemLabel="Must" itemValue="MUST" />
+								<f:selectItem itemLabel="Could" itemValue="COULD" />
+								<f:selectItem itemLabel="Should" itemValue="SHOULD" />
+								<f:selectItem itemLabel="Wont" itemValue="WONT" />
+							</p:selectOneMenu>
+						</p:column>
+						
+						<p:column style="width:10%">
+							<h:outputText value="Project:" />
+						</p:column>
+						<p:column style="width:30%">
+							<h:outputText id="usProjectTxt" value="#{sprintBacklogBean.currentProject.projectName}" />
+						</p:column> 
+					</p:row>
+					<p:row>
+						<p:column>
+							<h:outputText value="Value:" />
+						</p:column>
+						<p:column>
+							<p:spinner id="usValueSpner" 
+								value="#{userStory.value}"
+								validator="#{productBacklogBean.validateValue}"
+								style="margin-bottom: 0px !important;" 
+								min = "0" 
+								max="1000" 
+								widgetVar="spinValue">
+								<p:ajax event="change" update="msgValue" global="false" />
+								<p:ajax event="keyup" update="msgValue" global="false" />
+							</p:spinner>
+						</p:column>
+						
+						<p:column>
+							<h:outputText value="Status:" />
+						</p:column>
+						<p:column id="usStatusTxt" style="padding-bottom: 2px;">
+							<h:panelGroup layout="block" styleClass="form-inline">
+								<h:outputText value="To do"></h:outputText>
+							</h:panelGroup>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column></p:column>
+						<p:column styleClass="msg-error">
+							<p:message for="usValueSpner" id="msgValue" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<h:outputText value="Risk:" />
+						</p:column>
+						<p:column>
+							<p:spinner id="usRiskSpner" 
+								value="#{userStory.risk}"
+								validator="#{productBacklogBean.validateValue}"
+								style="margin-bottom: 0px !important;" 
+								min="0" 
+								max="1000" 
+								widgetVar="spinRisk">
+								<p:ajax event="change" update="msgRisk" global="false" />
+								<p:ajax event="keyup" update="msgRisk" global="false" />
+							</p:spinner>
+						</p:column>
+						
+						<p:column>
+							<h:outputText value="Issues:" />
+						</p:column>
+						
+						<p:column>
+							No subIssue
+						</p:column>
+					</p:row>
+					
+					<p:row>
+						<p:column></p:column>
+						<p:column styleClass="msg-error">
+							<p:message for="usRiskSpner" id="msgRisk" />
+						</p:column>
+					</p:row>
+					
+					<p:row rendered="#{!productBacklogBean.edit}">
+						<p:column colspan="4">
+							<p:separator style="border-width: 2px; margin: 4px 4px;" />
+						</p:column>
+					</p:row>
+					
+					<p:row>
+						<p:column>
+							<h:outputLabel for="usDescTxt" value="Description:" />
+						</p:column>
+						
+						<p:column colspan="3">
+							<p:editor id="usDescTxt" 
+								value="#{userStory.description}"
+								styleClass="fix-max-width"
+								controls="bold italic underline strikethrough font size color highlight | bullets numbering "
+								width="731" 
+								height="150"
+								maxlength="2000" 
+								widgetVar="editDescription">
+							</p:editor>
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column>
+							<h:outputLabel for="usNoteTxt" value="Note:" />
+						</p:column>
+						<p:column colspan="3">
+							<p:editor id="usNoteTxt" 
+								value="#{userStory.note}"
+								styleClass="fix-max-width"
+								controls="bold italic underline strikethrough font size color highlight | bullets numbering "
+								width="731" 
+								height="150"
+								maxlength="2000" 
+								widgetVar="editNote">
+							</p:editor>
+							<script>
+								$(document).ready(function(e) {
+									removeHtmlTagWhenPasteInEditorByIdParentAndWidget("#form-add-bl\\:usDescTxt",editDescription);
+									removeHtmlTagWhenPasteInEditorByIdParentAndWidget("#form-add-bl\\:usNoteTxt",editNote);
+									setHeightIframeBody();
+								});
+							</script>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+						</p:column>
+						<p:column colspan="3" style="text-align:center">
+							<p:commandButton id="savebtn" 
+								value="Save"
+								actionListener="#{sprintBacklogBean.saveUserStory}"
+								icon="icon-save" update=":form-add-bl" oncomplete="return update();">
+								<f:setPropertyActionListener value="#{false}" target="#{sprintBacklogBean.showFormAddBL}" />
+							</p:commandButton>
+							<p:commandButton id="cancelbtn" 
+								value="Cancel" 
+								immediate="true"
+								styleClass="secondary margin-left-5" update=":form-add-bl">
+								<f:setPropertyActionListener value="#{false}" target="#{sprintBacklogBean.showFormAddBL}" />
+							</p:commandButton>
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			</p:fieldset>
+		</h:form>
+	</center>
+</ui:composition>

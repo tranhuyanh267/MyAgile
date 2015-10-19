@@ -1,0 +1,40 @@
+<ui:composition	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+<p:fieldset styleClass="span12 fieldset-selector">
+	<h:form id="selectProjectAndTeam" styleClass="form-inline" prependId="false">
+		<h:outputText styleClass="title-margin-right-combobox" value="Select Project:"/>
+		<p:selectOneMenu styleClass="combo-box-modify text-left" value="#{remainingTasksV2Bean.selectedProjectIdInDropdownList}"
+		 			rendered="#{not empty remainingTasksV2Bean.allProjectsForDropdownList}">
+			<f:selectItems value="#{remainingTasksV2Bean.allProjectsForDropdownList}" var="project"
+							itemValue="#{project.projectId}" itemLabel="#{project.projectName}" />
+			<p:ajax update="selectProjectAndTeam, :frmBacklogRemain"
+					listener="#{remainingTasksV2Bean.updateTeamsDropDownListWhenProjectChanges}"
+					event="change" oncomplete="remainingTasksListTableVar.filter();"/>
+		</p:selectOneMenu>
+		
+		<p:selectOneMenu rendered="#{empty remainingTasksV2Bean.allProjectsForDropdownList}" styleClass="combo-box-modify">
+			<f:selectItem noSelectionOption="true" itemLabel="No Project" />
+		</p:selectOneMenu>
+		
+		
+		
+		<h:outputText styleClass="title-margin-right-combobox" value="Select Team:"/>
+		<p:selectOneMenu styleClass="text-left" value="#{remainingTasksV2Bean.selectedTeamIdInDropdownList}"
+					 rendered="#{not empty remainingTasksV2Bean.allTeamsForDropdownList}">
+			<f:selectItems value="#{remainingTasksV2Bean.allTeamsForDropdownList}" var="team"
+							itemValue="#{team.teamId}" itemLabel="#{team.teamName}" />
+			<p:ajax	listener="#{remainingTasksV2Bean.setSprintWhenChangingTeam}"
+					event="change" update=":frmBacklogRemain"/>
+		</p:selectOneMenu>
+		
+		<p:selectOneMenu rendered="#{empty remainingTasksV2Bean.allTeamsForDropdownList}" styleClass="combo-box-modify">
+			<f:selectItem noSelectionOption="true" itemLabel="No Team" />
+		</p:selectOneMenu>
+	</h:form>
+</p:fieldset>
+</ui:composition>

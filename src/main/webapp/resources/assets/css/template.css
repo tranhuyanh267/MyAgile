@@ -1,0 +1,96 @@
+/* All icons, elements in My Agile */
+/* http://localhost:8080/myagile/pages/ui/ui.faces */
+
+.rotate-90-degrees:before {
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+}
+
+.margin-right-3 {
+	margin-right: 2px;
+}
+
+.word-break-break-word {
+	word-wrap: break-word;
+	white-space: normal;
+	word-break: break-all;
+}
+
+.link-attachment-file {
+	color: #0096d6 !important;
+}
+
+.link-attachment-file:hover,.link-attachment-file:active {
+	text-decoration: underline !important;
+}
+
+.user-story-header {
+	margin-top: 4px !important;
+	margin-bottom: 6px !important;
+}
+
+a:hover, a:focus {
+	text-decoration: none !important;
+}
+
+/* Add common CSS */
+.title-margin-right-combobox {
+	margin-right: 5px;
+}
+
+.combo-box-modify {
+	margin-right: 15px;
+	width: 180px;
+}
+
+.fieldset-selector {
+	margin-bottom: 10px; text-align: left; float: none;
+}
+
+.ui-message-info, .ui-message-error, .ui-message-warn, .ui-message-fatal {
+	padding: 8px !important;
+	font-size: 14px !important;
+	margin-bottom: 10px !important;
+}
+
+/* BASIC CLASSES */
+.display-none {
+	display: none;
+}
+
+.margin-bottom-0 {
+	margin-bottom: 0px;
+}
+
+.text-right {
+	text-align: right;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.italic {
+	font-style: italic;
+}
+
+.no-margin {
+	margin: 0 !important;
+}
+/* END BASIC CLASSES */
+
+.image-loader {
+	vertical-align: middle;
+	width: 30px;
+}
+
+#viewIssueForm label {
+	margin-bottom: 0px !important;
+}
+
+
+/* footer template */
+#footer {
+	background-color: #297db6;
+	background-image: linear-gradient(to bottom, #297db6, #297db6);
+}

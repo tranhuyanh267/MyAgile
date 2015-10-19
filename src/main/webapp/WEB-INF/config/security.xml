@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+    <bean id="customAuthenticationHandler" class="com.ant.myagile.utils.CustomAuthenticationHandler" />
+    <bean id="customAuthenticationProvider" class="com.ant.myagile.utils.CustomAuthenticationProvider" />
+    <bean id="rememberMeServices" class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">
+        <property name="userDetailsService" ref="userDetailsService"/>
+        <property name="key" value="remember-me-myagile-key"/>
+        <property name="cookieName" value="remember_me_cookie" />
+    </bean>
+    <bean id="rememberMeAuthenticationProvider" class="org.springframework.security.authentication.RememberMeAuthenticationProvider">
+	  <property name="key" value="remember-me-myagile-key" />
+	</bean>
+	<security:http auto-config="true" disable-url-rewriting="true">
+		<security:intercept-url pattern="/login"
+			access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<security:intercept-url pattern="/logout"
+			access="IS_AUTHENTICATED_ANONYMOUSLY" />	
+		<security:intercept-url pattern="/pages/member/forgetPassword.xhtml"
+			access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<security:intercept-url pattern="/pages/member/active.xhtml"
+			access="IS_AUTHENTICATED_ANONYMOUSLY" />		
+		<security:intercept-url pattern="/pages/help/index.xhtml"
+			access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<security:intercept-url pattern="/resources/**"
+			access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<security:intercept-url pattern="/bundles/**"
+			access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<security:intercept-url pattern="/pages/**"
+			access="ROLE_USER, ROLE_STAKEHOLDER" />
+		<security:intercept-url pattern="/"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/team/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/sprint/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/project/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/productbacklog/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/productbacklogv2/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/issuev2/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/sprintbacklog/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/sprintbacklogv2/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/meeting/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/meetingv2/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/wizard/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/issue/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/statistics/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/profile/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/admin/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/adminv2/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/wiki/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/topic/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/kanban/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/kanbanv2/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/remaininguserstories/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/remaining/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/remainingv2/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/userstory/**"
+			access="ROLE_USER" />
+		<security:intercept-url pattern="/kanbanIssue/**"
+			access="ROLE_USER" />
+		<security:form-login login-page="/login"
+			default-target-url="/" authentication-failure-url="/login?error=incorrect"
+			authentication-success-handler-ref="customAuthenticationHandler" />
+		<security:logout invalidate-session="true" logout-success-url="/logout"/>
+		<security:remember-me services-ref="rememberMeServices" />
+		<security:session-management session-authentication-error-url="/login?error=other">
+            <security:concurrency-control expired-url="/login?error=other" error-if-maximum-exceeded="false" max-sessions="1"/>
+		</security:session-management>
+	</security:http>
+	<security:authentication-manager>
+		<security:authentication-provider ref="customAuthenticationProvider"/>
+		<security:authentication-provider ref="rememberMeAuthenticationProvider" />
+	</security:authentication-manager>
+</beans>

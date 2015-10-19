@@ -1,0 +1,393 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/layouts/template.xhtml"
+	xmlns:custom="http://myagile.com/custom">
+	<ui:define name="layoutTitle">
+        Myagile User Guide
+    </ui:define>
+	<ui:define name="layoutHead">
+		<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/css/index_help.css" />
+		<link rel="stylesheet" type="text/css" href="#{request.contextPath}/bundles/summernote.css" />
+		
+		
+		<script type="text/javascript" src="#{request.contextPath}/bundles/summernote.js" />
+		<script type="text/javascript" src="#{request.contextPath}/bundles/plupload.js" />
+		<script type="text/javascript" src="#{request.contextPath}/resources/assets/js/index_help.js" />
+	</ui:define>
+	<ui:define name="layoutBody">
+		<div class="content-section">
+			<div class="heading">
+				<h5 class = "add-feedback" onclick = "varFeedbackDialog.show();">Give Feedback</h5>
+				<h4>Myagile User Guide</h4>
+			</div>
+			<div class="content-block">
+				<div id="helpContentBlockLeft">
+					<ul>
+						<li><a href="#{request.contextPath}/help/getting-started">Getting
+								Started</a> <a href="#{request.contextPath}/help/gettingStarted.pdf"><img
+								src="#{request.contextPath}/resources/img/icons/pdf.png"></img></a>
+						</li>
+						<li><a href="#{request.contextPath}/help/account">User
+								account</a> <a href="#{request.contextPath}/help/account.pdf"><img
+								src="#{request.contextPath}/resources/img/icons/pdf.png"></img></a>
+							<ul>
+								<li><a href="#{request.contextPath}/help/account#sign-up">Login / Sign up</a></li>
+								<li><a
+									href="#{request.contextPath}/help/account#forget-pass">Forget
+										password</a></li>
+								<li><a
+									href="#{request.contextPath}/help/account#switch-account">Switch UserName</a></li>
+							</ul></li>
+						<li><a href="#{request.contextPath}/help/three-backlogs">Three
+								backlogs - Home page</a> <a
+							href="#{request.contextPath}/help/three-backlogs.pdf"><img
+								src="#{request.contextPath}/resources/img/icons/pdf.png"></img></a>
+							<ul>
+								<li><a
+									href="#{request.contextPath}/help/three-backlogs#productBackLogA">Product
+										backlog</a>
+									<ul>
+										<li><a
+											href="#{request.contextPath}/help/three-backlogs#productBackLogNewA">Create
+												a new user story</a></li>
+										<li><a
+											href="#{request.contextPath}/help/three-backlogs#productBackLogUpdateA">Update
+												user story</a></li>
+										<li><a
+											href="#{request.contextPath}/help/three-backlogs#productBackLogRemoveA">Remove
+												user story</a></li>
+										<li><a
+											href="#{request.contextPath}/help/three-backlogs#productBackLogViewA">View
+												information </a></li>
+										<li><a
+											href="#{request.contextPath}/help/three-backlogs#productBackLogFilterA">Filter
+												user story </a></li>
+										<li><a
+											href="#{request.contextPath}/help/three-backlogs#productBackLogSearchA">Search
+												user story </a></li>
+									</ul></li>
+								<li><a
+									href="#{request.contextPath}/help/three-backlogs#sprintBackLogA">Sprint
+										backlog</a></li>
+								<li><a
+									href="#{request.contextPath}/help/three-backlogs#impedimentBackLogA">Impediment
+										backlog</a></li>
+								<li><a
+									href="#{request.contextPath}/help/three-backlogs#historyA">History</a>
+								</li>
+								<li><a
+									href="#{request.contextPath}/help/three-backlogs#feedbackA">Feedback
+								</a></li>
+							</ul></li>
+						<li><a href="#{request.contextPath}/help/team">My Team</a> <a
+							href="#{request.contextPath}/help/team.pdf"><img
+								src="#{request.contextPath}/resources/img/icons/pdf.png"></img></a>
+							<ul>
+								<li><a href="#{request.contextPath}/help/team#createTeam">Create
+										team</a></li>
+								<li><a href="#{request.contextPath}/help/team#editTeam">Update
+										team</a></li>
+								<li><a href="#{request.contextPath}/help/team#assignMember">Assign
+										member to team</a></li>
+								<li><a href="#{request.contextPath}/help/team#viewTeam">View
+										team information</a></li>
+							</ul></li>
+						<li><a href="#{request.contextPath}/help/project">My
+								Project</a> <a href="#{request.contextPath}/help/project.pdf"><img
+								src="#{request.contextPath}/resources/img/icons/pdf.png"></img></a>
+							<ul>
+								<li><a href="#{request.contextPath}/help/project#create">Create
+										project</a></li>
+								<li><a href="#{request.contextPath}/help/project#view">View
+										project</a></li>
+								<li><a href="#{request.contextPath}/help/project#update">Update
+										project</a></li>
+							</ul></li>
+
+					</ul>
+				</div>
+				<div id="helpContentBlockRight">
+					<ul>
+						<li><a href="#{request.contextPath}/help/product-backlog">Product
+								backlog</a> <a href="#{request.contextPath}/help/productBacklog.pdf"><img
+								src="#{request.contextPath}/resources/img/icons/pdf.png"></img></a>
+							<ul>
+								<li><a
+									href="#{request.contextPath}/help/product-backlog#create">Create
+										user story</a></li>
+								<li><a
+									href="#{request.contextPath}/help/product-backlog#update">Update
+										user story</a></li>
+								<li><a
+									href="#{request.contextPath}/help/product-backlog#delete">Delete
+										user story</a></li>
+								<li><a
+									href="#{request.contextPath}/help/product-backlog#import">Import
+										user story from excel file</a></li>
+								<li><a
+									href="#{request.contextPath}/help/product-backlog#export">Export
+										user story to excel file</a></li>
+							</ul></li>
+						<li><a href="#{request.contextPath}/help/wizard">Wizard</a> <a
+							href="#{request.contextPath}/help/wizard.pdf"><img
+								src="#{request.contextPath}/resources/img/icons/pdf.png"></img></a>
+						</li>
+						<li><a href="#{request.contextPath}/help/sprint-backlog">Backlog</a>
+							<a href="#{request.contextPath}/help/sprintBacklog.pdf"><img
+								src="#{request.contextPath}/resources/img/icons/pdf.png"></img></a>
+						</li>
+						<li><a href="#{request.contextPath}/help/remaining-task">Remaining
+								Task</a> <a href="#{request.contextPath}/help/remainingTask.pdf"><img
+								src="#{request.contextPath}/resources/img/icons/pdf.png"></img></a>
+						</li>
+						<li><a href="#{request.contextPath}/help/meeting">Meeting</a>
+							<a href="#{request.contextPath}/help/meeting.pdf"><img
+								src="#{request.contextPath}/resources/img/icons/pdf.png"></img></a>
+						</li>
+						<li><a href="#{request.contextPath}/help/scrumboard">Scrum
+								Board</a> <a href="#{request.contextPath}/help/scrumboard.pdf"><img
+								src="#{request.contextPath}/resources/img/icons/pdf.png"></img></a>
+						</li>
+						<li><a href="#{request.contextPath}/help/kanbanboard">Kanban
+								Board</a> <a href="#{request.contextPath}/help/kanban.pdf"><img
+								src="#{request.contextPath}/resources/img/icons/pdf.png"></img></a>
+						</li>
+						<li><a href="#{request.contextPath}/help/manage-sprint">Manage
+								Sprint</a> <a href="#{request.contextPath}/help/manage-sprint.pdf"><img
+								src="#{request.contextPath}/resources/img/icons/pdf.png"></img></a>
+							<ul>
+								<li><a
+									href="#{request.contextPath}/help/manage-sprint#create">Create
+										sprint</a></li>
+								<li><a
+									href="#{request.contextPath}/help/manage-sprint#update">Update
+										sprint</a></li>
+							</ul></li>
+						<li><a href="#{request.contextPath}/help/issue">Manage
+								Issue</a> <a href="#{request.contextPath}/help/issue.pdf"><img
+								src="#{request.contextPath}/resources/img/icons/pdf.png"></img></a>
+							<ul>
+								<li><a href="#{request.contextPath}/help/issue#CRUD">Create,
+										update and delete</a></li>
+								<li><a href="#{request.contextPath}/help/issue#view">View
+										and history</a></li>
+								<li><a href="#{request.contextPath}/help/issue#excel">Excel
+										export issue</a></li>
+								<li><a href="#{request.contextPath}/help/issue#pdf">PDF
+										export issue</a></li>
+							</ul></li>
+						<li><a href="#{request.contextPath}/help/statistics">Statistics
+								and Feedbacks</a> <a
+							href="#{request.contextPath}/help/statistics.pdf"><img
+								src="#{request.contextPath}/resources/img/icons/pdf.png"></img></a>
+							<ul>
+								<li><a href="#{request.contextPath}/help/statistics#view">View
+										statistics information in sprint</a></li>
+								<li><a
+									href="#{request.contextPath}/help/statistics#viewAll">View
+										statistics of all sprints</a></li>
+								<li><a
+									href="#{request.contextPath}/help/statistics#feedbacks">Give
+										feedback</a></li>
+							</ul></li>
+
+						<li><a href="#{request.contextPath}/help/wiki">Wiki</a> <a
+							href="#{request.contextPath}/help/wiki.pdf"><img
+								src="#{request.contextPath}/resources/img/icons/pdf.png"></img></a>
+						</li>
+						<!-- 					<li> -->
+						<!-- 						<a href="#{request.contextPath}/help/chat">Chat</a> -->
+						<!-- 						<a href="#{request.contextPath}/help/chat.pdf"><img src="#{request.contextPath}/resources/img/icons/pdf.png"></img></a> -->
+						<!-- 					</li> -->
+					</ul>
+				</div>
+				<div style="clear:both"></div>
+			</div>
+		</div>
+		
+		<p:dialog id="feedBackDialog" widgetVar="varFeedbackDialog"
+			showHeader="FALSE" closeOnEscape="TRUE" width="800" height="800"
+			style="max-width:80%; max-height:80%; padding-bottom: 10px;" modal="true"
+			position="center">
+			<p:commandLink style="position: absolute; top: 2px; right: 7px;font-size: 1.2em;" styleClass="cl-close-dialog" immediate="true" action="#{feedbackExpressBean.resetFeedback}" update = ":frm-add-feedback"
+					oncomplete="varFeedbackDialog.hide()">
+					<i class="icon-remove"> </i>
+			</p:commandLink>
+			<h4 class = "title-give-feedback"><span class = "icon-lightbulb"></span> Give Feedback</h4>
+			<h:form styleClass="form-horizontal frm-feedback" id="frm-add-feedback">
+				<style>
+					#captcha-from-css {
+						max-width: 250px;
+						height: 30px;
+						margin-bottom: 5px;
+						display: flex;
+						background: url(#{request.contextPath}/resources/img/img-noise.png);
+					}
+					#captcha-from-css:after {
+						content: '#{feedbackExpressBean.generateCaptcha()}';
+						color: #fafafa;
+						margin: auto;
+						font-size: 1.5em;
+					}
+				</style>
+				<p:panelGrid styleClass="tb-form-feedback">
+					<!-- message success -->
+					<p:row>
+						<p:column styleClass="col-label" colspan="2">
+							<div class="ui-message-info ui-widget ui-corner-all no-margin message-thank display-none">
+								<span class="ui-message-info-icon"></span>
+								<span class="ui-message-info-detail">Thanks for your feedback.</span>
+							</div>
+						</p:column>
+					</p:row>
+					<!-- subject -->
+					<p:row>
+						<p:column styleClass="col-label">
+							<p:outputLabel value="Subject (*)" style="width: 100%;"/>
+						</p:column>
+						<p:column>
+							<p:inputText id="txtSubject" styleClass="clSubject" value="#{feedbackExpressBean.feedbackData.subject}" required="true" requiredMessage="Please enter subject" style="margin-bottom: 5px !important;">
+								<p:watermark value="Enter your idea..." for="txtSubject"></p:watermark>
+							</p:inputText>
+							<p:message for="txtSubject"/>	
+						</p:column>
+					</p:row>
+					<!-- description -->
+					<p:row>
+						<p:column styleClass="col-label">
+							<p:outputLabel for="txtDescription" value="Description"/>
+						</p:column>
+						<p:column styleClass = "td-for-description">
+							<div class = "description-editor"><h:outputText value="#{feedbackExpressBean.feedbackData.description}" escape="false"/> </div>
+							<h:inputHidden id = "txtDescription" value="#{feedbackExpressBean.feedbackData.description}"/>
+						</p:column>
+					</p:row>
+					<!-- attachment -->
+					<p:row>
+						<p:column styleClass="col-label">
+							<p:outputLabel for="txtDescription" value="Attachment"/>
+						</p:column>
+						<p:column>
+								<h:panelGroup layout="block" id="file-block" >
+									<p:messages for="downloadMsgs" id="downloadMsgs" showDetail="true"
+									closable="true" showSummary="false" />
+									<button type="button" id="addFile" style="margin-left: 0px; width: 150px;" class="btn btn-small btn-info input-block-level">
+										<i class="icon-picture icon-margin-right-5" /> Add file
+									</button>
+									<div id="team-logo-uploader" style="display: none;"></div>
+									<p:blockUI block="file-block" widgetVar="teamLogoBlock">Uploading... (<span class="upload-progress">0%</span>)</p:blockUI>
+								</h:panelGroup>
+								<script type="text/javascript">	
+								$(function () { 
+									initUploadAttachment('#{request.contextPath}/upload'); 
+								});
+								</script>
+						</p:column>
+					</p:row>
+					<!-- show file update -->
+					<p:row>
+						<p:column>
+						</p:column>
+						<p:column>
+							<h:panelGroup id="wrap-list-file-uploaded">
+								<h:panelGroup rendered="#{not empty feedbackExpressBean.feedbackData.fileTempDTOs}">
+										<ui:repeat var="fileUploaded" value="#{feedbackExpressBean.feedbackData.fileTempDTOs}">
+											<div>
+												<p:commandLink rendered="#{fileUploaded.diskFilename != null and fileUploaded.filename != null}" oncomplete="deleteFileDlg.show();" process="@this">
+														<span class="ui-icon ui-icon-trash" style="float: left; margin-top: 0px !important; padding-right: 7px;"></span>
+														<f:setPropertyActionListener value="#{fileUploaded.diskFilename}"
+																target="#{feedbackExpressBean.diskFileNameNeedToDelete}" />
+												</p:commandLink>
+												<p:commandLink  styleClass="ui-panel-titlebar-icon ui-corner-all"
+															ajax="false" action="#{downloadBean.download()}">
+													<f:setPropertyActionListener value="#{fileUploaded.diskFilename}"
+																target="#{downloadBean.fileName}" />
+													<h:outputText value="#{fileUploaded.filename}"/>
+												</p:commandLink>
+											</div>
+										</ui:repeat>
+								</h:panelGroup>
+							</h:panelGroup>
+						</p:column>
+					</p:row>
+					<!-- captcha -->
+					<p:row>
+						<p:column styleClass="col-label">
+							<p:outputLabel value="Captcha (*)"/>
+						</p:column>
+						<p:column>
+							<div id = "captcha-from-css"></div>
+							<h:panelGroup styleClass="wrap-answer-captcha" layout="block">
+								<h:inputText value="#{feedbackExpressBean.feedbackData.captchaAnswer}" styleClass="cltxtCaptcha" id = "txtCaptcha">
+									<p:watermark value="Enter captcha" for="txtCaptcha"></p:watermark>
+								</h:inputText>
+								<h:inputHidden value="#{feedbackExpressBean.feedbackData.captcha}"/>
+							</h:panelGroup>
+							<h:panelGroup styleClass="ui-message-error ui-widget ui-corner-all" style = "width: 237px;" layout="block" rendered="#{!feedbackExpressBean.feedbackData.inputCorrectCaptcha and not empty feedbackExpressBean.feedbackData.inputCorrectCaptcha}">
+								<span class="ui-message-error-icon"></span>
+								<span class="ui-message-error-detail">Captcha not correct</span>
+							</h:panelGroup>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2" styleClass="col-send-button">
+							<p:commandButton value="Send" actionListener="#{feedbackExpressBean.addFeedback}" onstart="beforeSendFeedback();" update="frm-add-feedback" style="margin-right: 5px;"/>
+							<p:commandButton value="Reset" actionListener="#{feedbackExpressBean.resetFeedback}" update="@form" immediate="true" styleClass="secondary"/>
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+				<script>
+					initEditDescription();
+				</script>
+				<p:remoteCommand name="uploadFile" action="#{feedbackExpressBean.uploadFile}" update="wrap-list-file-uploaded" process="@this">
+				</p:remoteCommand>
+			</h:form>
+		</p:dialog>
+		
+		<p:confirmDialog widgetVar="deleteFileDlg" id="deleteFileDialog" width="400" modal="true" closable="false" severity="alert">
+			<f:facet name="header">
+						<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+							<f:param value="Attachment" />
+						</h:outputFormat>
+			</f:facet>
+			<f:facet name="message">
+				Do you want to remove this file?
+			</f:facet>
+			<h:panelGroup layout="block" style="text-align: right">
+				<h:form>
+					<p:commandButton value="Yes" update=":frm-add-feedback:wrap-list-file-uploaded" oncomplete="deleteFileDlg.hide();" action="#{feedbackExpressBean.deleteAttachment}" process="@this"/>
+					<p:commandButton value="No" oncomplete="deleteFileDlg.hide();" />
+				</h:form>
+				
+			</h:panelGroup>
+		</p:confirmDialog>
+		
+		<p:confirmDialog widgetVar="thankYouFeedback" width="400" modal="true" closable="false" severity="info">
+			<f:facet name="header">
+				<h:outputFormat value="Inform" />
+			</f:facet>
+			<f:facet name="message">
+				<h:outputText value="Thanks for your feedback."/>
+			</f:facet>
+			<h:panelGroup layout="block" style="text-align: right">
+				<p:commandButton value="Close" oncomplete="thankYouFeedback.hide();" />
+			</h:panelGroup>
+		</p:confirmDialog>
+	</ui:define>
+
+	<ui:define name="layoutFooter">
+		<p:ajaxStatus>
+			<f:facet name="start">
+				<h:panelGroup styleClass="ajaxPopUp">
+					<p:graphicImage alt="ajax loader" styleClass="imgAjax" value="resources/img/ajax_loader/ajax_loader.gif" />
+				</h:panelGroup>
+			</f:facet>
+			<f:facet name="complete">
+				<h:outputText value="" />
+			</f:facet>
+		</p:ajaxStatus>
+	</ui:define>
+</ui:composition>

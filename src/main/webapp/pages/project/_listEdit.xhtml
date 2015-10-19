@@ -1,0 +1,285 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+    xmlns:custom="http://myagile.com/custom">
+    
+	<p:fieldset styleClass="span12">
+		<h:form id="list-update-project">
+			<p:remoteCommand name="ToBean" onstart="pageLoading();" 
+			oncomplete="handleSave(xhr, status, args); confirmation.hide(); pageLoadingComplete();"
+ 			update="projectUpdate" actionListener="#{projectBean.deleteProject}">
+			<p:confirmDialog style="max-width: 500px; text-align: left;"
+						hideEffect="explode" header="Delete Project"
+						severity="alert" widgetVar="confirmation">
+						<f:facet name="message">
+							<h:outputText
+								value="#{msg['myagile.project.Delete.ConfirmDialogOne']}">
+							</h:outputText>
+							<br />
+							<h:outputText>#{msg['myagile.project.Delete.ConfirmDialogTwo']}</h:outputText>
+						</f:facet>
+						<p:commandButton value="Yes, Please" onstart="ParseParamToBean();" style="margin-left: 10px;">
+						</p:commandButton>
+						<p:commandButton value="No, Thanks" onclick="confirmation.hide()"
+							type="button" />
+					</p:confirmDialog>
+			</p:remoteCommand>
+			<div class="ui-messages-info ui-corner-all" id="DeleteSuccess"
+				style="display: none;">
+				<span class="ui-messages-info-icon"></span> <span
+					class="ui-messages-info-detail">#{msg['myagile.DeleteSuccess']}</span>
+			</div>
+			<div class="ui-message-error ui-corner-all" id="DeleteFail"
+				style="display: none;">
+				<span class="ui-message-error-icon"></span> <span
+					class="ui-message-error-detail">#{msg['myagile.DeleteUnsuccess']}</span>
+			</div>
+
+
+			<p:dataTable var="project" value="#{projectBean.projects}"
+				id="projectUpdate" emptyMessage="No projects found"
+				styleClass="ui-widget-header" style="text-align:center;"
+				editable="true">
+
+				<p:ajax event="rowToggle" onstart="hideOtherToggledRow();"
+					listener="#{projectBean.onRowToggle}" update=":formParentSlide"></p:ajax>
+
+				<p:column headerText="Logo" width="15%">
+					<h:panelGroup id="project-logo-img-small">
+						<h:graphicImage rendered="#{empty project.imagePath}"
+							value="/resources/img/no_image_available.png"
+							style="width: 50px;" styleClass="img-rounded img-polaroid" alt="No Image"/>
+						<h:graphicImage rendered="#{not empty project.imagePath}"
+							value="/file/?type=project-logo&amp;filename=#{project.imagePath}&amp;pId=#{project.projectId}"
+							style="width: 50px;" styleClass="img-rounded img-polaroid" alt="Project Logo"/>
+					</h:panelGroup>
+				</p:column>
+
+				<p:column headerText="Name" width="35%" style="text-align:left;">
+						<h:commandLink actionListener="#{projectBean.linkToBacklogPage()}" styleClass="project-link" target="_blank">
+							<h:outputText value="#{project.projectName}"/>	
+							<f:setPropertyActionListener target="#{productBacklogBeanV2.projectId}" value="#{project.projectId}"></f:setPropertyActionListener>
+						</h:commandLink>	
+				</p:column>
+                <!-- PO column -->
+				<p:column headerText="Product Owner" width="20%" style="text-align:left;">
+				    <p:commandLink id="assignProjectLink" action="#{projectBean.initDataForSelectedMembers(project)}" styleClass="project-link"
+                                     update=":list-update-project:productOwnerDialog" oncomplete="selectProductOwner.show();" > 
+	                        <span class="icon-pencil" style="margin-top: 5px;"/>&#160;
+	    					<h:outputText value="#{projectBean.getProductOwner(project.getOwner())}" />
+		       				<h:outputText rendered="#{not empty project.productOwnerIds}" value="; " /> 
+				     		<h:outputText value="#{projectBean.getProductOwnersName(project)}" />
+                     </p:commandLink>
+                     <pe:tooltip for="assignProjectLink" showEvent="mouseover" fixed="true">
+                        <h:outputText value="Click to assign or unassign Product Owner."/>
+                     </pe:tooltip>
+				</p:column>
+
+				<p:column headerText="Teams" width="15%" style="text-align:left;">
+					<ui:repeat var="t"
+						value="#{projectBean.findTeamsByProject(project.projectId)}"
+						varStatus="status">
+						<h:outputText value="#{t.teamName}" />
+						<h:outputText rendered="#{not empty t.validTo}" value=" (hidden)" style="font-weight:bold;" />
+						<h:outputText rendered="#{!status.last}" value="; " />
+					</ui:repeat>
+				</p:column>
+
+				<p:column headerText="Delete" width="12%">
+					<p:commandButton value="Delete"
+						onclick="jsShowDialog(#{project.projectId})" type="button">
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="" width="3%">
+					<p:rowToggler id="view-project" />
+				</p:column>
+
+				<p:rowExpansion id="project-details">
+					<h:panelGroup id="project-information">
+						<h:panelGroup id="project-information-show"
+							rendered="#{projectBean.editMode == 'false'}" layout="block"
+							styleClass="row text-left"
+							style="margin-top: 10px; margin-bottom: 10px;">
+							<div class="project-logo span3">
+								<h:graphicImage style="height: 200px"
+									rendered="#{empty project.imagePath}"
+									value="/resources/img/no_image_available.png"
+									styleClass="img-rounded img-polaroid input-block-level" />
+								<h:graphicImage style="height: 200px"
+									rendered="#{not empty project.imagePath}"
+									value="/file/?type=project-logo&amp;filename=#{project.imagePath}&amp;pId=#{project.projectId}"
+									styleClass="img-rounded img-polaroid input-block-level" />
+							</div>
+							<div class="project-information text-left span8"
+								style="margin-left: 0px">
+								<h3>
+									Project:
+									<h:outputText value="#{project.projectName}" />
+								</h3>
+								<hr style="margin-top: 10px; margin-bottom: 10px;" />
+								<div class="row">
+									<div class="span4" style="margin-left: 2px">
+										<h4 style="text-style: italic;">Description</h4>
+										<p style="white-space: normal;">
+											<h:outputText value="#{project.description}" />
+										</p>
+									</div>
+									<div class="span2">
+										<h4 style="text-style: italic;">Publicity</h4>
+										<p>
+											<h:outputText
+												value="#{projectBean.showPublicityStatus(project.isPublic)}" />
+										</p>
+									</div>
+								</div>
+								<div class="row">
+									<div class="span4" style="margin-left: 2px">
+										<h4 style="text-style: italic;">Product Owner</h4>
+										<p>
+											<h:outputText value="#{projectBean.getProductOwner(project.getOwner())}" />
+					                        <h:outputText rendered="#{not empty project.productOwnerIds}" value="; " /> 
+					                        <h:outputText value="#{projectBean.getProductOwnersName(project)}" />
+										</p>
+									</div>
+								</div>
+								<h4 style="text-style: italic;">Team Information</h4>
+								<p:dataTable var="teamProject" value="#{project.teams}"
+									styleClass="ui-widget-header">
+									<p:column headerText="Name" style="width: 60%;"
+										rendered="#{empty teamProject.endDate}">
+										<h:outputText value="#{teamProject.team.teamName}" /><h:outputText rendered="#{not empty teamProject.team.validTo}" value=" (hidden)" style="font-weight:bold;" />
+									</p:column>
+									<p:column headerText="Mail Group" style="width: 40%;"
+										rendered="#{empty teamProject.endDate}">
+										<h:outputText value="#{teamProject.team.mailGroup}" />
+									</p:column>
+								</p:dataTable>
+								<hr style="margin-top: 10px; margin-bottom: 10px;" />
+								<div class="text-right">
+									<p:commandButton value="Edit Project"
+										update="project-information"
+										actionListener="#{projectBean.switchToEditMode(project.projectId)}" />
+								</div>
+							</div>
+						</h:panelGroup>
+
+						<h:panelGroup id="project-information-edit"
+							rendered="#{projectBean.editMode == 'true'}" layout="block"
+							styleClass="row text-left"
+							style="margin-top: 10px; margin-bottom: 10px;">
+
+							<h:panelGroup layout="block" id="project-logo"
+								class="project-logo span3">
+								<h:panelGroup id="project-logo-img">
+									<h:graphicImage style="height: 200px"
+										rendered="#{empty project.imagePath}"
+										value="/resources/img/no_image_available.png"
+										styleClass="img-rounded img-polaroid input-block-level" />
+									<h:graphicImage style="height: 200px"
+										rendered="#{not empty project.imagePath}"
+										value="/file/?type=project-logo&amp;filename=#{project.imagePath}&amp;pId=#{project.projectId}"
+										styleClass="img-rounded img-polaroid input-block-level" />
+								</h:panelGroup>
+								<div id="upload-alert"
+									class="ui-message-error ui-widget ui-corner-all"
+									style="margin-bottom: 5px; margin-top: 5px; display: none">
+									<span id="upload-alert-icon" class="ui-message-error-icon"></span>
+									<span id="upload-alert-message" class="ui-message-error-detail"></span>
+								</div>
+								<button type="button" id="btnChangeLogo"
+									style="margin-top: 10px; max-width: 201px;"
+									class="btn btn-small btn-info input-block-level">
+									<i class="icon-picture"></i> Change Logo
+								</button>
+							</h:panelGroup>
+							<p:blockUI block="project-logo" widgetVar="projectLogoBlock">
+							Uploading... (<span class="upload-progress">0%</span>)
+						</p:blockUI>
+							<div class="project-information text-left span8"
+								style="margin-left: 0px">
+
+								<h4>Project:</h4>
+								<h:inputText styleClass="span4" id="projectNameUpdate"
+									value="#{projectBean.project.projectName}">
+								</h:inputText>
+								<div class="ui-message-error ui-widget ui-corner-all"
+									id="showMessageProjectName" style="display: none"></div>
+								<hr style="margin-top: 10px; margin-bottom: 10px;" />
+								<div class="row">
+									<div class="span4" style="margin-left: 2px">
+										<h4 style="text-style: italic;">Description</h4>
+
+										<h:inputTextarea id="descriptionP"
+											value="#{projectBean.project.description}" styleClass="span4"
+											rows="5" />
+										<div class="ui-message-error ui-widget ui-corner-all"
+											id="showMessageDesc" style="display: none"></div>
+									</div>
+									<div class="span2">
+										<h4 style="text-style: italic;">Publicity</h4>
+										<p>
+											<p:selectBooleanCheckbox label="Public:" id="isPublic"
+												value="#{projectBean.project.isPublic}" />
+										</p>
+									</div>
+								</div>
+								<div class="row">
+									<div class="span4" style="margin-left: 2px">
+										<h4 style="text-style: italic;">Product Owner</h4>
+										<p>
+											<h:outputText value="#{projectBean.getProductOwner(project.getOwner())}" />
+                                            <h:outputText rendered="#{not empty project.productOwnerIds}" value="; " /> 
+                                            <h:outputText value="#{projectBean.getProductOwnersName(project)}" />
+										</p>
+									</div>
+								</div>
+
+								<h4 style="text-style: italic;">Team Information</h4>
+								<p:selectCheckboxMenu id="team-selection"
+									value="#{projectBean.selectedTeamsUpdate}" label="Teams"
+									filter="true" filterText="Filter" filterMatchMode="startsWith"
+									panelStyle="width:297px">
+									<f:selectItems value="#{projectBean.teams}" var="t"
+										itemLabel="#{t.teamName}" itemValue="#{t.teamId}" />
+								</p:selectCheckboxMenu>
+
+								<hr style="margin-top: 10px; margin-bottom: 10px;" />
+								<div class="text-right">
+									<p:commandButton id="btnSave" icon="icon-save" value="Save" style="margin-right: 5px;"
+										process="@parent"
+										actionListener="#{projectBean.updateProject}"
+										oncomplete="handleListComplete(xhr, status, args)" />
+									<p:commandButton value="Cancel" update="project-information"
+										actionListener="#{projectBean.switchToViewMode}"
+										process="@this" styleClass="secondary" />
+								</div>
+								<p:remoteCommand name="updateLogo"
+									actionListener="#{projectBean.updateProjectLogo}"
+									process="@parent"
+									update="project-logo-img, project-logo-img-small" />
+							</div>
+						</h:panelGroup>
+					</h:panelGroup>
+				</p:rowExpansion>
+			</p:dataTable>
+			<!-- Assign PO for projects -->
+                 <p:confirmDialog id="productOwnerDialog" layout="block" modal="true" width="400" closable="true" header="Setting" severity="" widgetVar="selectProductOwner" type="hidden">
+                        <f:facet name="message">Select to assign Product Owner </f:facet>
+                           <div style="margin-left:30px"> 
+                                <p:selectCheckboxMenu id="checkProductOwners" value="#{projectBean.selectedPOsForProject}" label="List of Users" filter="true" filterText="Filter" filterMatchMode="startsWith">
+                                     <f:selectItems value="#{projectBean.allActiveUsers}" var="member" itemLabel="#{member.firstName} #{member.lastName} ( #{member.username} )" itemValue="#{member.memberId}" />
+                                 </p:selectCheckboxMenu>
+                                 <h:inputHidden />
+                            </div>
+                          <div style="text-align:right">
+                            <p:commandButton value="Save" actionListener="#{projectBean.saveProductOwnersOfProject()}" update=":list-update-project:projectUpdate" oncomplete="selectProductOwner.hide();" />
+                            <p:commandButton value="Cancel" onclick="selectProductOwner.hide();" />
+                          </div>
+                 </p:confirmDialog>
+		</h:form>
+	</p:fieldset>
+</ui:composition>

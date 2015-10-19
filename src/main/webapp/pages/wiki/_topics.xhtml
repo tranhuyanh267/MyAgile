@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:custom="http://myagile.com/custom">
+<style>
+.form-inline tbody td {
+	padding: 0px;
+	border: none !important;
+}
+</style>
+<p:fieldset styleClass="span12">
+	<h:form id="form-wiki">
+		<div class="row">
+			<div id="all-contents">
+				<h:outputText value="#{wikiBean.getWikiHTML(wikiBean.team.teamId)}" escape="false"></h:outputText>
+				<small class="pull-right">
+					<h:outputText id="last-member-modify" 
+						value="Last modified: #{wikiBean.wiki.lastModifyMember.lastName} #{wikiBean.wiki.lastModifyMember.firstName}, "/>
+					<h:outputText id="last-date-modify" value="#{wikiBean.wiki.lastModifyDate}">
+						<f:convertDateTime pattern="MMM-dd-yyyy HH:mm" />
+					</h:outputText>
+				</small>
+			</div>
+		</div>
+	</h:form>
+	<h:form>
+		<p:remoteCommand name="sendData" actionListener="#{sharingTopicBean.redirectTopicEdit}"></p:remoteCommand>
+	</h:form>
+	
+</p:fieldset>
+
+<p:fieldset styleClass="index-wiki-fieldset-margin-top">
+	<h:form id="form-upload">
+		<td><h:outputText value="Attachments:" /></td>
+		<h:panelGroup layout="block" id="team-logo">
+			<button type="button" id="btnAddNewFile" class="btn btn-small btn-info" style="margin-top: 5px;">
+				<i class="icon-picture"/> Add file
+			</button>
+			<div class="upload-progress-wrapper">
+				<div id="upload-alert-add-file"
+					style="display: none; text-align: left !important;">
+					<span id="upload-alert-add-file-icon"></span> 
+					<span id="upload-alert-add-file-message" class="upload-message"></span>
+				</div>
+			</div>
+			<p:blockUI block="team-logo" widgetVar="teamLogoBlock">Uploading... (<span class="upload-progress">0%</span>)</p:blockUI>
+		</h:panelGroup>
+		<div style="margin-top: 10px;">
+			<ui:repeat value="#{wikiBean.attList}" var="attachment">
+				<p:commandLink styleClass="attach-file ui-panel-titlebar-icon ui-corner-all"
+					action="#{downloadBean.downloadAttachment}" ajax="false">
+					<h:outputText styleClass="ui-icon icon-download-alt" />
+					<f:setPropertyActionListener value="#{attachment.diskFilename}"
+						target="#{downloadBean.fileName}" />
+					<f:setPropertyActionListener value="#{wikiBean.wiki.wikiId}"
+						target="#{downloadBean.wikiId}" />
+					<h:outputText value=" #{attachment.filename}" />
+				</p:commandLink>
+				<small>
+					<h:outputText value=" (Created by: #{attachment.author.lastName} #{attachment.author.firstName}, " />
+					<h:outputText value="#{attachment.createdOn}">
+						<f:convertDateTime pattern="MMM-dd-yyyy HH:mm" />
+					</h:outputText>
+					<h:outputText value=")"/>
+				</small>
+				<p:commandLink
+					onclick="changeIdPlaceholder(&quot;#{attachment.filename}&quot;);deleteFileDlg.show();"
+					process="@this">
+					<span class="ui-icon ui-icon-trash"
+						style="float: left; margin-top: -1px !important; padding-right: 7px;"></span>
+					<f:setPropertyActionListener value="#{attachment}"
+						target="#{wikiBean.att}" />
+				</p:commandLink>
+				<br />
+			</ui:repeat>
+		</div>
+		
+		<script type="text/javascript">
+			initUploadAttachment('#{request.contextPath}/upload');
+			
+		</script>
+		<p:remoteCommand name="updateLogo"
+			actionListener="#{wikiBean.uploadFile}" update="form-upload"
+			process="@this" />
+
+	</h:form>
+</p:fieldset>
+</html>

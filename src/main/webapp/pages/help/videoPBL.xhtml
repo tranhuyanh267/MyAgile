@@ -1,0 +1,109 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/layouts/template.xhtml">
+	<ui:define name="layoutTitle">
+        Myagile User Guide
+    </ui:define>
+	<ui:define name="layoutHead">
+		<script type="text/javascript" src="#{request.contextPath}/bundles/myagile.js"></script>
+		<script type="text/javascript" src="#{request.contextPath}/bundles/mediaElement.js" />	
+		<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/libs/mediaelement/mediaelementplayer.css" />
+		<style>
+.visited {
+	color: red;
+	text-decoration: underline;
+}
+img{
+	padding: 2px;
+}
+</style>
+	</ui:define>
+	<ui:define name="layoutBody">
+		<div class="content-section">
+			<div class="heading">
+				<h4>Video Guide for Product Backlogs Page</h4>
+			</div>
+
+			<div class="content-block">
+				<div style="max-width: 66%;padding-left:17%;">
+					<video height="350" width="100%">
+						<source type="video/mp4" src="#{request.contextPath}/file/?type=video&amp;filename=ProductBacklog.mp4" />
+					</video>
+				</div>
+				<div style="margin-left: 14%;">
+					<p:separator style="border-width: 1px; margin: 9px 139px 14px 9px;border-color:#DCDCDC;" />
+					<ul style="list-style: none;">
+						<li><li class="icon-facetime-video" style="font-size: 20px;"/>&#160;&#160;
+						<a href="#{request.contextPath}/help/video">Sign Up - Update profile.</a></li>
+					</ul>
+					<p:separator style="border-width: 1px; margin: 9px 139px 14px 9px;border-color:#DCDCDC;" />
+					<ul style="list-style: none;">
+						<li><li class="icon-facetime-video" style="font-size: 20px;"/>&#160;&#160;
+						<a href="#{request.contextPath}/help/videoSwitchEmail"> Switch UserName (Email account).</a></li>
+					</ul>
+					<p:separator style="border-width: 1px; margin: 9px 139px 14px 9px;border-color:#DCDCDC;" />
+					<ul style="list-style: none;">
+						<li><li class="icon-facetime-video" style="font-size: 20px;"/>&#160;&#160;
+						<a href="#{request.contextPath}/help/videoHome">All function of Home page.</a></li>
+					</ul>
+					<p:separator style="border-width: 1px; margin: 9px 139px 14px 9px;border-color:#DCDCDC;" />
+					<ul style="list-style: none;">
+					<li><li class="icon-facetime-video" style="font-size: 20px;"/>&#160;&#160;<a href="#{request.contextPath}/help/videoShowTeam">All function of Team</a></li>
+					</ul>
+					<p:separator style="border-width: 1px; margin: 9px 139px 14px 9px;border-color:#DCDCDC;" />
+					<ul style="list-style: none;">
+						<li><li class="icon-facetime-video" style="font-size: 20px;"/>&#160;&#160;<a href="#{request.contextPath}/help/videoProject">All function of Project page.</a></li>
+					</ul>
+					<p:separator style="border-width: 1px; margin: 9px 139px 14px 9px;border-color:#DCDCDC;" />
+					<ul style="list-style: none;">
+						<li><li class="icon-facetime-video" style="font-size: 20px;"/>&#160;&#160;<a href="#{request.contextPath}/help/videoPBL">All function of Product Backlog pages.</a></li>
+					</ul>
+					<p:separator style="border-width: 1px; margin: 9px 139px 14px 9px;border-color:#DCDCDC;" />
+					<ul style="list-style: none;">
+						<li><li class="icon-facetime-video" style="font-size: 20px;"/>&#160;&#160;<a href="#{request.contextPath}/help/videoSprintBacklog"><b class = "visited">All function of Backlog page.</b></a></li>
+					</ul>
+					<p:separator style="border-width: 1px; margin: 9px 139px 14px 9px;border-color:#DCDCDC;" />
+					<ul style="list-style: none;">
+						<li><li class="icon-facetime-video" style="font-size: 20px;"/>&#160;&#160;<a href="#{request.contextPath}/help/videoRemainingTask">All function of Remaining Task page.</a></li>
+					</ul>	
+					<p:separator style="border-width: 1px; margin: 9px 139px 14px 9px;border-color:#DCDCDC;" />
+					<ul style="list-style: none;">
+						<li><li class="icon-facetime-video" style="font-size: 20px;"/>&#160;&#160;<a href="#{request.contextPath}/help/videoMeeting">All function of Meeting page.</a></li>
+					</ul>	
+					<p:separator style="border-width: 1px; margin: 9px 139px 14px 9px;border-color:#DCDCDC;" />
+					<ul style="list-style: none;">
+						<li><li class="icon-facetime-video" style="font-size: 20px;"/>&#160;&#160;<a href="#{request.contextPath}/help/videoSprint">All function of Sprint page.</a></li>
+					</ul>
+					<p:separator style="border-width: 1px; margin: 9px 139px 14px 9px;border-color:#DCDCDC;" />
+					<ul style="list-style: none;">
+						<li><li class="icon-facetime-video" style="font-size: 20px;"/>&#160;&#160;<a href="#{request.contextPath}/help/videoIssue">All function of Manage Issue page.</a></li>
+					</ul>
+					<p:separator style="border-width: 1px; margin: 9px 139px 14px 9px;border-color:#DCDCDC;" />
+					<ul style="list-style: none;">
+						<li><li class="icon-facetime-video" style="font-size: 20px;"/>&#160;&#160;<a href="#{request.contextPath}/help/videoFeedBack">Function feedback for Product Owner.</a></li>
+					</ul>
+					<p:separator style="border-width: 1px; margin: 9px 139px 14px 9px;border-color:#DCDCDC;" />
+					<ul style="list-style: none;">
+						<li><li class="icon-facetime-video" style="font-size: 20px;"/>&#160;&#160;<a href="#{request.contextPath}/help/videoScrumBoard">All function of Scrum Board page.</a></li>
+					</ul>
+					<p:separator style="border-width: 1px; margin: 9px 139px 14px 9px;border-color:#DCDCDC;" />
+					<ul style="list-style: none;">
+						<li><li class="icon-facetime-video" style="font-size: 20px;"/>&#160;&#160;<a href="#{request.contextPath}/help/videoKanbanBoard">All function of Kanban Board page.</a></li>
+					</ul>
+					<p:separator style="border-width: 1px; margin: 9px 139px 14px 9px;border-color:#DCDCDC;" />
+					<ul style="list-style: none;">
+						<li><li class="icon-facetime-video" style="font-size: 20px;"/>&#160;&#160;<a href="#{request.contextPath}/help/videoWiki">All function of Wiki page.</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+<script type="text/javascript">
+$("video").mediaelementplayer({
+    defaultVideoWidth: 'auto',
+    defaultVideoHeight: 'auto',
+    plugins: []
+});
+</script>
+	</ui:define>
+	<ui:define name="layoutFooter">
+	</ui:define>
+</ui:composition>

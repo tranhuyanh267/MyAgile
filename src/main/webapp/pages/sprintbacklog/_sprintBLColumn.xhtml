@@ -1,0 +1,121 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:custom="http://myagile.com/custom">
+	<h:body rendered="#{sprintBacklogBean.getSprintId() eq 0}" >
+		<div aria-live="polite" class="ui-message-error ui-widget ui-corner-all" id="no-sprint">
+			<span class="ui-message-error-icon"/>
+			<span class="ui-message-error-detail">#{msg['myagile.sprintBL.NoSprint']}</span>
+		</div>
+	</h:body>
+	<h:body rendered="#{sprintBacklogBean.getSprintId() gt 0}">
+		<ul id="sortable2" class="#{sprintBacklogBean.isUserInAnyRolesStatistic ? 'connectedSortable' : ''}">
+			<p:dataList  value="#{sprintBacklogBean.sprintBacklogIssue}" varStatus="chartStatus" var="is" id="sortPaginator2"
+			     pageLinks="5" paginator="true" rows="10" paginatorPosition="bottom" paginatorAlwaysVisible="false"
+			       paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+			       rowsPerPageTemplate="5,10,15,30,50,#{sprintBacklogBean.sprintBacklogIssue.size()}" type="none" >  
+			  <li class="ui-state-default  #{sprintBacklogBean.getStatusIssue(is)}  
+			  #{sprintBacklogBean.isUserInAnyRolesSprint ? 'list-is' :''} expand" id="panel_#{is.issueId}-#{is.displayIssueId}">
+				<c:set var="sprintsBefore" value="#{sprintBacklogBean.retrieveAllSprintBeforeByIssue(is)}"/>
+				<c:set var="sprintsAfter" value="#{sprintBacklogBean.retrieveAllSprintAfterByIssue(is)}"/>
+				<p:panel styleClass="sticker sticker-low" closable="false"
+					collapsed="true" toggleable="true" 
+					style="display: block; #{sprintsAfter.size() gt 0 ? 'background-color: #E3E3E3 !important;' : ''} " widgetVar="widgetVar_#{is.issueId}">
+					<f:facet name="header">
+						<div class='sticker-header tooltip_panel_#{is.issueId}-#{is.displayIssueId}' title="Drop to delete Issue ##{is.displayIssueId} from Sprint Backlog">
+							<div class='row row-content'>
+								<div class='header-left span3 pull-left'  style="display: inline;">
+									<p class='small-lead'>
+										<strong style='text-decoration: underline;'>##{is.getUserStory().getUserStoryId()}:</strong> 
+										<h:outputText value=" #{is.subject}"/>
+									</p>
+								</div>
+								<div class='pull-right'>			
+									<div class='small-lead'>
+								<a id='#{is.issueId}' name='#{is.displayIssueId}' onclick="return false;" 
+									old-point="#{sprintBacklogBean.sprintBacklogInfo.get(is.issueId)[1]}" 
+									new-point="#{sprintBacklogBean.sprintBacklogInfo.get(is.issueId)[2]}" 
+									non-format="#{sprintBacklogBean.sprintBacklogInfo.get(is.issueId)[3]}"
+									class="icon-warning-sign"
+									style="color: #f39c12;margin-left:10px;display:#{sprintBacklogBean.sprintBacklogInfo.get(is.issueId)[4]}">
+								</a>
+								<h:panelGroup layout="block" styleClass="wrap-history-link" rendered="#{sprintsBefore.size() gt 0 or sprintsAfter.size() gt 0}">
+									<h:panelGroup id="history-link" styleClass="icon-exclamation-sign wokring-history-icon"></h:panelGroup>
+									<h:panelGroup layout="block" styleClass="display-none">
+										<ul class="list-sprint-history">
+											<ui:fragment rendered="#{sprintsBefore.size() gt 0}">
+												<li class="except-li"><a onclick="return false;">Started in:</a></li>
+											</ui:fragment>
+											<ui:repeat var="sprintBefore" value="#{sprintsBefore}">
+												<li>
+													<h:commandLink actionListener="#{sprintBacklogBean.linkFromHistoryToScrumBoard(sprintBefore)}" value="#{sprintBefore.sprintName}" target="_blank">
+													</h:commandLink>
+												</li>
+											</ui:repeat>
+											
+											<ui:fragment rendered="#{sprintsAfter.size() gt 0}">
+												<li class="except-li"><a onclick="return false;">Continuous in:</a></li>
+											</ui:fragment>
+											<ui:repeat var="sprintAfter" value="#{sprintsAfter}">
+												<li>
+													<h:commandLink actionListener="#{sprintBacklogBean.linkFromHistoryToScrumBoard(sprintAfter)}" value="#{sprintAfter.sprintName}" target="_blank">
+													</h:commandLink>
+												</li>
+											</ui:repeat>
+										</ul>
+									</h:panelGroup>
+								</h:panelGroup>
+									Done: #{sprintBacklogBean.sprintBacklogInfo.get(is.issueId)[0]}%</div>
+									<div class="#{sprintsAfter.size() gt 0 ? 'task-progress-gray' : 'task-progress'}" style='width: #{sprintBacklogBean.sprintBacklogInfo.get(is.issueId)[0]}%'></div>
+									
+								</div>
+							</div>
+							
+						</div>
+						
+							
+					</f:facet>
+					<div class='sticker-inner'>
+						<h:outputText escape="false" value="#{is.description}"/>
+					</div>
+					<div class='sticker-footer'>
+							<div style="width: 100%" class="point">
+							E:#{sprintBacklogBean.sprintBacklogInfo.get(is.issueId)[5]}
+							<a id='#{is.issueId}' name='#{is.displayIssueId}' onclick="return false;" 
+									old-point="#{sprintBacklogBean.sprintBacklogInfo.get(is.issueId)[1]}" 
+									new-point="#{sprintBacklogBean.sprintBacklogInfo.get(is.issueId)[2]}" 
+									non-format="#{sprintBacklogBean.sprintBacklogInfo.get(is.issueId)[3]}"
+									class="icon-warning-sign"
+									style="color: #f39c12;margin-left:10px;display:#{sprintBacklogBean.sprintBacklogInfo.get(is.issueId)[4]}">
+							</a>
+							| R:#{sprintBacklogBean.sprintBacklogInfo.get(is.issueId)[6]}
+								<h:panelGroup rendered="#{sprintBacklogBean.isUserInAnyRolesSprint}">
+									<ul class="span2 icon-wrapper unstyled inline pull-right text-right">
+										<li><h:commandLink action="#{issueBean.backToAddIssuePage}" title="Edit Issue" target="_new">	
+											 <f:setPropertyActionListener value="#{is}" target="#{issueBean.viewIssue}" />
+											 <i class="icon-pencil"/>
+											</h:commandLink>
+										</li>
+								  	</ul>
+							  	</h:panelGroup>
+							</div>
+					</div>
+					
+				</p:panel>
+				</li>
+				<script type="text/javascript">
+					sortable();
+					showTaskStickerDetails(widgetVar_#{is.issueId});
+					showToolTipHistory();
+					function showToolTipHistory(){
+						$(".wokring-history-icon").attr("title","Click to see more details");
+					}
+				</script>
+			</p:dataList>	
+		</ul>
+		
+	</h:body>
+</ui:composition>

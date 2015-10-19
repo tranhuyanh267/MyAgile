@@ -1,0 +1,70 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+		xmlns:ui="http://java.sun.com/jsf/facelets" 
+		xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui" template="/WEB-INF/layouts/template.xhtml"
+		xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="layoutTitle">
+        Myagile User Guide
+    </ui:define>
+	<ui:define name="layoutHead">
+	</ui:define>
+	<ui:define name="layoutBody">
+		<c:set value="#{request.contextPath}/resources/img/help/wiki" var="pwikiPath"></c:set>
+		<div class="content-section">
+			<div class="heading">
+				<h4>Wiki Overview</h4>
+				<a id="pbacklogOverview"></a>
+			</div>
+			<div class="content-block">
+				<div class="content-block-nav">
+					<p class="content-block-nav-back">
+						<a href="#{request.contextPath}/help"><i class="icon-double-angle-left"></i> Guide</a>
+						<a href="#{request.contextPath}/help/statistics"><i class="icon-double-angle-left"></i> Previous</a>
+					</p>
+					<p class="content-block-nav-forward">
+						<a href="#{request.contextPath}/help/getting-started">Next <i class="icon-double-angle-right"></i></a>
+					</p>
+				</div>
+				<div class="content-block-main">
+					<p>Click the “wiki” to come into wiki page</p>
+					<p>This page is used for saving documents of team.</p>
+					<img alt="index.picture" src="#{pwikiPath}/index.png" />
+					<dl>
+						<dt><a id="create">1. Edit wiki</a></dt>
+						<dd>
+							<p>Click the “Edit Wiki” button and create outline for wiki.</p>
+							<img alt="edit_wiki.picture" src="#{pwikiPath}/edit_wiki.png" />
+							
+							<p>Click the “Save” button to finish.</p>
+							<img alt="after-edit-wiki.picture" src="#{pwikiPath}/after-edit-wiki.png" />
+						</dd>
+						<dt><a id="update">2. View and edit topic</a></dt>
+						<dd>
+							<p>From the wiki page click to the link of the topic to access to that topic. If the topic is empty, system will open the editor for create topic:</p>
+							<img alt="pbacklog_guide.picture" src="#{pwikiPath}/edit_topic.png" />
+							
+							<p>
+								You also can upload document for topic by click to "Add File" button and select files.
+							</p>
+							<p>
+								Click "Save" to finish. The topic look like this:
+							</p>
+							<img alt="pbacklog_guide.picture" src="#{pwikiPath}/topic.png" />
+							
+							
+							<p>
+								Then, back to wiki page, the topic have content will have blue color.
+							</p>
+							
+							<img alt="pbacklog_guide.picture" src="#{pwikiPath}/after-create-topic.png" />
+							</dd>
+							
+					</dl>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+	<ui:define name="layoutFooter">
+	</ui:define>
+</ui:composition>

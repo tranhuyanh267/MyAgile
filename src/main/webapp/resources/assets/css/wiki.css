@@ -1,0 +1,77 @@
+.toppic-category {
+	font-size: 16px;
+	color: red;
+	cursor: default;
+}
+
+a {
+	cursor: pointer;
+}
+
+#editor-topic div.ui-editor {
+	width: 100% !important;
+}
+
+#main-wiki {
+	margin-top: 10px;
+}
+/*Don't allow user to select*/
+/* body { */
+/* 	-webkit-touch-callout: none; */
+/* 	-webkit-user-select: none; */
+/* 	-khtml-user-select: none; */
+/* 	-moz-user-select: none; */
+/* 	-ms-user-select: none; */
+/* 	user-select: none; */
+/* } */
+/*--css for add wiki-------*/
+.add-wiki .ui-editor{
+	width:100% !important;
+	min-height:350px !important;
+}
+
+.add-wiki-title{
+	margin-bottom:15px;
+	cursor:default;
+}
+.add-wiki-none{
+	display:none;
+}
+/*------------css for index wiki---------*/
+.index-wiki-fieldset-margin-top{
+	margin-top: 10px; 
+}
+/*------------css for edit wiki--------- */
+.edit-wiki-title{
+	margin-bottom:15px;
+	cursor: default;
+}
+.edit-wiki .ui-editor{
+	min-height:350px !important;
+	width:100% !important;
+}
+.edit-wiki .ui-editor iframe{
+	min-height:320px !important;
+}
+div[id*='message_container']{
+	background-color: #297db6;
+	opacity: 0.85;
+	color: #fff;
+	bottom: 60px;
+}
+
+input[type=button] {
+	padding-top: 2px !important;
+}
+
+.clFormWikiAdd .ui-editor iframe{
+	height:315px !important;
+}
+
+.ui-widget-content a {
+	color: #0096d6;
+}
+
+.ui-widget-content a:hover {
+	text-decoration: none !important;
+}

@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:custom="http://myagile.com/custom">
+<center>
+	<p:fieldset styleClass="span12 fieldset-selector">
+		<h:form id="form" styleClass="form-inline" prependId="false">				
+			<h:outputText value="Select Team:" styleClass="title-margin-right-combobox"/>
+			<p:selectOneMenu rendered="#{empty issueBeanV2.teamList}" styleClass="combo-box-modify text-left">
+	               <f:selectItem  noSelectionOption="true" itemLabel="No team"/>
+	        </p:selectOneMenu>
+			
+			<p:selectOneMenu id="teamSelect" value="#{issueBeanV2.teamId}" styleClass="combo-box-modify text-left" rendered="#{not empty issueBeanV2.teamList}">					  
+				<f:selectItems value="#{issueBeanV2.teamList}" var="t" itemValue="#{t.teamId}" itemLabel="#{t.teamName}"/>
+				<p:ajax event="change" listener="#{issueBeanV2.handleTeamChange}" update=":listIssueForm,:issueForm,selectSprintPanel,form"/>
+		    </p:selectOneMenu>
+		    
+		    <h:outputText value="Select Sprint:" styleClass="title-margin-right-combobox"/>
+		    <h:panelGroup id="selectSprintPanel">
+			    <p:selectOneMenu rendered="#{empty issueBeanV2.sprintList}" styleClass="text-left">
+		               <f:selectItem  noSelectionOption="true" itemLabel="No sprint"/>
+		        </p:selectOneMenu>
+				<p:selectOneMenu id="sprintSelect" value="#{issueBeanV2.sprint}" styleClass="combo-box-modify text-left" rendered="#{not empty issueBeanV2.sprintList}">
+		               <f:selectItems value="#{issueBeanV2.sprintList}" var="s" itemLabel="#{s.status == 'open' ? s.sprintName : ''.concat(s.sprintName).concat(' (Closed)')}" />
+		               <p:ajax event="change" listener="#{issueBeanV2.handleSprintChange}" update=":listIssueForm,:issueForm,form"/>		               
+		        </p:selectOneMenu>
+	        </h:panelGroup>   
+
+	        <h:panelGroup id="manageSprintIssue" rendered="#{issueBeanV2.teamId != null and issueBeanV2.sprint.sprintId != null and custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', issueBeanV2.teamId)}">
+	        	<p:commandButton value="New Issue" oncomplete="handleCreateRequest(xhr, status, args)" actionListener="#{issueBeanV2.handleCreateIssue}" icon="icon-plus" global="false"/>
+	        </h:panelGroup>
+	        <p:messages for="msgs" id="msgs" showDetail="true" closable="true" autoUpdate="true" showSummary="false"/>			
+		</h:form>
+	</p:fieldset>
+</center>
+</ui:composition>

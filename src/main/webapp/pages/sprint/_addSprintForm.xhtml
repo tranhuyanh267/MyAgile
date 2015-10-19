@@ -1,0 +1,123 @@
+<ui:composition	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:custom="http://myagile.com/custom">
+<h:panelGroup id="customSecShowSprint">
+<p:fieldset id="show-sprint-form" rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', sprintBean.sprint.team.teamId)}"
+	style=" margin-bottom:5px;" styleClass="span12">
+	<h:form id="sprintForm" prependId="false" >
+		<h:outputText
+			value="#{sprintBean.sprint.sprintId == null ? 'New Sprint' : 'Edit Sprint'}"
+			style="font-weight:bold;margin-left:5px;color:#45a1de" styleClass="header-font-size"/>
+		<p:separator style="margin:5px" />
+		<div class="ui-messages-info ui-corner-all  content-font-size" id="SaveMsgs" style="display: none;">
+			<span class="ui-messages-info-icon"></span><span class="ui-messages-info-detail ">#{msg['myagile.SaveSuccess']}</span>
+		</div>
+		<div class="ui-messages-info ui-corner-all  content-font-size" id="EditMsgs" style="display: none;">
+			<span class="ui-messages-info-icon"></span><span class="ui-messages-info-detail">#{msg['myagile.UpdateSuccess']}</span>
+		</div>
+		<p:panelGrid id="grid">
+			<p:row>
+				<p:column>
+					<h:outputLabel for="sprintName" value="Sprint Name:" styleClass=" content-font-size" />
+				</p:column>
+				<p:column>
+					<p:inputText id="sprintName"
+							value="#{sprintBean.sprint.sprintName}" required="true" styleClass="remove-html-control-character content-font-size"
+							maxlength="255" requiredMessage="#{msg['myagile.sprint.ErrorEmptyName']}">
+							<p:ajax event="keyup" update="sprintNameMsgs" global="false"/>
+					</p:inputText>
+				</p:column>
+				<p:column>
+					<h:outputLabel for="sprintstatus" value="Sprint Status:" styleClass=""/>
+				</p:column>
+				<p:column>
+					<p:selectOneMenu id="sprintstatus"
+							value="#{sprintBean.sprint.status}" style="width: 215px; margin-bottom: -5px;" styleClass="text-left ">
+							<f:selectItem itemLabel="Open" itemValue="open" />
+							<f:selectItem itemLabel="Closed" itemValue="closed" />
+					</p:selectOneMenu>
+				</p:column>
+			</p:row>	
+			<p:row>
+				<p:column colspan="2">
+					<p:message for="sprintName"	id="sprintNameMsgs" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel for="startDate" value="Date Start:"  styleClass=" content-font-size"/>
+				</p:column>
+				<p:column>
+					<p:calendar value="#{sprintBean.sprint.dateStart}" styleClass=" content-font-size"
+							id="startDate" navigator="true" effect="fadeIn" required="true"
+							pattern="MM/dd/yyyy" requiredMessage="#{msg['myagile.sprint.ErrorEmptyStartDate']}"
+							readonlyInput="true"
+							converterMessage="Date is invalid. Date format MM/dd/yyyy"
+							maxlength="255">
+							<f:convertDateTime type="date" pattern="MM/dd/yyyy"
+								timeZone="#{sprintBean.timeZone}" />
+							<p:ajax event="dateSelect" global="false"
+								listener="#{sprintBean.handleDateStartSelect}"
+								update="sprintForm">
+							</p:ajax>
+					</p:calendar>
+				</p:column>
+				<p:column>
+					<h:outputLabel for="endDate" value="Date End:"  styleClass=" content-font-size"/>
+				</p:column>
+				<p:column>
+					<p:calendar value="#{sprintBean.sprint.dateEnd}" styleClass=" content-font-size"
+							id="endDate" navigator="true" effect="fadeIn" required="true"
+							pattern="MM/dd/yyyy" requiredMessage="#{msg['myagile.sprint.ErrorEmptyEndDate']}"
+							readonlyInput="true"
+							converterMessage="Date is invalid. Date format MM/dd/yyyy"
+							maxlength="255">
+							<f:convertDateTime type="date" pattern="MM/dd/yyyy"
+								timeZone="#{sprintBean.timeZone}" />
+							<p:ajax event="dateSelect" update="sprintForm:endDateMsgs" global="false">
+							</p:ajax>
+					</p:calendar>
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column colspan="2"><p:message for="startDate" id="startDateMsgs"  /></p:column>
+				<p:column colspan="2"><p:message for="endDate" id="endDateMsgs" /></p:column>
+			</p:row>
+			<p:row>
+				<p:column colspan="4">
+				<p:selectBooleanCheckbox value="#{sprintBean.reuseSetting}" styleClass=" content-font-size"
+							rendered="#{(empty sprintBean.sprint.sprintId) and (not empty sprintBean.getLastSprint())}"
+							itemLabel="Reuse setting from previous sprint" />
+				</p:column>
+			</p:row>
+					
+		</p:panelGrid>
+		<p:separator style="margin:5px" />
+		<h:panelGroup layout="block" style="text-align: center;">
+					<p:commandButton id="saveButton" value="Save" action="#{sprintBean.saveSprint}" oncomplete="handleSave(xhr, status, args);" update=":listSprints,sprintForm,:form:msgs" styleClass=" content-font-size" style="margin-right:5px" icon="icon-save" />
+					<p:commandButton value="Close" onclick="closeForm();return false;" global="false" styleClass="secondary content-font-size" />
+		</h:panelGroup>
+		<script>
+			$(document).ready(function() {
+				$('#SaveMsgs').hide();
+				$('#EditMsgs').hide();
+				$("#sprintName").blur(function(){
+					removeHTMLTagAndControlCharacterInInput("sprintName");
+				});
+				
+				
+				$("#sprintName").on("keypress",function(e){
+					if(e.which == 13){
+						removeHTMLTagAndControlCharacterInInput("sprintName");
+						}
+				});
+			});
+		</script>
+	</h:form>
+</p:fieldset>
+</h:panelGroup>
+</ui:composition>

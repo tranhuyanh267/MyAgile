@@ -1,0 +1,44 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<link rel="stylesheet" type="text/css"
+		href="#{request.contextPath}/bundles/font-awesome.css" />
+	<link rel="stylesheet" type="text/css"
+		href="#{request.contextPath}/resources/assets/css/error.css" />
+</h:head>
+<h:body>
+	<div class="magrin-left-150">
+
+		<div class="text-center" style="margin-top: 100px;">
+			<div class="row">
+				<span class="icon-warning-sign"
+					style="font-size: 85px; color: #08739C;"> </span>
+			</div>
+			<div class="page-error-404">
+
+				<div class="error-text">
+					<h2 style="">System error !</h2>
+					<p>Please contact with Administrator.</p>
+					<p>Thank you!</p>
+
+				</div>
+
+				<div class="error-text">
+					<button class="btn btn-primary" onclick="backtohome()">
+						<span class="icon-home"></span> Back to home
+					</button>
+				</div>
+				<script>
+					function backtohome() {
+						window.location.assign("#{request.contextPath}/");
+					}
+				</script>
+
+			</div>
+		</div>
+	</div>
+</h:body>
+</html>

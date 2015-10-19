@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/layouts/template.xhtml">
+	<ui:define name="layoutTitle">
+	    Sprint Backlogs
+	</ui:define>
+	<ui:define name="layoutHead">
+		<link rel="stylesheet" type="text/css"
+			href="#{request.contextPath}/resources/assets/css/sprintbacklog.css" />
+		<link rel="stylesheet" type="text/css"
+			href="#{request.contextPath}/resources/assets/css/tooltipster.css" />
+		<h:outputStylesheet library="primefaces-extensions"
+			name="tooltip/tooltip.css" />
+		<script type="text/javascript"
+			src="#{request.contextPath}/resources/assets/js/sprintbacklog.js" />
+		<script type="text/javascript" src="#{request.contextPath}/resources/assets/js/main.js" />
+		<script type="text/javascript"
+			src="#{request.contextPath}/resources/assets/js/issue.js" />
+		<script type="text/javascript"
+			src="#{request.contextPath}/resources/assets/libs/tooltipster/jquery.tooltipster.min.js" />
+		<script type="text/javascript"
+			src="#{request.contextPath}/bundles/summernote.js" />
+		<link rel="stylesheet" type="text/css"
+			href="#{request.contextPath}/bundles/summernote.css" />
+		<script type="text/javascript"
+			src="#{request.contextPath}/resources/assets/js/productbacklog.js" />
+		<link rel="stylesheet" type="text/css"
+			href="#{request.contextPath}/resources/assets/css/productbacklog.css" />
+		<h:outputScript library="primefaces-extensions"
+			name="primefaces-extensions.js" />
+		<h:outputScript library="primefaces-extensions"
+			name="tooltip/tooltip.js" />
+		<style>
+.note-editor .note-editable {
+	background-color: #FFFFFF;
+}
+
+.btn {
+	background-color: #FFFFFF !important;
+	color: black !important;
+	border: 1px solid #CCCCCC;
+}
+
+.note-palette-title {
+	color: white !important;
+}
+
+.note-color-reset {
+	color: white;
+}
+</style>
+	<h:panelGroup styleClass="ajaxPopUp" id="loading-wait-page-loaded">
+		<p:graphicImage alt="ajax loader" styleClass="imgAjax"
+			value="/resources/img/ajax_loader/ajax_loader.gif" />
+	</h:panelGroup>
+	<script>
+		$("#loading-wait-page-loaded").show();
+	</script>
+	</ui:define>
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:event listener="#{sprintBacklogBean.initPreview}"
+				type="preRenderView" />
+		</f:metadata>
+	</ui:define>
+	<ui:define name="layoutBody">
+		<h:panelGroup layout="block" styleClass="row">
+			<ui:include src="_selector.xhtml" />
+			<p:fieldset styleClass="span12" style="margin-top: 10px;">
+				<ui:include src="_filter.xhtml" />
+				<p:separator style="margin:10px 0;" />
+				<center id="fieldset_content" style="width: 100%;">
+					<h:form id="form2" prependId="false" style="margin-bottom: -6px;">
+						<h:inputHidden value="#{sprintBacklogBean.sprintStatus}"
+							id="status" />
+						<script type="text/javascript">
+							//<![CDATA[
+							function getDataJSON(key, value) {
+								try {
+									var obj = jQuery
+											.parseJSON('#{sprintBacklogBean.jsonObject}');
+									var jsonChild = eval("obj.US_" + key);
+									var result = eval("jsonChild." + value);
+									if (typeof (result) == 'undefined') {
+										return "null";
+									}
+									return eval("jsonChild." + value);
+								} catch (e) {
+									return "";
+								}
+							}
+							//]]>
+						</script>
+						<div class="dashboard row" id="dashboard">
+							<div class = "row" style="text-align:left;margin-bottom:0px;">
+								<h:commandLink styleClass="undone-link" value="You still have #{sprintBacklogBean.totalUnDoneTask} undone task(s)." rendered="#{sprintBacklogBean.countRemainingTasks() > 0}" action="#{sprintBacklogBean.linkToRemainingTask}" title="Click on this message will link to the Remaining Task page." target="_blank">
+								</h:commandLink>
+							</div>
+							<div id="colum1" class="column span5" style="margin-top:10px">
+								<span class="lead" style="float: left">Product Backlog</span>
+								<p:commandButton icon="icon-resize-full" type="button"
+									onclick="expandAll(1);" id="toggle1" value="Expand All" />
+								<ui:include src="_productBLColumn.xhtml" />
+							</div>
+							<div id="colum2" class="column span5" style="margin-right:0;margin-top:10px">
+								<span class="lead" style="float: left">Sprint Backlog</span>
+								<p:commandButton icon="icon-resize-full" type="button"
+									onclick="expandAll(2);" id="toggle2" value="Expand All" />
+								<ui:include src="_sprintBLColumn.xhtml" />
+							</div>
+						</div>
+						<script>
+							sortable();
+							removeTextInPagination();
+							setTextAllInPaginationSelect();
+						</script>
+					</h:form>
+				</center>
+			</p:fieldset>
+		</h:panelGroup>
+		<ui:include src="_confirmDialog.xhtml" />
+	</ui:define>
+	<ui:define name="layoutFooter">
+		<h:form>
+			<p:remoteCommand name="update" update=":form2"
+				onstart="loadingStatus.show();"
+				oncomplete="loadingStatus.hide();confirmChangeParentPointDlg.hide();" />
+			<p:remoteCommand name="redirectToMeetingPage"
+				action="#{meetingBean.redirectToMeetingPage}" />
+			<p:remoteCommand name="updateParentPoint"
+				actionListener="#{sprintBacklogBean.updateParentPoint}"
+				async="false" oncomplete="update();" />
+			<p:remoteCommand autoRun="true" name="setNullSelectedParentIssue"
+				actionListener="#{meetingBean.setSelectedParentIssueId(null)}"
+				global="false" />
+			<p:remoteCommand name="test"
+				actionListener="#{sprintBacklogBean.test}" />
+			<p:remoteCommand
+				actionListener="#{sprintBacklogBean.moveUserStoryToSprintBacklog}"
+				name="moveUserStoryToSprintBacklog"
+				oncomplete="updateBacklog(xhr, status, args);" />
+			<p:remoteCommand
+				action="#{sprintBacklogBean.moveIssueToProductBacklog}"
+				name="moveIssueToProductBacklog" />
+			<p:ajaxStatus>
+				<f:facet name="start">
+					<h:panelGroup styleClass="ajaxPopUp">
+						<p:graphicImage alt="ajax loader" styleClass="imgAjax"
+							value="/resources/img/ajax_loader/ajax_loader.gif" />
+					</h:panelGroup>
+				</f:facet>
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
+			<p:dialog id="loadingStatus" widgetVar="loadingStatus" modal="false" draggable="false"
+				closable="false" resizable="false" showHeader="false">
+				<h:panelGroup styleClass="ajaxPopUp">
+					<p:graphicImage alt="ajax loader" styleClass="imgAjax"
+						value="/resources/img/ajax_loader/ajax_loader.gif" />
+				</h:panelGroup>
+			</p:dialog>
+		</h:form>
+		<script>
+			$(window).load(function () {
+				$("#loading-wait-page-loaded").hide();
+			});
+		</script>
+	</ui:define>
+</ui:composition>

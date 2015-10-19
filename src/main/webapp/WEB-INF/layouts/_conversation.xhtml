@@ -1,0 +1,139 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+    <script>
+    //<![CDATA[
+        $(document).ready(function () {
+        	attachEvents();
+        });
+        function attachEvents() {
+        	$(".conversation .titleText").unbind("click");
+            $(".conversation .titleText").on("click", function (e) {
+                $conversation = $(this).parents(".conversation");
+                if ($conversation.hasClass("minimized")) {
+                    maximize($conversation);
+                } else {
+                    minimize($conversation);
+                }
+            });
+			
+            $(".titlebar").unbind("click");
+            $(".titlebar").on("click", ".btn-close", function (e) {
+                $(this).parents(".conversation").hide();
+            });
+			
+            $("li.chat-item").unbind("click");
+            $("li.chat-item").on("click", "i.icon-ok-sign", function (e) {
+                var conversationId = $(this).attr("data-member-id");
+                $conversation = $("#" + conversationId + ".conversation");
+                $('#chatVar').attr('data-load-old-msg', 'true');
+                $('#' + conversationId + ' .conversationContent').empty();
+                showLoadingMessage(conversationId);
+                getConversation([{name:'sender', value: conversationId},{name:'limitNumber', value: 0}]);
+                if (!$conversation.is(":visible")) {
+                    $conversation.prependTo($("#conversation-wrapper"));
+                }
+                $conversation.show();
+                maximize($conversation);
+            });
+            
+            $(".conversation .inputMessage").unbind("click");
+            $(".conversation .inputMessage").on("click", function(e){
+            	  var conversationId = $(this).parents('.conversation').attr('id');
+            	  var unReadClass = $(this).parents('.conversation').find('.conversationContent .messageWrapper span');
+            	  $(unReadClass).removeClass('unreadIcon');
+            	  updateMessageStatus([{name: 'sender', value: conversationId}]);
+            });
+            
+            $('.times-list li').unbind("click");
+            $('.times-list li').on("click",function(){
+            	var senderId = $(this).parents('.conversation').attr('id');
+            	var dateNumber = $(this).attr("data-dateNumber");
+            	var overlayId = $(this).parent().parent().get(0);
+            	var conversationId = $('#' + senderId).find('.conversationContent');
+            	$(overlayId).fadeOut();
+            	$(conversationId).empty();
+            	showLoadingMessage(senderId);
+            	getMessageByDate([{name:'sender', value: senderId},{name:'numberDate', value:dateNumber}])
+            });
+			
+            $('.conversation .inputMessage').unbind("keydown");
+            $('.conversation .inputMessage').on("keydown", function(e) {
+                var conversationId = $(this).parents('.conversation').attr('id');
+                var key = e.which || e.charCode || e.keyCode || 0;
+                if (key == 13) {
+                    isTyping = false;
+                    sendStopTypingStatus(conversationId);
+                } else {
+                    sendStartTypingStatus(conversationId);
+                }
+              
+                var keyCode = e.keyCode || e.which;
+                if (keyCode == 13) {
+                    if ($(this).val().length > 0) {
+                        sendConversationMessage($(this).parents(".conversation"));
+                    }
+               	    var unReadClass = $(this).parents('.conversation').find('.conversationContent .messageWrapper span');
+               	    $(unReadClass).removeClass('unreadIcon');
+               	    updateMessageStatus([{name: 'sender', value: conversationId}]);
+                    // reset input height to default
+                    $(this).height(20);
+                    $(this).parents('.conversation').find('.conversationContent').height(229);
+                    e.preventDefault();
+                } else {
+                    fitTextAreaToContent(this);
+                }
+            });
+            
+            updateUnreadConversationInTitle();
+        }
+        
+        function updateUnreadConversationInTitle() {
+        	var totalUnreadMessageEl = $(".unread-number-text");
+            var originalTitleEL = $("title");
+            if(totalUnreadMessageEl.length > 0) {
+            	var originalTitle = originalTitleEL.html().split(" - ");
+            	if(originalTitleEL.length > 0) {
+            		if(originalTitle.length == 2) {
+                		$("title").html("("+totalUnreadMessageEl.html()+") - "+originalTitle[1]);
+            		} else {
+            			$("title").html("("+totalUnreadMessageEl.html()+") - "+$("title").html().trim());
+            		}
+            	}
+            } else {
+            	var originalTitle = originalTitleEL.html().split(" - ");
+            	$("title").html(originalTitle[1]);
+            }
+        }
+        //]]>
+    </script>
+    <h:form styleClass="hide">
+        <p:remoteCommand name="updateMessageStatus" actionListener="#{onlineSessionBean.updateMessageStatus()}" global="false"  immediate="false" update=":unread-number-form, :chat-list-wrapper-form:chat-wrapper"></p:remoteCommand>
+   		<p:remoteCommand name="getMessageByDate" actionListener="#{onlineSessionBean.loadMessageByDate()}" global="false" immediate="false"></p:remoteCommand>
+   		<p:remoteCommand name="getConversation" actionListener="#{onlineSessionBean.loadConversation()}" global="false" immediate="false"></p:remoteCommand>
+        <p:remoteCommand name="sendSystemMessage" actionListener="#{onlineSessionBean.sendTypingMessage}" global="false" immediate="false"></p:remoteCommand>
+    </h:form>
+    <div id="conversation-wrapper">
+        <input id="isMessagesLoaded" type="hidden" value="false" autocomplete="off"/>
+    	<input id="loggedMemberId" type="hidden" value="#{onlineSessionBean.loggedInMember.memberId}"/>
+
+    	<span id="chatVar" class="hide" data-load-old-msg="false"/>
+    	<p:socket channel="/im#{onlineSessionBean.privateChannel}" onMessage="receiveMessage">
+    		<p:ajax event="message" listener="#{onlineSessionBean.updateUnreadConversations()}" global="false" update=":unread-number-form, :chat-list-wrapper-form:chat-wrapper"></p:ajax>
+    	</p:socket>
+        <p:socket channel="/old#{onlineSessionBean.privateChannel}" onMessage="receiveOldMessage"></p:socket>
+        <p:socket channel="/sttu#{onlineSessionBean.privateChannel}">
+        	<p:ajax event="message" global="false" update=":unread-number-form, :chat-list-wrapper-form:chat-wrapper"></p:ajax>
+        </p:socket>
+
+        <ui:repeat value="#{onlineSessionBean.membersInScrumTeam}" var="member">
+            <ui:include src="_chatbox.xhtml"></ui:include>
+        </ui:repeat>
+        <ui:repeat value="#{onlineSessionBean.relatedMembers}" var="member">
+            <ui:include src="_chatbox.xhtml"></ui:include>
+        </ui:repeat>
+    </div>
+</ui:composition>

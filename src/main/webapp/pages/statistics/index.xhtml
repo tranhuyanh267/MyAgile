@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/layouts/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="layoutTitle">
+		Statistics &amp; Feedbacks
+	</ui:define>
+	<ui:define name="metadata">
+		<f:metadata>
+	    	<f:event listener="#{statisticBean.initPreview}" type="preRenderView"/>
+		</f:metadata>
+	</ui:define>
+	<ui:define name="layoutHead">
+		<script type="text/javascript" src="#{request.contextPath}/resources/assets/js/sprint.js" />
+		<script type="text/javascript" src="#{request.contextPath}/resources/assets/js/dialogOverlay.js" />	
+        <style type="text/css">
+            .selector-wrapper {
+                width: 335px;
+                height: 35px;
+                display: inline-block;
+                text-align: right;
+            }
+            .selector-wrapper .ui-selectonemenu {
+                text-align: left;
+            }
+            @media (max-width: 672px) {
+                #wrap, #footer {
+                    min-width: 622px;
+                }
+                #body-div.container {
+                    width: 622px;
+                }
+            }
+            
+        </style>
+	</ui:define>
+	
+	<ui:define name="layoutBody">
+		<h:panelGroup layout="block" styleClass="row">
+			<ui:include src="_selector.xhtml"></ui:include>
+			<ui:include src="_sprintStatistic.xhtml" />
+			<ui:include src="_feedback.xhtml" />
+		</h:panelGroup>
+	</ui:define>
+	
+	<ui:define name="layoutFooter">
+		<pe:tooltip global="true" myPosition="left center" atPosition="right center" forSelector=".ui-state-error"/>
+		<p:confirmDialog widgetVar="regenerate" id="regenerateConfirm" header="Are you sure?" width="400" modal="true" closable="false" severity="alert">
+			<f:facet name="message">
+				<h:outputFormat value="#{msg['myagile.sprint.RegenerateStatistic']}">
+					<f:param value="#{statisticBean.selectedDropDownSprint}"/>
+				</h:outputFormat>
+			</f:facet>
+			<h:panelGroup layout="block" style="text-align: right">
+				<p:commandButton value="Yes" action="#{statisticBean.regenerateStatistic}" oncomplete="regenerate.hide();" update=":statisticForm" />
+				<p:commandButton value="No" oncomplete="regenerate.hide();" />
+			</h:panelGroup>
+		</p:confirmDialog>
+		
+		<p:ajaxStatus>  
+			<f:facet name="start"> <h:panelGroup styleClass="ajaxPopUp" ><p:graphicImage alt="ajax loader" styleClass="imgAjax" value="/resources/img/ajax_loader/ajax_loader.gif" /></h:panelGroup></f:facet>  
+	 		<f:facet name="complete"><h:outputText value="" /></f:facet>  	   			
+		</p:ajaxStatus>
+		<script type="text/javascript">
+			function handleSaveStatistic(xhr, status, args){
+				if (args.save == true) {
+	                PrimeFaces.ab({source: '', update: 'statisticForm'});
+	            }
+			}
+		</script>
+	</ui:define>
+</ui:composition>

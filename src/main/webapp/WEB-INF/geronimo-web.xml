@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<web-app xmlns="http://geronimo.apache.org/xml/ns/j2ee/web-2.0.1"
+	xmlns:sys="http://geronimo.apache.org/xml/ns/deployment-1.2" xmlns:sec="http://geronimo.apache.org/xml/ns/security-2.0">
+	<sys:environment>
+		<sys:moduleId>
+			<sys:groupId>vn.axonactive.ant</sys:groupId>
+			<sys:artifactId>${app.artifactId}</sys:artifactId>
+			<sys:version>0.1</sys:version>
+			<sys:type>war</sys:type>
+		</sys:moduleId>
+		<sys:dependencies>
+		</sys:dependencies>
+		<sys:hidden-classes>
+			<sys:filter>javax.mail.*</sys:filter>
+			<sys:filter>javax.activation.*</sys:filter>
+			<sys:filter>org.apache.commons.codec.*</sys:filter>
+			<sys:filter>org.apache.log4j</sys:filter>
+            <sys:filter>log4j</sys:filter>
+            <sys:filter>org.slf4j</sys:filter>
+<!-- 			<sys:filter>org.apache.log4j.*</sys:filter> -->
+<!-- 			<sys:filter>org.slf4j.*</sys:filter> -->
+<!-- 			<sys:filter>org.apache.log4j</sys:filter> -->
+<!-- 			<sys:filter>log4j</sys:filter> -->
+		</sys:hidden-classes>
+	</sys:environment>
+	<context-root>${app.contextRoot}</context-root>
+	<!-- <nam:resource-ref> -->
+	<!-- JNDI name -->
+	<!-- <nam:ref-name>jdbc/oms-webDataSource</nam:ref-name> -->
+	<!-- Name in Geronimo Console -->
+	<!--<nam:resource-link>oms-web-dbpool</nam:resource-link> -->
+	<!-- </nam:resource-ref> -->
+</web-app>

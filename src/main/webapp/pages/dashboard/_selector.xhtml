@@ -1,0 +1,52 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:custom="http://myagile.com/custom"
+	>
+<center>
+	<p:fieldset styleClass="span12 wrap-select" style="margin-bottom:10px; float:none; padding-top: 10px; padding-bottom: 8px;" rendered="#{profileMB.member.active}">
+		<h:form id="form" styleClass="form-inline text-center" prependId="false">
+            
+            <h:panelGroup styleClass="selector-wrapper text-center pull-left">
+                <p:messages for="msgs" id="msgs" showDetail="true" closable="true" showSummary="false"/>
+                <h:outputText value="Select Team: " style="margin-right:10px"/>
+                <p:selectOneMenu style="margin-right:5px; width: 185px;" rendered="#{empty dashboardBean.teamList}" styleClass="text-left">
+                    <f:selectItem noSelectionOption="true" itemLabel="No team"/>
+                </p:selectOneMenu>
+                <p:selectOneMenu id="teamSelect" value="#{dashboardBean.sprint.team.teamId}" style="margin-right:5px; width: 185px;" rendered="#{not empty dashboardBean.teamList}" styleClass="text-left">
+                    <f:selectItems value="#{dashboardBean.teamList}" var="t" itemValue="#{t.teamId}" itemLabel="#{t.teamName}"/>
+                    <p:ajax listener="#{dashboardBean.handleChangeTeam}" update="msgs, :kanban, :setting-kanban, selectSprintPanel, settingBtn, manageSprintIssue, :userStoryForm" onstart="hideform()"/>
+                </p:selectOneMenu>
+            </h:panelGroup>
+		    
+		    <h:panelGroup id="selectSprintPanel" styleClass="selector-wrapper text-center pull-left">
+                <h:outputText value="Select Sprint: " style="margin-right:5px;"/>
+			    <p:selectOneMenu style="margin-right:5px; width: 185px;" rendered="#{empty dashboardBean.sprintList}" styleClass="text-left">
+		               <f:selectItem  noSelectionOption="true" itemLabel="No sprint"/>
+		        </p:selectOneMenu>
+				<p:selectOneMenu id="sprintSelect" value="#{dashboardBean.sprint.sprintId}" style="margin-right:5px; width: 185px;" rendered="#{not empty dashboardBean.sprintList}" styleClass="text-left">
+		               <f:selectItems value="#{dashboardBean.sprintList}" var="t" itemValue="#{t.sprintId}" itemLabel="#{t.status == 'open' ? t.sprintName : ''.concat(t.sprintName).concat(' (Closed)')}" />
+		               <p:ajax listener="#{dashboardBean.handleChangeSprint}" update=":setting-kanban, :kanban, :userStoryForm" onstart="hideform()"/>
+		        </p:selectOneMenu>
+	        </h:panelGroup>
+	        
+	        <h:panelGroup styleClass="pull-left" rendered="#{dashboardBean.scrumTeamMember == true and dashboardBean.sprint.dateEnd != null}">
+                <p:commandButton value = "New User Story" action="#{dashboardBean.resetNotAddedAttachmentList}" onclick="showUserStoryForm()" global="false" update=":userStoryForm">
+                	
+                </p:commandButton>
+                
+	        </h:panelGroup>   
+	        <h:panelGroup id="manageSprintIssue" styleClass="auto-width selector-wrapper text-center pull-right" rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', dashboardBean.sprint.team.teamId)}">
+				<p:commandButton id="settingBtn" value="Setting" icon="icon-cogs" global="false" style="float:right" 
+						actionListener="#{dashboardBean.refreshStatusTempList}" onclick="toggleSettingForm()" async="false" update=":setting-kanban">
+					<f:ajax render="@none" execute="@none" />
+				</p:commandButton>
+	        </h:panelGroup>
+		</h:form>
+	</p:fieldset>
+</center>
+</ui:composition>

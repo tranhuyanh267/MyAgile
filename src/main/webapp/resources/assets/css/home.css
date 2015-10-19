@@ -1,0 +1,432 @@
+/* Home page layout **************************************/
+#product-backlog {
+    width: 100%;
+    margin-top:-25px;
+    margin-bottom: -30px;
+}
+
+#productBacklog {
+    width: 100%;
+}
+
+#addBtnForm .btn-add, #newBtn .btn-add {
+    height: 25px;
+    text-align: center;
+    font-size: 80%;
+    font-weight: bold;
+    position: absolute;
+    top: 0;
+    right: 2px;
+}
+
+#addBtnForm .btn-upload {
+    height: 25px;
+    text-align: center;
+    font-size: 80%;
+    font-weight: bold;
+    position: absolute;
+    top: 0;
+    right: 68px;
+}
+
+#newBtn {
+    position: absolute;
+    display: block;
+    top: 27px;
+    right: 5px;
+}
+
+.page-container {
+    margin-bottom: 20px;
+}
+
+.backlogs-container > .span3 {
+    width: 25%;
+    min-width: 235px;
+    margin-left: 0.5%;
+}
+
+.backlogs-container > .span3:nth-of-type(1) {
+    margin-left: 0 !important;
+}
+
+.backlogs-container > .span6 {
+    width: 49%;
+    min-width: 460px;
+    margin-left: 0.5%;
+}
+
+#addBtnForm {
+    position: relative;
+    margin-top: -18px;
+    margin-right: -2px;
+}
+
+.backlogs-container.span12 {
+    margin-left: 0;
+}
+
+.page-container .row {
+    margin-left: 0;
+}
+
+.user-story-list > div {
+    border: none;
+}
+
+.homepage-userstory-panel, .homepage-impediment-panel {
+    margin-bottom: 5px;
+	padding: 1px;
+	border-radius: 0px;
+	word-wrap: break-word;
+}
+
+.input-user-story-name {
+    width: 100%;
+}
+
+.input-user-story-desc {
+    width: 100%;
+}
+
+.ui-editor textarea, .ui-editor iframe {
+    width: 100% !important;
+}
+
+.selectProject, .selectTeam {
+    display: inline-block;
+    width: 335px;
+    height: 35px;
+}
+
+.selectProject > div, .selectTeam > div {
+    margin-left: 5px;
+}
+
+.filter-status {
+    font-size: 0.8em !important;
+    margin: 5px auto;
+}
+.filter-status .ui-chkbox-box {
+    margin-top: 5px;
+    width: 12px;
+    height: 12px;
+    line-height: 15px;
+}
+.filter-status label {
+    font-size: 1em;
+}
+
+@media (min-width: 1200px) {
+    #body-div.container {
+        width: 1170px !important;
+    }
+    .filter-status label {
+        font-size: 14px;
+        margin-right: 3px;
+    }
+}
+
+@media (min-width: 980px) and (max-with: 1199px) {
+    #body-div.container {
+        width: 940px !important;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+    .backlogs-container > .span3, .backlogs-container > .span6 {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    #body-div.container {
+        width: 700px !important;
+    }
+    
+    .mobile-expand {
+    	width: 100% !important;
+    }
+    .filter-status label {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 767px) {
+    .backlogs-container > .span3, .backlogs-container > .span6 {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+    
+    #body-div.container {
+        width: 480px;
+    }
+    .mobile-expand {
+    	width: 100% !important;
+    }
+    .filter-status label {
+        font-size: 14px;
+    }
+}
+
+.jqplot-table-legend-label {
+	padding: 0px 5px 0px 2px !important;
+}
+
+.jqplot-title {
+	top: 10px !important;
+}
+
+.word-break-break-word {
+	padding-bottom: 10px;
+	list-style-type: none;
+	font-size: 14px;
+	font-weight: normal;
+}
+
+.history-status {
+	margin-left: 15px;
+}
+
+.history-panel {
+	margin-top: -30px;
+	margin-bottom: -20px;
+}
+
+.history-panel-content {
+	margin: 0px -14px -11px -14px !important;
+	border: none;
+}
+
+.history-list {
+	border: none;
+	width: 100%;
+	margin-bottom: 10px;
+	margin-top: -10px;
+}
+
+.histories {
+	color: #297DB6;
+	width: 100%;
+	font-size: 13px;
+}
+
+.author-change {
+	font-weight: bold;
+}
+
+.wrapper-change-content {
+	padding: 0px 0px;
+	border: none;
+}
+
+.wrapper-change-content-box {
+	margin: -10px 0px;
+	padding: 0px 0px;
+	border: none;
+}
+
+.status-of-userstory {
+	font-style: italic;
+	color: #4D4D50;
+}
+
+.separator-histories {
+	border-width: 1px;
+	margin: 4px 4px;
+}
+
+.btn-show-more {
+	margin: -10px auto 10px 18px !important;
+	font-size: 12px !important;
+}
+
+.date-bold {
+	font-weight: bold;
+	font-size: 13px;
+	margin-left: 5px;
+}
+
+.date-width {
+	width: 110px;
+}
+
+.no-history {
+	margin-left: 5px;
+}
+
+#historyPanel\:tabView\:tab3 .ui-panel-content .ui-widget-content {
+	padding-top: 1px !important;
+	padding-bottom: 1px !important;
+}
+
+#historyPanel\:tabView\:tab3 .history-status {
+	margin-left: 42px !important;
+}
+
+.blockOverlay {
+	background-color: #0F0F0F;
+}
+
+.pe-blockui-content {
+	padding: initial !important;
+}
+
+#searchForm\:keyword {
+	margin-top: -10px;
+}
+
+.customMsg {
+	font-size: 12px !important;
+}
+
+.width-select-homepage {
+	width: 47.5% !important;
+}
+
+@media (min-width : 980px) and (max-width: 1199px) {
+	.width-select-homepage {
+		width: 47% !important;
+	}
+}
+
+/* Product Backlog */
+#addNewForm {
+	display: none;
+	padding-bottom: 1px;
+	top: 0;
+	margin-bottom: 0px;
+}
+
+.usCustom{margin: 10px 0 0;}
+
+.add-new-form-widget {
+	display: none;
+	margin-top: -20px;
+}
+
+.message-add-succesfully {
+	display: none;
+}
+
+#addNewForm .ui-messages-info-icon {
+	padding-top: 3px;
+	width: 20px;
+}
+
+#addNewForm .message-add-succesfully {
+	margin-bottom: 15px;
+	margin-top: -10px;
+}
+
+/* On Firefox */
+@-moz-document url-prefix() {
+    .input-user-story-name {
+		height: 33px;
+	}
+}
+
+.us-subject {
+	margin-top: -10px;
+}
+
+.btn-expand-all {
+	margin-top: -5px;
+}
+
+.btn-expand-all-wrapper {
+	margin-bottom: 10px;
+}
+
+.us-description-message {
+	visibility: hidden;
+	display: none;
+}
+
+.us-value  {
+	margin: 0 10px 4px 0;
+}
+
+#addNewForm .separator {
+	margin: 0px;
+	margin-top: 15px;
+}
+
+.margin-left-select {
+	margin-left: 2%;
+}
+
+#searchForm {
+	padding-bottom: 20px;
+	margin-top: -22px;
+}
+
+#userStoryDetail {
+	margin-top: -25px;
+	width: 100%;
+	margin-bottom: -13px;
+}
+
+#usDetailForm {
+	margin-top: -12px;
+}
+
+.btn-set-des-void {
+	font-size: 12px;
+	margin-top: 4px;
+}
+
+.edit-us-subject {
+	margin-top: 5px;
+	display: none;
+	padding: 0;
+}
+
+.spinner-value {
+	margin-top: 10px;
+}
+
+/* Meeting Video */
+#meeting-video\:sprint-length_input {
+	width: 80px;
+}
+
+.choose-date {
+	margin-bottom: 10px;
+}
+
+.upload-video-hr {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+/* Impediment Backlog */
+.description-impedement {
+	width: 95%;
+}
+
+#data {
+	margin-bottom: 5px;
+	margin-top: 20px;
+	width: 100%;
+}
+
+.wrap-sad-face {
+	margin-right: 30px;
+}
+
+.sad-smile-face {
+	width: 50px;
+	height: 50px;
+	position: relative;
+	float: right;
+	top: -22px;
+	right: -40px;
+}
+
+.margin-left-28 {
+	margin-left: 28px !important;
+}
+
+.ui-tabs-selected a {
+	color: black !important;
+}

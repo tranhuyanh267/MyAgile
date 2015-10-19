@@ -1,0 +1,156 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/layouts/template.xhtml">
+	<ui:define name="layoutTitle">
+        Home
+    </ui:define>
+	<ui:define name="layoutHead">
+		<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/libs/mediaelement/mediaelementplayer.css" />
+        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/css/home.css"/>
+		<script type="text/javascript" src="#{request.contextPath}/bundles/chart.js" />
+		<script type="text/javascript" src="#{request.contextPath}/resources/assets/js/main.js" />
+		<!-- UserVoice JavaScript SDK (only needed once on a page) -->
+		<script>
+			(function(){
+				var uv=document.createElement('script');
+				uv.type='text/javascript';
+				uv.async=true;
+				uv.src='//widget.uservoice.com/40hh2kLIpLBtETH6fOQNg.js';
+				var s=document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(uv,s)})()
+		</script>
+		<!-- A tab to launch the Classic Widget -->
+		<script>
+			UserVoice = window.UserVoice || [];
+			UserVoice.push(['showTab', 'classic_widget', {
+		  		mode: 'feedback',
+				primary_color: '#297db6',
+				link_color: '#007dbf',
+				forum_id: 113471,
+				tab_label: 'Feedback',
+				tab_color: '#297db6',
+				tab_position: 'middle-left',
+				tab_inverted: false
+			}]);
+		</script>	
+	</ui:define>
+	<ui:define name="layoutBody">
+		<div class="page-container">
+			<h:form styleClass="form-inline main-selector text-center">
+				<h:button style = "display:none;" value = "#{adminBean.initRoleAdmin()}"/>
+				<f:event type="preRenderView" listener="#{homeBean.syncBeanData}" />
+				<h:panelGroup>
+					<h:panelGroup id="selectProject" styleClass="selectProject">
+                        <h:outputText value="Select Project:" />
+						<p:selectOneMenu value="#{homeBean.projectId}" required="true" rendered="#{not empty homeBean.projects}" styleClass="text-left">
+							<f:selectItems value="#{homeBean.projects}" var="p" itemValue="#{p.projectId}" itemLabel="#{p.projectName}" />
+							<p:ajax update="selectTeam, :selectSprint, :burndownChart,:historyPanel:tabView,:productBacklog, :meeting-video, :videoplayer-init, :plupload-init, :data:dataRetro, :newBtn"
+								listener="#{homeBean.selectProject(homeBean.projectId)}" event="change" />
+							<p:ajax event="change" listener="#{homeBean.handleChangeForIssueHistory}" update=":historyPanel" oncomplete="handleChangeForIssueHistory();"/>
+						</p:selectOneMenu>
+						<p:selectOneMenu rendered="#{empty homeBean.projects}" styleClass="text-left">
+                            <f:selectItem noSelectionOption="true" itemLabel="No project"/>
+						</p:selectOneMenu>
+					</h:panelGroup>
+					<h:panelGroup id="selectTeam" styleClass="selectTeam">
+                        <h:outputText value="Select Team:" />
+						<p:selectOneMenu value="#{homeBean.teamId}" required="true" rendered="#{not empty homeBean.teams}" styleClass="text-left">
+							<f:selectItems value="#{homeBean.teams}" var="t" itemValue="#{t.teamId}" itemLabel="#{t.teamName}" />
+							<p:ajax global="false" update=":newBtn, :selectSprint, :burndownChart, :meeting-video, :historyPanel:tabView,:videoplayer-init, :plupload-init, :data:dataRetro, :newBtn" listener="#{homeBean.selectTeam(homeBean.teamId)}"
+								event="change"/>
+							<p:ajax event="change" listener="#{homeBean.handleChangeForIssueHistory}" update=":historyPanel" oncomplete="handleChangeForIssueHistory();"/>
+						</p:selectOneMenu>
+						<p:selectOneMenu rendered="#{empty homeBean.teams}" styleClass="text-left">
+                            <f:selectItem noSelectionOption="true" itemLabel="No team"/>
+						</p:selectOneMenu>
+					</h:panelGroup>
+				</h:panelGroup>
+			</h:form>
+
+			<div class="row-fluid">
+				<div class="backlogs-container span12">
+					<div class="span3 product-backlog">
+						<p:fieldset legend="Product Backlog">
+							<ui:include src="_pbacklog.xhtml" />
+							<script type="text/javascript" src="#{request.contextPath}/resources/assets/js/sprintBackLogUploadAttachment.js" />
+						</p:fieldset>
+					</div>
+					<!-- end product-backlog -->
+
+					<div class="span6 sprint-backlog">
+						<p:fieldset legend="Sprint Backlog" style="overflow: hidden; ">
+							<div class="sprint-content mobile-expand">
+								<h:form id="selectSprint" styleClass="mobile-expand">
+									<script type="text/javascript">
+										function handleChangeForIssueHistory(){
+											$("div[aria-hidden='true']").css("display","none");
+										}
+										function handleChangeForKanbanIssueHistory(){
+											$("div[aria-hidden='true']").css("display","none");
+										}
+									</script>
+									<p:selectOneMenu value="#{homeBean.sprintId}" styleClass="mobile-expand text-left" required="true" rendered="#{not empty homeBean.sprints}">
+										<f:selectItems value="#{homeBean.sprints}" var="sp" itemValue="#{sp.sprintId}" itemLabel="#{sp.status == 'open' ? sp.sprintName : ''.concat(sp.sprintName).concat(' (Closed)')}" />
+										<p:ajax global="false" update=":burndownChart, :meeting-video, :videoplayer-init, :plupload-init" listener="#{homeBean.selectSprint(homeBean.sprintId)}" event="change" />
+										<p:ajax global="false" listener="#{homeBean.handleChangeForIssueHistory}" update=":historyPanel:tabView" oncomplete="handleChangeForIssueHistory();" event="change"/>
+									</p:selectOneMenu>
+									<p:selectOneMenu styleClass="mobile-expand text-left" rendered="#{empty homeBean.sprints}">
+                                        <f:selectItem noSelectionOption="true" itemLabel="No sprint"/>
+									</p:selectOneMenu>
+								</h:form>
+								<ui:include src="_meetingvideo.xhtml"></ui:include>
+								<div id="burndown-chart">
+									<ui:include src="_chart.xhtml" />
+								</div>
+							</div>
+						</p:fieldset>
+						<div >
+							<h:form id="historyPanel" style="margin-top: 10px;">
+								<ui:include src="_history.xhtml" />
+							</h:form>
+						</div>
+					</div>
+					<!-- end sprint-backlog -->
+					<div class="span3 impediment-backlog">
+						<p:fieldset legend="Impediment Backlog">
+							<ui:include src="_impediment.xhtml"></ui:include>
+						</p:fieldset>
+					</div> 
+					<!-- end impediment-backlog -->
+				</div>
+				
+			</div>
+		</div>
+	</ui:define>
+
+	<ui:define name="layoutFooter">
+		<script type="text/javascript" src="#{request.contextPath}/resources/assets/js/home.js"/>
+		<script type="text/javascript" src="#{request.contextPath}/bundles/plupload.js" />	
+		<script type="text/javascript" src="#{request.contextPath}/bundles/mediaElement.js" />	
+		<h:panelGroup id="videoplayer-init">
+			<h:panelGroup rendered="#{not empty meetingVideoBean.meetingVideo.videoFileName}">
+				<script type="text/javascript">
+					$("video").mediaelementplayer({
+					    defaultVideoWidth: 'auto',
+					    defaultVideoHeight: 'auto',
+					    plugins: []
+					});
+				</script>
+			</h:panelGroup>
+		</h:panelGroup>
+
+		<h:panelGroup id="plupload-init">
+			<h:panelGroup rendered="#{not empty homeBean.selectedSprint.sprintId}">
+				<script type="text/javascript" src="#{request.contextPath}/bundles/meeting-video.js" />
+				<script type="text/javascript">
+					var contextPath = "#{request.contextPath}";
+					var params = {
+						sprintId : '#{homeBean.selectedSprint.sprintId}',
+						teamId : '#{homeBean.teamId}',
+						upload_type : 'meeting-video'
+					}
+					initMeetingVideoUploader(contextPath, params);
+				</script>
+			</h:panelGroup>
+		</h:panelGroup>
+	</ui:define>
+</ui:composition>

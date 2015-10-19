@@ -1,0 +1,58 @@
+<ui:composition template="/WEB-INF/layouts/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	
+	<ui:define name="layoutTitle">
+		Add wiki
+	</ui:define>
+	
+	<ui:define name="layoutHead">
+	</ui:define>
+	
+	<ui:define name="layoutBody">
+	<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/css/wiki.css" />
+		
+		<p:fieldset styleClass="add-wiki-none">
+			<h:outputFormat>#{wikiBean.checkExistWiki()}</h:outputFormat>
+		</p:fieldset>
+	
+		<p:fieldset styleClass="add-wiki-title">
+			Add new wiki for #{wikiBean.team.teamName} Team
+		</p:fieldset>
+		
+		<p:fieldset style="margin-bottom:10px;" styleClass="add-wiki">
+			<h:form id="formWikiAdd" styleClass="clFormWikiAdd">
+				<c:set var="wiki" value="#{wikiBean.wiki}"></c:set>
+				<div class="row wiwi-content" >
+					<p:editor value="#{wikiBean.contentWiki}" id="idEditorWiki" widgetVar="editorWikiAdd"></p:editor>
+				</div>		
+				<p:commandButton value="Save" icon="icon-save" action="#{wikiBean.saveWiki}" >
+				</p:commandButton>
+				<script>
+					$(document).ready(function(){
+						removeHtmlTagWhenPasteInEditorByIdParentAndWidget("#formWikiAdd\\:idEditorWiki",editorWikiAdd);
+						setHeightIframeBody();
+					});
+				</script>
+			</h:form>
+		</p:fieldset>
+	</ui:define>
+	
+	<ui:define name="layoutFooter">
+		<p:ajaxStatus>
+			<f:facet name="start">
+				<h:panelGroup styleClass="ajaxPopUp">
+					<p:graphicImage alt="ajax loader" styleClass="imgAjax"
+						value="/resources/img/ajax_loader/ajax_loader.gif" />
+				</h:panelGroup>
+			</f:facet>
+			<f:facet name="complete">
+				<h:outputText value="" />
+			</f:facet>
+		</p:ajaxStatus>
+	</ui:define>
+</ui:composition>

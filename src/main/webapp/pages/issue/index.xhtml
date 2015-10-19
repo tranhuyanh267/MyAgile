@@ -1,0 +1,50 @@
+<ui:composition template="/WEB-INF/layouts/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+	<ui:define name="layoutTitle">Issue Management</ui:define>
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:event listener="#{issueBean.initPreview}" type="preRenderView" />
+		</f:metadata>
+	</ui:define>
+	<ui:define name="layoutHead">
+        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/css/issue.css"/>
+		<script type="text/javascript" src="#{request.contextPath}/bundles/uaParser.js" />
+		<script type="text/javascript" src="#{request.contextPath}/resources/assets/js/issue.js" />
+    </ui:define>
+	
+	<ui:define name="layoutBody">
+		<h:panelGroup layout="block" styleClass="row">
+			<ui:include src="_selector.xhtml"/>
+			<ui:include src="_addIssueForm.xhtml" />
+			<ui:include src="_listIssue.xhtml" />
+			<ui:include src="_confirmDialog.xhtml" />
+		</h:panelGroup>
+	</ui:define>
+	
+	<ui:define name="layoutFooter">		
+    	<h:form>
+    		<p:remoteCommand name="isEmptySelectedIssueForExport" actionListener="#{issueBean.isSelectedIssueEmpty}" oncomplete="handleExportRequest(xhr, status, args);"></p:remoteCommand>
+    	</h:form>
+	
+		<p:ajaxStatus>  
+			<f:facet name="start"> <h:panelGroup styleClass="ajaxPopUp" ><p:graphicImage alt="ajax loader" styleClass="imgAjax" value="resources/img/ajax_loader/ajax_loader.gif" /></h:panelGroup></f:facet>  
+	 		<f:facet name="complete"><h:outputText value="" /></f:facet>  	   			
+		</p:ajaxStatus>
+		
+		<script type="text/javascript" src="#{request.contextPath}/bundles/plupload.js" />
+		
+		<script>
+		$(function(){
+			var subject = $('#issueForm\\:' + "subject").val();
+		   	if(subject == null || subject==""){
+		   		closeForm();
+	   		}	
+		})
+		</script>
+	</ui:define>
+</ui:composition>

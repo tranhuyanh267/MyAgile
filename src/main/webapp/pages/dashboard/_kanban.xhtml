@@ -1,0 +1,502 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:custom="http://myagile.com/custom"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	
+<h:form id="hiddenFormKanBan" style="display:none;">	
+	<p:socket channel="/issueChange" onMessage="receiveIssueInfo"/>
+</h:form>
+<h:form id="kanban" style="margin-left: 0px;" prependId="false">	
+	<h:inputHidden id="currentLogUserId" value="#{dashboardBean.loggedMember.memberId}"/>
+	<input  style="display:none;" id="pastSprint" value="#{dashboardBean.isPastSprint()}" />
+	<h:panelGroup layout="block" id="kanban_wrapper" styleClass="kanban_wrapper" rendered="#{not empty dashboardBean.statusList}">
+		<table id="boardFixed" class="board">
+			<thead>
+				<tr>
+					<ui:repeat var="status" value="#{dashboardBean.statusList}">
+						<h:panelGroup rendered="#{status.type != 'ACCEPTED_HIDE'}">
+							<th class="status" style="background-color:##{status.color}">#{status.name}</th>
+						</h:panelGroup>
+					</ui:repeat>
+				</tr>
+				<tr>
+					<ui:repeat var="status" value="#{dashboardBean.statusList}">
+						<h:panelGroup rendered="#{status.type != 'ACCEPTED_HIDE'}">
+							<th class="expand" >
+								<i class="icon-fixed-width icon-collapse-alt"></i>
+							</th>
+						</h:panelGroup>
+					</ui:repeat>
+				</tr>
+			</thead>
+		</table>
+		<table id="boardKanban" class="board">
+			<thead style="visibility: hidden;">
+				<tr>
+					<ui:repeat var="status" value="#{dashboardBean.statusList}">
+						<h:panelGroup rendered="#{status.type != 'ACCEPTED_HIDE'}">
+							<th class="status" style="background-color:##{status.color}">#{status.name}</th>
+						</h:panelGroup>
+					</ui:repeat>
+				</tr>
+				<tr>
+					<ui:repeat var="status" value="#{dashboardBean.statusList}">
+						<h:panelGroup rendered="#{status.type != 'ACCEPTED_HIDE'}">
+							<th class="expand" >
+								<i class="icon-fixed-width icon-collapse-alt"></i>
+							</th>
+						</h:panelGroup>
+					</ui:repeat>
+				</tr>
+			</thead>
+			<tbody>
+			<h:panelGroup rendered="#{dashboardBean.addSwimLine}">
+				<tr class = "tr-swimline" >
+					<ui:repeat var="status" value="#{dashboardBean.statusList}">
+					<h:panelGroup rendered="#{status.type != 'ACCEPTED_HIDE'}">
+					<h:outputScript rendered="#{status.type=='DONE'}">
+						<script type="text/javascript"> 
+							var STATUS_DONE_ID = #{status.statusId};
+						</script>
+					</h:outputScript>
+					<td id="#{status.statusId}" class = "cantain-drop">
+						<h:panelGroup id="column" layout="block" styleClass="column #{(dashboardBean.sprint.status == 'open' and dashboardBean.scrumTeamMember) ? 'task-group' : ''}">		
+							<ui:repeat var="issue" value="#{dashboardBean.getIssueOrderByStatusAndSwimline(status.statusId)}">
+								<ui:param name="project" value="#{dashboardBean.projectOfIssue}" />						
+							<p:panel styleClass="span4 sticker sticker-medium panel_#{issue.issueId}" id="issue_sticker" toggleable="true" toggleSpeed="300" 
+								 collapsed="true" widgetVar="sticker_#{issue.issueId}">
+								<input type="hidden" value="#{issue.issueId}" class="issue-hidden"/>
+								<input type="hidden" value="#{issue.displayIssueId}" class="display-issueId-hidden"/>
+								<h:inputHidden value="#{issue.issueId}"/>
+								<f:facet name="header">									
+									<div class="sticker-header">
+										<h:panelGroup rendered="#{dashboardBean.multiProject}"> 										
+										<div id="#{issue.issueId}" class="ribbon" style = "border: 7px solid;border-color: #{project.projectColor} transparent transparent #{project.projectColor};"></div>
+										</h:panelGroup>
+										<div class="row">
+											<div class="header-left pull-left" style="width: 270px;">
+												<p class="small-lead" title="#{issue.subject}">
+												<h:commandLink styleClass="id_header" id="viewbtn" action="#{issueBeanV2.toViewIssuePage}" value="#{issue.type}: ##{issue.displayIssueId}:" target="_blank">
+													<f:setPropertyActionListener value="#{issue}" target="#{issueBeanV2.viewIssue}" />
+												</h:commandLink>
+												#{issue.subject}
+												</p>
+											</div>				
+											<h:panelGroup id="relationBtn" layout="block" class="header-right pull-left">
+													<p:commandLink rendered="#{!empty issue.parent}" id="showRelationship" styleClass="text-center" update=":relationshipChart" oncomplete="pnTasksRelationship.show()" actionListener="#{dashboardBean.showTasksRelationship}">
+												  		<f:attribute name="selectedIssueIdForRelationship" value="#{issue}" />
+												  		<h:graphicImage value="/resources/img/icons/flow-tree.png" alt="Avatar"  style="position: relative; z-index: 1; width: 15px; height: 15px; margin: 10px 0 0 10px;" />
+													</p:commandLink>	
+											</h:panelGroup>								
+											<h:panelGroup id="avatar-wrapper" layout="block" class="pull-right">
+												<h:panelGroup rendered="#{not empty issue.assigned}">
+													<h:graphicImage alt="avatar-sticker" id="ava_img" value="/file/?type=small-member-logo&amp;filename=#{issue.assigned.avatar}" styleClass="img-circle avatar" onclick="$(this).next().css('display','block')"/>
+													<p:overlayPanel rendered="#{dashboardBean.sprint.status=='open' and dashboardBean.scrumTeamMember}" for="ava_img" styleClass="members-selector" style="display: none;"
+																	showEffect="fade" widgetVar="iss_member_wg_#{issue.issueId}" onShow="setScrollableForAssignMenu(this)">
+														<ul class="member-list">
+															<li style="cursor: pointer;" onclick="assignTaskToMember(-1, #{issue.issueId})"><h:graphicImage alt="ava-none" id="ava_none" value="/resources/img/user.png" styleClass="img-circle avatar" /> None</li>
+															<ui:repeat var="member" value="#{dashboardBean.findDevelopmentMembersByTeamIdWithExclude(issue.assigned.memberId)}">
+																<li style="cursor: pointer;" onclick="assignTaskToMember('#{member.memberId}','#{issue.issueId}')"><h:graphicImage alt="ava-img" id="ava_img" value="/file/?type=small-member-logo&amp;filename=#{member.avatar}" styleClass="img-circle avatar"/> <h:outputText value="#{dashboardBean.showUserName(member)}" /></li>
+															</ui:repeat>
+														</ul>															
+													</p:overlayPanel>
+												</h:panelGroup>
+													
+												<h:panelGroup rendered="#{empty issue.assigned}">
+													<h:graphicImage alt="avatar-sticker" id="ava_img_none" value="/resources/img/user.png" styleClass="img-circle avatar" onclick="$(this).next().css('display','block')"/>
+											
+													<p:overlayPanel rendered="#{dashboardBean.sprint.status=='open' and dashboardBean.scrumTeamMember}" for="ava_img_none" styleClass="members-selector" style="display: none;"
+																	showEffect="fade"  widgetVar="iss_member_wg_#{issue.issueId}" onShow="setScrollableForAssignMenu(this)">
+														<ul class="member-list">
+															<ui:repeat var="member" value="#{dashboardBean.findDevelopmentMembersByTeamId()}">
+																<li style="cursor: pointer;" onclick="assignTaskToMember('#{member.memberId}','#{issue.issueId}')"><h:graphicImage alt="ava-img" id="ava_img" value="/file/?type=small-member-logo&amp;filename=#{member.avatar}" styleClass="img-circle avatar"/> <h:outputText value="#{dashboardBean.showUserName(member)}" /></li>
+															</ui:repeat>
+														</ul>
+													</p:overlayPanel>	
+												</h:panelGroup>
+														
+												<div class="task-progress" style="width: #{dashboardBean.calculateProgressInit(issue)}%"></div>													
+											</h:panelGroup>																					
+										</div>																			
+									</div>										
+								</f:facet>		
+								<div class="sticker-inner">	
+									<h:outputText value="#{issue.description}" escape="false" />
+								</div>
+								<div class="sticker-footer">
+									<div class="row">											
+										<div class="pointRemainInplace" style="width: auto;display: inline-block;">R:
+											<p:inplace effect="none" widgetVar="p_inplace_#{issue.issueId}" styleClass="txtEstimateAndRemain"  id="ajaxInplacePointRemain" disabled="#{((issue.status.type=='START') or (dashboardBean.sprint.status == 'closed')) or !dashboardBean.scrumTeamMember}">													
+										 		<p:ajax event="save" listener="#{dashboardBean.updatePointRemain(issue.issueId)}" async="false" oncomplete="updateComponent('#{component.parent.clientId}', #{issue.issueId}, #{issue.status.type=='START'});" update="reorder,pointRemainMsg" global="true"/>
+												<p:ajax event="cancel" global="false" update="reorder"/>
+												<p:inputText onclick="this.selectionStart = 0; this.selectionEnd = $(this).val().length;" style="width: 60px;"  id="pointRemain" onkeyup="if(event.keyCode == 27){p_inplace_#{issue.issueId}.cancel()}" 
+										onkeypress="if(event.keyCode == 13){p_inplace_#{issue.issueId}.save();return false;};"
+												validator="#{dashboardBean.checkPointRemain}" required="true" value="#{dashboardBean.pointRemainFormat}" label="text">
+													<f:attribute name="pointR" value="#{issue.issueId}"/>
+												</p:inputText>
+											</p:inplace>
+										</div>
+										<h:panelGroup  styleClass="reorder" id="reorder"  >
+										  		<i class="icon-reorder" id="pointremain" style="cursor: pointer"/>
+										</h:panelGroup>
+										<p:overlayPanel id="chartPanel"  appendToBody="true"  for="reorder" hideEffect="fade" styleClass="pointremain-selector" widgetVar="iss_history_rep_#{issue.issueId}" 
+										  		onShow="setScrollablePointRemainHistory(this)">
+											<ul class="pointremain-list">
+												<ui:repeat var="pointRemain" value="#{dashboardBean.findHistoryOfPointRemainByIssueId(issue.issueId)}">
+													<li style="cursor: pointer;"><h:outputText value="#{pointRemain}" escape="false" /></li>
+												</ui:repeat>
+											</ul>
+  										</p:overlayPanel>	   
+	   									<ul class="span2 icon-wrapper unstyled inline pull-right text-right">
+	   										<li>
+	   											<h:commandLink style="padding: 0 15px;" styleClass="edit-issue-link" action="#{issueBeanV2.backToAddIssuePage}" title="Edit Issue" target="_new" rendered="#{dashboardBean.scrumTeamMember}">
+	   												<f:setPropertyActionListener value="#{issue}" target="#{issueBeanV2.viewIssue}" />
+	   												<i class="icon-pencil"></i>
+	   											</h:commandLink>
+	   											<h:commandLink  rendered="#{dashboardBean.scrumTeamMember}" onclick="event.preventDefault(); event.stopPropagation(); iss_#{issue.issueId}_ctx.show(event); return false;" style="padding: 0 15px;" class="btn-more-options-#{issue.issueId}" title="More...">
+	   												<i class="icon-ellipsis-vertical"></i>
+	   											</h:commandLink>
+	   										</li>
+	   									</ul>
+	   									<p:message for="pointRemain" id="pointRemainMsg" display="default"/>	   												
+										<div >
+											<input type="hidden" class="existHistoryOfPointRemain" value="#{dashboardBean.existHistoryOfPointRemain}"/>
+											<input type="hidden" class="oldEstimate" value="#{dashboardBean.pointEstimateFormat}"/>
+											E: <p:inplace  effect="none" widgetVar="p_inplace_e#{issue.issueId}" styleClass="txtEstimateAndRemain" id="ajaxInplaceEstimatePoint" disabled="#{((issue.status.type!='START') or (dashboardBean.sprint.status == 'closed')) or !dashboardBean.scrumTeamMember}">	
+													<p:ajax event="save" oncomplete="updateComponent('#{component.parent.clientId}', #{issue.issueId}, #{issue.status.type=='START'})" listener="#{dashboardBean.updateEstimatePoint(issue.issueId)}" global="true" async="false"/>											
+													<p:ajax event="cancel" global="false" />
+													<p:inputText  style="width: 60px" onkeyup="if(event.keyCode == 27){p_inplace_e#{issue.issueId}.cancel()}" 
+													onkeypress="if(event.keyCode == 13){p_inplace_e#{issue.issueId}.save();return false;};" 
+													id="estimatePoint" validator="#{dashboardBean.checkEstimatePoint}" required="true" value="#{dashboardBean.pointEstimateFormat}" label="text"/>
+													<p:message for="estimatePoint" id="estimatePointMsg" display="default"/>
+												</p:inplace>											
+										</div>											
+									</div>
+								</div>	
+							</p:panel>				
+							<p:contextMenu for="issue_sticker" styleClass="context-menu" model="#{dashboardBean.contextMenu}" rendered="#{dashboardBean.sprint.status=='open'}" widgetVar="iss_#{issue.issueId}_ctx" />	
+							<script>
+ 						tooltipProjectDetail(#{issue.issueId}, #{project.projectId}, '#{project.projectName}', '#{project.projectLogo}','#{request.contextPath}');
+						</script>							
+						</ui:repeat>
+						
+					</h:panelGroup>
+				</td>
+				</h:panelGroup>
+				</ui:repeat>
+				</tr>	
+			<!-- other tr -->
+				<tr class = "normal-row-with-swimline">
+					<ui:repeat var="status" value="#{dashboardBean.statusList}">
+					<h:panelGroup rendered="#{status.type != 'ACCEPTED_HIDE'}">
+					<h:outputScript rendered="#{status.type=='DONE'}">
+						<script type="text/javascript"> 
+							var STATUS_DONE_ID = #{status.statusId};
+						</script>
+					</h:outputScript>
+					<td id="#{status.statusId}" class = "cantain-drop">
+						<h:panelGroup id="column" layout="block" styleClass="column #{(dashboardBean.sprint.status == 'open' and dashboardBean.scrumTeamMember) ? 'task-group' : ''}">		
+							<ui:repeat var="issue" value="#{dashboardBean.getIssueOrderByStatusAndNotInSwimline(status.statusId)}">
+								<ui:param name="project" value="#{dashboardBean.projectOfIssue}" />						
+							<p:panel styleClass="span4 sticker sticker-medium panel_#{issue.issueId}" id="issue_sticker" toggleable="true" toggleSpeed="300" 
+								 collapsed="true" widgetVar="sticker_#{issue.issueId}">
+								<input type="hidden" value="#{issue.issueId}" class="issue-hidden"/>
+								<input type="hidden" value="#{issue.displayIssueId}" class="display-issueId-hidden"/>
+								<h:inputHidden value="#{issue.issueId}"/>
+								<f:facet name="header">									
+									<div class="sticker-header">
+										<h:panelGroup rendered="#{dashboardBean.multiProject}"> 										
+										<div id="#{issue.issueId}" class="ribbon" style = "border: 7px solid;border-color: #{project.projectColor} transparent transparent #{project.projectColor};"></div>
+										</h:panelGroup>
+										<div class="row">
+											<div class="header-left pull-left" style="width: 270px;">
+												<p class="small-lead" title="#{issue.subject}">
+												<h:commandLink styleClass="id_header" id="viewbtn" action="#{issueBeanV2.toViewIssuePage}" value="#{issue.type}: ##{issue.displayIssueId}:" target="_blank">
+													<f:setPropertyActionListener value="#{issue}" target="#{issueBeanV2.viewIssue}" />
+												</h:commandLink>
+												#{issue.subject}
+												</p>
+											</div>				
+											<h:panelGroup id="relationBtn" layout="block" class="header-right pull-left">
+													<p:commandLink rendered="#{!empty issue.parent}" id="showRelationship" styleClass="text-center" update=":relationshipChart" oncomplete="pnTasksRelationship.show()" actionListener="#{dashboardBean.showTasksRelationship}">
+												  		<f:attribute name="selectedIssueIdForRelationship" value="#{issue}" />
+												  		<h:graphicImage value="/resources/img/icons/flow-tree.png" alt="Avatar"  style="position: relative; z-index: 1; width: 15px; height: 15px; margin: 10px 0 0 10px;" />
+													</p:commandLink>	
+											</h:panelGroup>								
+											<h:panelGroup id="avatar-wrapper" layout="block" class="pull-right">
+												<h:panelGroup rendered="#{not empty issue.assigned}">
+													<h:graphicImage alt="avatar-sticker" id="ava_img" value="/file/?type=small-member-logo&amp;filename=#{issue.assigned.avatar}" styleClass="img-circle avatar" onclick="$(this).next().css('display','block')"/>
+													<p:overlayPanel rendered="#{dashboardBean.sprint.status=='open' and dashboardBean.scrumTeamMember}" for="ava_img" styleClass="members-selector" style="display: none;"
+																	showEffect="fade" widgetVar="iss_member_wg_#{issue.issueId}" onShow="setScrollableForAssignMenu(this)">
+														<ul class="member-list">
+															<li style="cursor: pointer;" onclick="assignTaskToMember(-1, #{issue.issueId})"><h:graphicImage alt="ava-none" id="ava_none" value="/resources/img/user.png" styleClass="img-circle avatar" /> None</li>
+															<ui:repeat var="member" value="#{dashboardBean.findDevelopmentMembersByTeamIdWithExclude(issue.assigned.memberId)}">
+																<li style="cursor: pointer;" onclick="assignTaskToMember('#{member.memberId}','#{issue.issueId}')"><h:graphicImage alt="ava-img" id="ava_img" value="/file/?type=small-member-logo&amp;filename=#{member.avatar}" styleClass="img-circle avatar"/> <h:outputText value="#{dashboardBean.showUserName(member)}" /></li>
+															</ui:repeat>
+														</ul>															
+													</p:overlayPanel>
+												</h:panelGroup>
+													
+												<h:panelGroup rendered="#{empty issue.assigned}">
+													<h:graphicImage alt="avatar-sticker" id="ava_img_none" value="/resources/img/user.png" styleClass="img-circle avatar" onclick="$(this).next().css('display','block')"/>
+											
+													<p:overlayPanel rendered="#{dashboardBean.sprint.status=='open' and dashboardBean.scrumTeamMember}" for="ava_img_none" styleClass="members-selector" style="display: none;"
+																	showEffect="fade"  widgetVar="iss_member_wg_#{issue.issueId}" onShow="setScrollableForAssignMenu(this)">
+														<ul class="member-list">
+															<ui:repeat var="member" value="#{dashboardBean.findDevelopmentMembersByTeamId()}">
+																<li style="cursor: pointer;" onclick="assignTaskToMember('#{member.memberId}','#{issue.issueId}')"><h:graphicImage alt="ava-img" id="ava_img" value="/file/?type=small-member-logo&amp;filename=#{member.avatar}" styleClass="img-circle avatar"/> <h:outputText value="#{dashboardBean.showUserName(member)}" /></li>
+															</ui:repeat>
+														</ul>
+													</p:overlayPanel>	
+												</h:panelGroup>
+														
+												<div class="task-progress" style="width: #{dashboardBean.calculateProgressInit(issue)}%"></div>													
+											</h:panelGroup>																					
+										</div>																			
+									</div>										
+								</f:facet>		
+								<div class="sticker-inner">	
+									<h:outputText value="#{issue.description}" escape="false" />
+								</div>
+								<div class="sticker-footer">
+									<div class="row">											
+										<div class="pointRemainInplace" style="width: auto;display: inline-block;">R:
+											<p:inplace effect="none" widgetVar="p_inplace_#{issue.issueId}" styleClass="txtEstimateAndRemain" id="ajaxInplacePointRemain" disabled="#{((issue.status.type=='START') or (dashboardBean.sprint.status == 'closed')) or !dashboardBean.scrumTeamMember}">													
+										 		<p:ajax event="save" listener="#{dashboardBean.updatePointRemain(issue.issueId)}" async="false" oncomplete="updateComponent('#{component.parent.clientId}', #{issue.issueId}, #{issue.status.type=='START'});" update="reorder,pointRemainMsg" global="true"/>
+												<p:ajax event="cancel" global="false" update="reorder"/>
+												<p:inputText style="width: 60px;"  id="pointRemain" onkeyup="if(event.keyCode == 27){p_inplace_#{issue.issueId}.cancel()}" 
+										onkeypress="if(event.keyCode == 13){p_inplace_#{issue.issueId}.save();return false;};"
+												validator="#{dashboardBean.checkPointRemain}" required="true" value="#{dashboardBean.pointRemainFormat}" label="text">
+													<f:attribute name="pointR" value="#{issue.issueId}"/>
+												</p:inputText>
+											</p:inplace>
+										</div>
+										<h:panelGroup  styleClass="reorder" id="reorder"  >
+										  		<i class="icon-reorder" id="pointremain" style="cursor: pointer"/>
+										</h:panelGroup>
+										<p:overlayPanel id="chartPanel"  appendToBody="true"  for="reorder" hideEffect="fade" styleClass="pointremain-selector" widgetVar="iss_history_rep_#{issue.issueId}" 
+										  		onShow="setScrollablePointRemainHistory(this)">
+											<ul class="pointremain-list">
+												<ui:repeat var="pointRemain" value="#{dashboardBean.findHistoryOfPointRemainByIssueId(issue.issueId)}">
+													<li style="cursor: pointer;"><h:outputText value="#{pointRemain}" escape="false" /></li>
+												</ui:repeat>
+											</ul>
+  										</p:overlayPanel>	   
+	   									<ul class="span2 icon-wrapper unstyled inline pull-right text-right">
+	   										<li>
+	   											<h:commandLink style="padding: 0 15px;" styleClass="edit-issue-link" action="#{issueBeanV2.backToAddIssuePage}" title="Edit Issue" target="_new" rendered="#{dashboardBean.scrumTeamMember}">
+	   												<f:setPropertyActionListener value="#{issue}" target="#{issueBeanV2.viewIssue}" />
+	   												<i class="icon-pencil"></i>
+	   											</h:commandLink>
+	   											<h:commandLink  rendered="#{dashboardBean.scrumTeamMember}" onclick="event.preventDefault(); event.stopPropagation(); iss_#{issue.issueId}_ctx.show(event); return false;" style="padding: 0 15px;" class="btn-more-options-#{issue.issueId}" title="More...">
+	   												<i class="icon-ellipsis-vertical"></i>
+	   											</h:commandLink>
+	   										</li>
+	   									</ul>
+	   									<p:message for="pointRemain" id="pointRemainMsg" display="default"/>	   												
+										<div >
+											<input type="hidden" class="existHistoryOfPointRemain" value="#{dashboardBean.existHistoryOfPointRemain}"/>
+											<input type="hidden" class="oldEstimate" value="#{dashboardBean.pointEstimateFormat}"/>
+											E: <p:inplace  effect="none" widgetVar="p_inplace_e#{issue.issueId}" styleClass="txtEstimateAndRemain" id="ajaxInplaceEstimatePoint" disabled="#{((issue.status.type!='START') or (dashboardBean.sprint.status == 'closed')) or !dashboardBean.scrumTeamMember}">	
+													<p:ajax event="save" oncomplete="updateComponent('#{component.parent.clientId}', #{issue.issueId}, #{issue.status.type=='START'})" listener="#{dashboardBean.updateEstimatePoint(issue.issueId)}" global="true" async="false"/>											
+													<p:ajax event="cancel" global="false" />
+													<p:inputText style="width: 60px" onkeyup="if(event.keyCode == 27){p_inplace_e#{issue.issueId}.cancel()}" 
+													onkeypress="if(event.keyCode == 13){p_inplace_e#{issue.issueId}.save();return false;};" 
+													id="estimatePoint" validator="#{dashboardBean.checkEstimatePoint}" required="true" value="#{dashboardBean.pointEstimateFormat}" label="text"/>
+													<p:message for="estimatePoint" id="estimatePointMsg" display="default"/>
+												</p:inplace>											
+										</div>											
+									</div>
+								</div>	
+							</p:panel>				
+							<p:contextMenu for="issue_sticker" styleClass="context-menu" model="#{dashboardBean.contextMenu}" rendered="#{dashboardBean.sprint.status=='open'}" widgetVar="iss_#{issue.issueId}_ctx" />								
+							<script type="text/javascript">
+								showTaskStickerDetails(sticker_#{issue.issueId});
+								tooltipProjectDetail(#{issue.issueId}, #{project.projectId}, '#{project.projectName}', '#{project.projectLogo}','#{request.contextPath}');
+								removeMoreOptionButtons();
+							</script>	
+						</ui:repeat>
+					</h:panelGroup>
+				</td>
+				</h:panelGroup>
+				</ui:repeat>
+				</tr>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{!dashboardBean.addSwimLine}">
+					<tr>
+					<ui:repeat var="status" value="#{dashboardBean.statusList}">
+					<h:panelGroup rendered="#{status.type != 'ACCEPTED_HIDE'}">
+					<h:outputScript rendered="#{status.type=='DONE'}">
+						<script type="text/javascript"> 
+							var STATUS_DONE_ID = #{status.statusId};
+						</script>
+					</h:outputScript>
+					<td id="#{status.statusId}" class = "cantain-drop">
+						<h:panelGroup id="column" layout="block" styleClass="column #{(dashboardBean.sprint.status == 'open' and dashboardBean.scrumTeamMember) ? 'task-group' : ''}">		
+							<ui:repeat var="issue" value="#{dashboardBean.getIssueOrderByStatus(status.statusId)}">
+								<ui:param name="project" value="#{dashboardBean.projectOfIssue}" />						
+							<p:panel styleClass="span4 sticker sticker-medium panel_#{issue.issueId}" id="issue_sticker" toggleable="true" toggleSpeed="300" 
+								 collapsed="true" widgetVar="sticker_#{issue.issueId}">
+								<input type="hidden" value="#{issue.issueId}" class="issue-hidden"/>
+								<input type="hidden" value="#{issue.displayIssueId}" class="display-issueId-hidden"/>
+								<h:inputHidden value="#{issue.issueId}"/>
+								<f:facet name="header">									
+									<div class="sticker-header">
+										<h:panelGroup rendered="#{dashboardBean.multiProject}"> 										
+										<div id="#{issue.issueId}" class="ribbon" style = "border: 7px solid;border-color: #{project.projectColor} transparent transparent #{project.projectColor};"></div>
+										</h:panelGroup>
+										<div class="row">
+											<div class="header-left pull-left" style="width: 270px;">
+												<p class="small-lead" title="#{issue.subject}">
+												<h:commandLink styleClass="id_header" id="viewbtn" action="#{issueBeanV2.toViewIssuePage}" value="#{issue.type}: ##{issue.displayIssueId}:" target="_blank">
+													<f:setPropertyActionListener value="#{issue}" target="#{issueBeanV2.viewIssue}" />
+												</h:commandLink>
+												#{issue.subject}
+												</p>
+											</div>				
+											<h:panelGroup id="relationBtn" layout="block" class="header-right pull-left">
+													<p:commandLink rendered="#{!empty issue.parent}" id="showRelationship" styleClass="text-center" update=":relationshipChart" oncomplete="pnTasksRelationship.show()" actionListener="#{dashboardBean.showTasksRelationship}">
+												  		<f:attribute name="selectedIssueIdForRelationship" value="#{issue}" />
+												  		<h:graphicImage value="/resources/img/icons/flow-tree.png" alt="Avatar"  style="position: relative; z-index: 1; width: 15px; height: 15px; margin: 10px 0 0 10px;" />
+													</p:commandLink>	
+											</h:panelGroup>								
+											<h:panelGroup id="avatar-wrapper" layout="block" class="pull-right">
+												<h:panelGroup rendered="#{not empty issue.assigned}">
+													<h:graphicImage alt="avatar-sticker" id="ava_img" value="/file/?type=small-member-logo&amp;filename=#{issue.assigned.avatar}" styleClass="img-circle avatar" onclick="$(this).next().css('display','block')"/>
+													<p:overlayPanel rendered="#{dashboardBean.sprint.status=='open' and dashboardBean.scrumTeamMember}" for="ava_img" styleClass="members-selector" style="display: none;"
+																	showEffect="fade" widgetVar="iss_member_wg_#{issue.issueId}" onShow="setScrollableForAssignMenu(this)">
+														<ul class="member-list">
+															<li style="cursor: pointer;" onclick="assignTaskToMember(-1, #{issue.issueId})"><h:graphicImage alt="ava-none" id="ava_none" value="/resources/img/user.png" styleClass="img-circle avatar" /> None</li>
+															<ui:repeat var="member" value="#{dashboardBean.findDevelopmentMembersByTeamIdWithExclude(issue.assigned.memberId)}">
+																<li style="cursor: pointer;" onclick="assignTaskToMember('#{member.memberId}','#{issue.issueId}')"><h:graphicImage alt="ava-img" id="ava_img" value="/file/?type=small-member-logo&amp;filename=#{member.avatar}" styleClass="img-circle avatar"/> <h:outputText value="#{dashboardBean.showUserName(member)}" /></li>
+															</ui:repeat>
+														</ul>															
+													</p:overlayPanel>
+												</h:panelGroup>
+													
+												<h:panelGroup rendered="#{empty issue.assigned}">
+													<h:graphicImage alt="avatar-sticker" id="ava_img_none" value="/resources/img/user.png" styleClass="img-circle avatar" onclick="$(this).next().css('display','block')"/>
+											
+													<p:overlayPanel rendered="#{dashboardBean.sprint.status=='open' and dashboardBean.scrumTeamMember}" for="ava_img_none" styleClass="members-selector" style="display: none;"
+																	showEffect="fade"  widgetVar="iss_member_wg_#{issue.issueId}" onShow="setScrollableForAssignMenu(this)">
+														<ul class="member-list">
+															<ui:repeat var="member" value="#{dashboardBean.findDevelopmentMembersByTeamId()}">
+																<li style="cursor: pointer;" onclick="assignTaskToMember('#{member.memberId}','#{issue.issueId}')"><h:graphicImage alt="ava-img" id="ava_img" value="/file/?type=small-member-logo&amp;filename=#{member.avatar}" styleClass="img-circle avatar"/> <h:outputText value="#{dashboardBean.showUserName(member)}" /></li>
+															</ui:repeat>
+														</ul>
+													</p:overlayPanel>	
+												</h:panelGroup>
+														
+												<div class="task-progress" style="width: #{dashboardBean.calculateProgressInit(issue)}%"></div>													
+											</h:panelGroup>																					
+										</div>																			
+									</div>										
+								</f:facet>		
+								<div class="sticker-inner">	
+									<h:outputText value="#{issue.description}" escape="false" />
+								</div>
+								<div class="sticker-footer">
+									<div class="row">											
+										<div class="pointRemainInplace" style="width: auto;display: inline-block;">R:
+											<p:inplace effect="none" widgetVar="p_inplace_#{issue.issueId}" styleClass="txtEstimateAndRemain" id="ajaxInplacePointRemain" disabled="#{((issue.status.type=='START') or (dashboardBean.sprint.status == 'closed')) or !dashboardBean.scrumTeamMember}">													
+										 		<p:ajax event="save" listener="#{dashboardBean.updatePointRemain(issue.issueId)}" async="false" oncomplete="updateComponent('#{component.parent.clientId}', #{issue.issueId}, #{issue.status.type=='START'});" update="reorder,pointRemainMsg" global="true"/>
+												<p:ajax event="cancel" global="false" update="reorder"/>
+												<p:inputText style="width: 60px;"  id="pointRemain" onkeyup="if(event.keyCode == 27){p_inplace_#{issue.issueId}.cancel()}" 
+										onkeypress="if(event.keyCode == 13){p_inplace_#{issue.issueId}.save();return false;};"
+												validator="#{dashboardBean.checkPointRemain}" required="true" value="#{dashboardBean.pointRemainFormat}" label="text">
+													<f:attribute name="pointR" value="#{issue.issueId}"/>
+												</p:inputText>
+											</p:inplace>
+										</div>
+										<h:panelGroup  styleClass="reorder" id="reorder"  >
+										  		<i class="icon-reorder" id="pointremain" style="cursor: pointer"/>
+										</h:panelGroup>
+										<p:overlayPanel id="chartPanel"  appendToBody="true"  for="reorder" hideEffect="fade" styleClass="pointremain-selector" widgetVar="iss_history_rep_#{issue.issueId}" 
+										  		onShow="setScrollablePointRemainHistory(this)">
+											<ul class="pointremain-list">
+												<ui:repeat var="pointRemain" value="#{dashboardBean.findHistoryOfPointRemainByIssueId(issue.issueId)}">
+													<li style="cursor: pointer;"><h:outputText value="#{pointRemain}" escape="false" /></li>
+												</ui:repeat>
+											</ul>
+  										</p:overlayPanel>	   
+	   									<ul class="span2 icon-wrapper unstyled inline pull-right text-right">
+	   										<li>
+	   											<h:commandLink style="padding: 0 15px;" styleClass="edit-issue-link" action="#{issueBeanV2.backToAddIssuePage}" title="Edit Issue" target="_new" rendered="#{dashboardBean.scrumTeamMember}">
+	   												<f:setPropertyActionListener value="#{issue}" target="#{issueBeanV2.viewIssue}" />
+	   												<i class="icon-pencil"></i>
+	   											</h:commandLink>
+	   											<h:commandLink  rendered="#{dashboardBean.scrumTeamMember}" onclick="event.preventDefault(); event.stopPropagation(); iss_#{issue.issueId}_ctx.show(event); return false;" style="padding: 0 15px;" class="btn-more-options-#{issue.issueId}" title="More...">
+	   												<i class="icon-ellipsis-vertical"></i>
+	   											</h:commandLink>
+	   										</li>
+	   									</ul>
+	   									<p:message for="pointRemain" id="pointRemainMsg" display="default"/>	   												
+										<div >
+											<input type="hidden" class="existHistoryOfPointRemain" value="#{dashboardBean.existHistoryOfPointRemain}"/>
+											<input type="hidden" class="oldEstimate" value="#{dashboardBean.pointEstimateFormat}"/>
+											E: <p:inplace  effect="none" widgetVar="p_inplace_e#{issue.issueId}" styleClass="txtEstimateAndRemain" id="ajaxInplaceEstimatePoint" disabled="#{((issue.status.type!='START') or (dashboardBean.sprint.status == 'closed')) or !dashboardBean.scrumTeamMember}">	
+													<p:ajax event="save" oncomplete="updateComponent('#{component.parent.clientId}', #{issue.issueId}, #{issue.status.type=='START'})" listener="#{dashboardBean.updateEstimatePoint(issue.issueId)}" global="true" async="false"/>											
+													<p:ajax event="cancel" global="false" />
+													<p:inputText style="width: 60px" onkeyup="if(event.keyCode == 27){p_inplace_e#{issue.issueId}.cancel()}" 
+													onkeypress="if(event.keyCode == 13){p_inplace_e#{issue.issueId}.save();return false;};" 
+													id="estimatePoint" validator="#{dashboardBean.checkEstimatePoint}" required="true" value="#{dashboardBean.pointEstimateFormat}" label="text"/>
+													<p:message for="estimatePoint" id="estimatePointMsg" display="default"/>
+												</p:inplace>											
+										</div>											
+									</div>
+								</div>	
+							</p:panel>				
+							<p:contextMenu for="issue_sticker" styleClass="context-menu" model="#{dashboardBean.contextMenu}" rendered="#{dashboardBean.sprint.status=='open'}" widgetVar="iss_#{issue.issueId}_ctx" />								
+							<script type="text/javascript">
+								tooltipProjectDetail(#{issue.issueId}, #{project.projectId}, '#{project.projectName}', '#{project.projectLogo}','#{request.contextPath}');
+								removeMoreOptionButtons();
+								paddingTopColumn();
+							</script>	
+						</ui:repeat>
+					</h:panelGroup>
+				</td>
+				</h:panelGroup>
+				</ui:repeat>
+				</tr>
+				</h:panelGroup>
+			</tbody>
+		</table>
+		<h:panelGroup id="scriptKanban">
+			<script type="text/javascript">
+				setBoardHeight();
+				sortable();
+				expandAndCollapseColum();
+				firstClickToSelectAllText();
+			</script>
+		</h:panelGroup>
+		</h:panelGroup>
+		
+		<p:confirmDialog widgetVar="informCanNotMoveTask" width="400" modal="true" closable="true" severity="alert" type="hidden">
+			<f:facet name="header">
+				<h:outputText value="Warning"></h:outputText>
+			</f:facet>
+			<f:facet name="message">
+						You can not update the status of task in the past Sprint
+			</f:facet>
+			<h:panelGroup layout="block" style="text-align: right">
+				<p:commandButton value="Close" oncomplete="informCanNotMoveTask.hide()" />
+			</h:panelGroup>
+		</p:confirmDialog>
+		
+	</h:form>
+	<script type="text/javascript">
+		$(function(){
+			setBoardHeight();			
+			$(window).resize(function() {
+				setBoardHeight();			
+			});	
+		})
+		
+	</script>
+</ui:composition>

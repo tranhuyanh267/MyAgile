@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:custom="http://myagile.com/custom">
+
+<ui:composition template="/pages/admin/users.xhtml">
+	<ui:define name="layoutTitle">
+		User's project
+	</ui:define>
+	
+	<ui:define name="layoutHead">
+		<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/css/project.css" />
+	</ui:define>
+	<ui:define name="adminContent">
+		<ui:include src="_titleuserproject.xhtml"/>
+		<ui:include src="_listuserproject.xhtml"/>
+	</ui:define>
+	
+	<ui:define name="layoutFooter">
+		<p:ajaxStatus>
+			<f:facet name="start">
+				<h:panelGroup styleClass="ajaxPopUp">
+					<p:graphicImage alt="ajax loader" styleClass="imgAjax" value="/resources/img/ajax_loader/ajax_loader.gif" />
+				</h:panelGroup>
+			</f:facet>
+			<f:facet name="complete">
+				<h:outputText value="" />
+			</f:facet>
+		</p:ajaxStatus>
+
+	</ui:define>
+</ui:composition>
+</html>

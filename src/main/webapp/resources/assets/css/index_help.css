@@ -1,0 +1,112 @@
+#body-div {
+	min-width: 490px;
+}
+
+.display-none {
+	display: none;
+}
+
+.content-block {
+	width: auto;
+}
+
+.content-section .heading {
+	padding-right: 21px;
+}
+/* css for note editor */
+.note-editor .btn {
+	background: white;
+	color:black;
+}
+.note-editor .btn-group{
+	border:1px solid #ccc;
+	border-radius:4px;
+}
+.note-editor .note-color .dropdown-menu {
+	margin-left:-10px;
+}
+.note-editor .note-color .note-palette-title,
+.note-editor .note-color .note-color-reset {
+	color:white;
+}
+
+.note-editor .note-color .note-color-reset:hover {
+	background: white;
+	color:black;
+}
+
+/* style for feedback form */
+.add-feedback{
+	float: right;
+	color: #0076A3;
+	cursor: pointer;
+}
+
+.frm-feedback{
+	overflow: auto;
+	height: 60%;
+	padding:0px 10%;
+}
+
+.tb-form-feedback {
+	width: 100%;
+	margin-top: 10px;
+}
+
+.clSubject {
+	width: 100%;
+	padding-left: 0px;
+	padding-right: 0px;
+	text-indent: 7px;
+	margin-bottom: 5px !important;
+}
+.col-label {
+	text-align: left;
+	width: 100px;
+}
+
+.col-send-button {
+	text-align: center;
+}
+
+.tb-form-feedback,.tb-form-feedback tr, .tb-form-feedback td{
+	border: none;
+}
+
+.cltxtCaptcha {
+	padding-top: 4px;
+	padding-bottom: 4px;
+	width: 250px;
+	padding-left: 0px;
+	padding-right: 0px;
+	text-indent: 7px;
+}
+
+.wrap-answer-captcha {
+	margin-bottom: 5px;
+}
+
+#feedBackDialog {
+}
+
+.title-give-feedback {
+	top:9px;
+	font-size: 16px;
+	background: #45a1de;
+  	display: inline;
+  	padding: 3px 12px;
+  	color: white;
+	position: relative;
+}
+
+.title-give-feedback:after {
+	position: absolute;
+	border: 10px solid;
+	border-color: red transparent transparent transparent;
+	
+}
+
+.message-thank {
+	position: relative;
+  	top: 3px;
+}

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:custom="http://myagile.com/custom">
+<style>
+#userStoryTable .ui-datatable-header {
+	background: white;
+	color: black;
+	border-top-right-radius: 0px;
+	border-top-left-radius: 0px;
+}
+/* set width for error msg  */
+.td-msg-userstory-exist > div{
+	width:250px;
+}
+.msg-estimate > div{
+	width:290px;
+	padding-left:5px !important;
+	padding-right:5px !important;
+}
+.msg >div{
+	width:250px;
+}
+
+
+[id = "userStoryForm:id-priority_panel"],
+[id = "userStoryForm:projectSelector_panel"]
+{
+	width:300px;
+}
+#msg-save-inform{
+	text-align: left;
+}
+@media screen and (min-width:1200px){
+	#msg-save-inform{
+		width:1170px;
+		margin:auto;
+	}
+}
+
+</style>
+
+<p:messages id="msg-save-inform"  for = "msg-save-inform"/>
+	
+<p:fieldset id="fieldset-userStoryForm"
+	style="display:none;margin-bottom:5px" styleClass="span12">
+	<h:form id="userStoryForm">
+		<c:set var="userStory" value="#{dashboardBean.userStory}"></c:set>
+		<p:panelGrid id="userStoryPnl"
+			styleClass="user-story-table-fixed noborder">
+			<p:row>
+				<p:column style="width:100%" colspan="4">
+					<p:messages for="msgs" id="msgs" showDetail="true" closable="true"
+						showSummary="false" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column style="width:10%">
+					<h:outputLabel for="usNameTxt" value="Name:"
+						style="margin-bottom: 0px !important;" />
+				</p:column>
+				<p:column style="width:30%">
+					<p:inputText value="#{userStory.name}" id="usNameTxt"
+						style="width: 290px; margin-bottom: 0px !important;"
+						validator="#{dashboardBean.validateUserStory}" required="true"
+						immediate="true">
+						<p:ajax event="keyup" update="usNameMsgs" global="false" />
+						<f:validateLength maximum="255" />
+					</p:inputText>
+				</p:column>
+
+				<p:column style="width:10%">
+					<h:outputText value="Project:" />
+				</p:column>
+
+				<p:column style="width:30%">
+					<p:selectOneMenu id="projectNullSelector"
+						rendered="#{empty dashboardBean.projectList}">
+						<f:selectItem itemLabel="No project" noSelectionOption="true" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu id="projectSelector"
+						value="#{dashboardBean.projectId}"
+						rendered="#{!empty dashboardBean.projectList}"
+						style="width:300px;margin-bottom: 0px !important;">
+						<f:selectItems value="#{dashboardBean.projectList}" var="p"
+							itemValue="#{p.projectId}" itemLabel="#{p.projectName}" />
+						<p:ajax event="change"
+							listener="#{dashboardBean.handleChangeProject}" />
+					</p:selectOneMenu>
+				</p:column>
+			</p:row>
+			
+			<p:row>
+				<p:column></p:column>
+				<p:column styleClass="td-msg-userstory-exist">
+					<p:message for="usNameTxt" id="usNameMsgs" />
+				</p:column>
+			</p:row>
+			
+			<p:row>
+				<p:column style="width:10%">
+					<h:outputText value="Priority:" style="margin-bottom: 0px !important;"/>
+				</p:column>
+				<p:column style="width:30%">
+					<p:selectOneMenu 
+						value="#{userStory.priority}" 
+						style="width: 298px; margin-bottom: 0px !important;" 
+						id = "id-priority"
+						widgetVar="selpriority">
+						<f:selectItem itemLabel="--Select a priority--" itemValue="NONE" />
+		                <f:selectItem itemLabel="Must" itemValue="MUST" />
+		                <f:selectItem itemLabel="Could" itemValue="COULD" />
+		                <f:selectItem itemLabel="Should" itemValue="SHOULD"/>
+		                <f:selectItem itemLabel="Wont" itemValue="WONT" />
+					</p:selectOneMenu>
+				</p:column>				
+				
+				<p:column>
+					<h:outputText value="Status:" />
+				</p:column>
+				
+				<p:column id="usStatusTxt" style="padding-bottom: 2px;">
+					<h:panelGroup layout="block" styleClass="form-inline">
+						<h:outputText value="In progress"></h:outputText>
+					</h:panelGroup>
+				</p:column>
+				
+			</p:row>
+			
+			<p:row>
+				<p:column>
+					<h:outputText value="Value:" />
+				</p:column>
+				<p:column>
+					<p:spinner id="usValueSpner" value="#{userStory.value}" widgetVar="spinValue"
+								style="margin-bottom: 0px !important;"
+								validator="#{productBacklogBean.validateValue}"
+								immediate="true">
+								<p:ajax event="change" update="msgValue" global="false"/>
+								<p:ajax event="keyup" update="msgValue" global="false"/>
+					</p:spinner>					
+				</p:column>
+				
+				<p:column >
+					<h:outputText value="Issues:" />
+				</p:column>
+				<p:column>
+					No subIssue
+				</p:column>	
+			</p:row>
+			<p:row>
+				<p:column></p:column>
+				<p:column styleClass="msg">
+					<p:message for="usValueSpner" id="msgValue" display="default" />
+				</p:column>
+				
+			</p:row>
+			
+			<p:row>
+				<p:column>
+					<h:outputText value="Risk:" />
+				</p:column>
+				<p:column >
+					<p:spinner id = "usRiskSpiner" value="#{userStory.risk}"
+								style="margin-bottom: 0px !important;" widgetVar="spinRisk"
+								validator="#{productBacklogBean.validateValue}"
+								immediate="true">
+								<p:ajax event="change" update="msgRisk" global="false"/>
+								<p:ajax event="keyup" update="msgRisk" global="false"/>
+					</p:spinner>					
+				</p:column>
+				
+				<p:column>
+					<h:outputLabel for="estimate" value="Estimate: " />
+				</p:column>
+				<p:column>
+					<p:inputText id="estimate" style="width:290px;" validator="#{issueBean.checkPointEstimate}"
+						value="#{dashboardBean.estimate}" maxlength="8">
+						<p:ajax event="keyup" update="estimateMsg" oncomplete="removeError('estimate');" global="false"/>	
+					</p:inputText>
+				</p:column>
+			</p:row>
+			
+			<p:row>
+				<p:column></p:column>
+				<p:column styleClass="msg">
+					<p:message for="usRiskSpiner" id="msgRisk" display="default" />
+				</p:column>
+				<p:column></p:column>
+				<p:column styleClass="msg-estimate">
+					<p:message for="estimate" id="estimateMsg" display="default" />
+				</p:column>	
+			</p:row>
+			
+			<p:row>
+				<p:column>
+					<h:outputLabel for="usDescTxt" value="Description:" />
+				</p:column>
+				<p:column colspan="3">
+					<p:editor id="usDescTxt" value="#{userStory.description}" widgetVar="editorDescription" styleClass="fix-max-width"
+							  controls="bold italic underline strikethrough font size color highlight | bullets numbering " width="793"
+							  height="150" maxlength="2000">
+					</p:editor>
+				</p:column>
+			</p:row>
+			
+			<p:row>
+				<p:column>
+					<h:outputLabel for="usNoteTxt" value="Note:" />
+				</p:column>
+				<p:column colspan="3">
+					<p:editor id="usNoteTxt" value="#{userStory.note}" widgetVar="editorNote" styleClass="fix-max-width"
+							  controls="bold italic underline strikethrough font size color highlight | bullets numbering " width="793"
+							  height="150" maxlength="2000">
+					</p:editor>
+				</p:column>
+			</p:row>
+			<p:row>
+			    <p:column>
+			         Attachment:
+                </p:column>
+                <p:column>
+                    <h:panelGroup layout="block" id="usAttachment">
+                        <script type="text/javascript">
+                            $(document).ready(function(){
+                                initUploadAttachment('#{request.contextPath}/upload'); 
+                            });
+                        </script>
+	                    <button id="pickfiles" class="btn btn-small btn-info input-block-level" style="width: 200px;">
+						    <i class="icon-picture"></i> Add file
+						</button>
+						<p:blockUI block="usAttachment" widgetVar="uploadAttBlock" style="width: 200px;">
+						    Uploading... (<span class="upload-progress">0%</span>)
+						</p:blockUI>
+					</h:panelGroup>	
+					<p:remoteCommand name="updateAtt" actionListener="#{dashboardBean.uploadAttachment}" update="us-attachment-list" process="@this" />
+                </p:column>
+			</p:row>
+			<p:row>
+                <p:column></p:column>
+                 <p:column>
+	                    <h:panelGroup layout="block" id="us-attachment-list">
+                                <p:panel id="filelist" style="border:0px;">
+                                    <!-- Not Added List-->
+                                    <ui:repeat
+                                        value="#{dashboardBean.notAddedAttachmentList}"  rendered="#{not empty dashboardBean.notAddedAttachmentList}"
+                                        var="attachment">
+                                        
+                                        <p:commandLink rendered="#{attachment.diskFilename != null and attachment.filename != null}" 
+                                            onclick="changeIdPlaceholder(&quot;#{attachment.filename}&quot;);deleteNotAddedFileDlg.show();" process="@this">
+                                            <span class="ui-icon ui-icon-trash"
+                                                style="float: left; margin-top: 1px !important; padding-right: 7px;"></span>
+                                            <span style="float: left;">#{attachment.filename}</span>
+                                            <f:setPropertyActionListener  value="#{attachment}" target="#{dashboardBean.deleteAttachment}" />
+                                        </p:commandLink>
+                                        <br />
+                                    </ui:repeat>
+                                    <div class="upload-progress-wrapper">
+                                        <div id="upload-alert-add-file" style="display: none">
+                                            <span id="upload-alert-add-file-icon"></span> <span
+                                                id="upload-alert-add-file-message" class="upload-message"></span>
+                                        </div>
+                                    </div>
+                                 </p:panel>
+                            </h:panelGroup>
+                 </p:column>
+            </p:row>    
+			<p:row>
+				<p:column>
+				</p:column>
+				<p:column colspan="3" style="text-align:center">
+					<p:commandButton id="savebtn" value="Save"
+						style="margin-right:5px;"
+						actionListener="#{dashboardBean.saveUserStory}" update = ":msg-save-inform"
+						icon="icon-save" onstart="hideform()" onsuccess="resetForm();" oncomplete="updateValueChangedAfterSaveUserStory();" global="false">
+					</p:commandButton>
+
+					<p:commandButton id="cancelbtn" value="Cancel" onclick="return hideform();" ajax="false">
+					</p:commandButton>
+				</p:column>
+			</p:row>
+		</p:panelGrid>
+		<script>
+			$(document).ready(function(){
+				removeHtmlTagWhenPasteInEditorByIdParentAndWidget("#userStoryForm\\:usDescTxt",editorDescription);
+				removeHtmlTagWhenPasteInEditorByIdParentAndWidget("#userStoryForm\\:usNoteTxt",editorNote);
+				setHeightIframeBody();
+			});
+		</script>
+	</h:form>
+	<h:form>
+		<p:remoteCommand name="refreshPage" autoRun="true"
+			actionListener="#{productBacklogBean.onRefreshPage()}"
+			update=":userStoryForm" />
+	</h:form>
+</p:fieldset>
+</html>

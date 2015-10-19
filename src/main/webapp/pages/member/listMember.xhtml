@@ -1,0 +1,138 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	template="/WEB-INF/layouts/template.xhtml">
+	<ui:define name="layoutHead">
+		<script
+			src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script>
+			$(function() {
+				$(".ui-commandlink").hide();
+				$("#sel").on("change", "select", function() {
+					$("div[class='member-profile']").hide();
+					$("div[name='" + $(this).val() + "']").show();
+				});
+
+				$(".ui-commandlink").on("click", function() {
+					$(this).parent().parent().hide(500);
+
+				});
+				$(".member-avatar").on("mouseover", function() {
+					$(this).children("form").children("a").show();
+				});
+				$(".member-avatar").on("mouseout", function() {
+					$(this).children("form").children("a").hide();
+				});
+
+			});
+		</script>
+	</ui:define>
+	<ui:define name="layoutTitle">
+		List Member
+	</ui:define>
+	<ui:define name="layoutBody">
+		<h3>Team Member</h3>
+		<h:form>
+			<div id="sel">
+				Select a team:
+				<h:selectOneMenu id="selectTeam">
+					<f:selectItem itemLabel="Select Team" itemValue="0" />
+					<c:forEach items="${result}" var="t">
+						<f:selectItem itemLabel="${t.teamName}" itemValue="${t.teamId}" />
+					</c:forEach>
+					<p:ajax update="panel" event="change"></p:ajax>
+				</h:selectOneMenu>
+				<h:outputText id="panel" />
+			</div>
+		</h:form>
+
+
+		<div id="memberDetail" class="team-members">
+			<div class="row">
+				<fieldset class="member span10">
+					<legend style="width: 100px;">Member</legend>
+					<c:forEach items="${member}" var="m">
+						<div class="member-profile" name="${m.team.teamId}"
+							style="display: none;">
+							<c:if test="${m.isAccepted == true}">
+								<div class="member-avatar">
+									<div class="darken">
+										<h:graphicImage alt="member avatar" name="img/imageMember/${m.member.avatar}"
+											rendered="true" />
+									</div>
+									<h:form>
+									<p:commandLink value="Remove" action="rmMember"
+										styleClass="btn btn-info" style="margin-top:-40px;">
+										<f:param name="teamMemberId" value="#{m.teammemberId}"></f:param>
+									</p:commandLink>
+									</h:form>
+								</div>
+								<div class="member-info">
+
+									<p class="member-name">${m.member.lastName}
+										${m.member.firstName}</p>
+										<p>
+											<h:selectOneMenu value="${m.position}">
+												<f:selectItem itemLabel="Srum Master"
+													itemValue="SCRUM_MASTER" />
+												<f:selectItem itemLabel="Stakeholder"
+													itemValue="STAKEHOlDER" />
+												<f:selectItem itemLabel="Developer" 
+													itemValue="DEVELOPER" />
+													<f:selectItem itemLabel="Product Owner" 
+													itemValue="PRODUCT_OWNER" />
+											</h:selectOneMenu>
+										</p>
+									<p>										
+										<span class="aicon-email"></span>${m.member.username}
+									</p>
+									<p>
+										<i class="aicon-skype"></i>${m.member.skype}
+									</p>
+									<p>
+										<i class="aicon-mobile"></i>${m.member.mobile}
+									</p>
+									<p>
+										<span class="aicon-company"></span>${m.member.company}
+									</p>
+								</div>
+							</c:if>
+							<c:if test="${m.isAccepted == false}">
+								<div class="member-avatar">
+									<div class="darken">
+										<h:graphicImage alt="user avatar" name="img/imageMember/user.png"
+											rendered="true" />
+									</div>
+									<h:form>
+									<p:commandLink value="Remove" action="rmMember"
+										styleClass="btn btn-info" style="margin-top:-40px;">
+										<f:param name="teamMemberId" value="#{m.teammemberId}"></f:param>
+									</p:commandLink>
+									</h:form>
+								</div>
+								<div class="member-info">
+
+									<p class="member-name">Waiting for acceptance</p>
+									<p>
+										<span class="aicon-email"></span>${m.member.username}
+									</p>
+
+								</div>
+							</c:if>
+
+						</div>
+					</c:forEach>
+
+				</fieldset>
+			</div>
+		</div>
+
+
+
+	</ui:define>
+
+</ui:composition>

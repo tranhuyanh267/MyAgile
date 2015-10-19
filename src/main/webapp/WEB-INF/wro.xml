@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<groups xmlns="http://www.isdc.ro/wro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.isdc.ro/wro wro.xsd">
+	<!-- Libs -->
+	<group name="myagile">
+		<css>/resources/assets/css/myagile-ui.css</css>
+		<css>/resources/assets/libs/bootstrap/css/bootstrap-responsive.min.css</css>
+		<css>/resources/assets/css/main.css</css>
+		<js>/resources/assets/libs/bootstrap/js/bootstrap.min.js</js>
+		<js>/resources/assets/js/main.js</js>
+	</group>
+	<group name = "summernote">
+		<css>/resources/assets/libs/summernote/summernote.css</css>
+		<js>/resources/assets/libs/summernote/summernote.min.js</js>
+	</group>
+	<group name="chart">
+		<js>/resources/assets/js/chart.js</js>
+		<js>/resources/assets/libs/jqplot/jqplot.dateAxisRenderer.js</js>
+		<js>/resources/assets/libs/jqplot/jqplot.canvasOverlay.js</js>
+	</group>
+	<group name="project">
+		<css minimize="false">/resources/assets/css/project.css</css>
+	</group>
+	<group name="issue">
+		<js>/resources/assets/js/issue.js</js>
+	</group>
+	<group name="meeting-video">
+		<js>/resources/assets/js/meeting-video.js</js>
+	</group>	
+	<group name="kanban">
+		<css>/resources/assets/css/kanban.css</css>
+		<js>/resources/assets/js/kanban.js</js>
+	</group>	
+	<group name="meeting">
+		<js>/resources/assets/js/meeting.js</js>
+	</group>	
+	
+	<group name="font-awesome">
+		<css minimize="false">/resources/assets/libs/FontAwesome/css/font-awesome-ie7.min.css</css>
+		<css minimize="false">/resources/assets/libs/FontAwesome/css/font-awesome.min.css</css>
+	</group>
+	<group name="respond">
+		<js minimize="false">/resources/assets/libs/bootstrap/js/respond.min.js</js>
+	</group>
+	<group name="html5shiv">
+		<js>/resources/assets/js/html5shiv.js</js>
+	</group>
+	<group name="plupload">
+		<js>/resources/assets/libs/plupload/plupload.js</js>
+		<js>/resources/assets/libs/plupload/plupload.gears.js</js>
+		<js>/resources/assets/libs/plupload/plupload.silverlight.js</js>
+		<js>/resources/assets/libs/plupload/plupload.flash.js</js>
+		<js>/resources/assets/libs/plupload/plupload.html4.js</js>
+		<js>/resources/assets/libs/plupload/plupload.html5.js</js>
+	</group>
+	<group name="mCustomScrollbar">
+		<js minimize="false">/resources/assets/libs/mCustomScrollbar/jquery.mCustomScrollbar.min.js</js>
+		<css>/resources/assets/libs/mCustomScrollbar/jquery.mCustomScrollbar.css</css>
+	</group>
+	<group name="mediaElement">
+		<js minimize="false">/resources/assets/libs/mediaelement/mediaelement-and-player.min.js</js>
+		<css>/resources/assets/libs/mediaelement/mediaelementplayer.css</css>
+	</group>	
+	<group name="uaParser">
+		<js minimize="true">/resources/assets/libs/UAParser/ua-parser.js</js>
+	</group>	
+	<group name="jqueryuitouch">
+		<js minimize="true">/resources/assets/libs/jqueryuitouch/jquery.ui.touch-punch.min.js</js>
+	</group>
+	<group name="jgestures">
+		<js minimize="true">/resources/assets/libs/jgestures/jgestures.min.js</js>
+	</group>
+	<group name="hammer">
+		<js minimize="true">/resources/assets/libs/hammer/jquery.hammer.js</js>
+	</group>
+	<group name="tooltipster">
+		<js minimize="true">/resources/assets/libs/tooltipster/jquery.tooltipster.min.js</js>
+	</group>
+	<group name="zeroclipboard">
+		<js minimize="false">/resources/assets/libs/ZeroClipboard/ZeroClipboard.js</js>
+	</group>
+</groups>

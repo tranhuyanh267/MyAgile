@@ -1,0 +1,179 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:custom="http://myagile.com/custom">
+
+	<h:panelGroup id="newBtn">
+		<h:panelGroup rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', homeBean.teamId)}">
+			<p:commandButton id="btnNewImpediment" 
+				icon="icon-plus" 
+				value="New"
+				onclick="controlNewImpe();return false;"
+				rendered="#{not empty homeBean.sprints}" 
+				global="false"
+				styleClass="btn-add" 
+				process="@this" />
+		</h:panelGroup>
+	</h:panelGroup>
+
+	<h:form id="impeForm" styleClass="display-none">
+		<div class="newDesc">
+			<h:outputLabel for="description" value="Description(*):" />
+			<p:inputTextarea id="description"
+				styleClass="description-impedement"
+				value="#{retroMB.retro.description}" 
+				label="Description"
+				required="true"
+				onkeyup="if($(this).val().trim().length!=0) {$('.error-desc').hide();} if(255 > $(this).val().trim().length){$('.error-desc-length').hide();}">
+			</p:inputTextarea>
+			<div class="error-desc ui-message-error ui-widget ui-corner-all display-none">
+				<span class="ui-message-error-icon"></span>#{msg['myagile.home.ImpedimentNullDesc']}
+			</div>
+			<div class="error-desc-length ui-message-error ui-widget ui-corner-all display-none">
+				<span class="ui-message-error-icon"></span>#{msg['myagile.home.ImpedimentMaxlength']}
+			</div>
+		</div>
+		
+		<p:commandButton id="btnSaveImpediment" global="false" value="Save"
+			icon="icon-save" styleClass="title-margin-right-combobox"
+			onclick="if(handleSaveImpe()){return false;}"
+			action="#{retroMB.addRetro}" update=":data:dataRetro, :impeForm"
+			oncomplete="$('#btnNewImpediment').show();" />
+		<p:commandButton id="btnCancelImpediment" value="Cancel" global="false" onclick="closeImpForm();" type="button" styleClass="secondary" />
+	</h:form>
+
+	<h:form id="data">
+		<h:panelGrid columns="1" id="dataRetro" styleClass="homepage-impediment-panel">
+			<p:messages id="message" showDetail="true" closable="true" />
+			<ui:repeat value="#{retroMB.listAllRetro}" var="retro">
+				<p:panel
+					header="&lt;strong&gt; ##{retro.id}.&lt;/strong&gt; #{retro.owner.lastName} #{retro.owner.firstName}"
+					toggleable="true" 
+					collapsed="false" 
+					widgetVar="panel#{retro.id}"
+					rendered="#{not empty homeBean.teams}" 
+					style="position: relative;"
+					styleClass="#{retro.status} homepage-impediment-panel">
+					<f:facet name="actions">
+						<p:commandLink global="false"
+							styleClass="ui-panel-titlebar-icon ui-corner-all"
+							update=":data:deleteDialogRetro" 
+							oncomplete="deleteDlg.show();"
+							rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', homeBean.teamId)}">
+							<h:outputText styleClass="ui-icon ui-icon-trash" />
+							<f:setPropertyActionListener value="#{retro}" target="#{retroMB.selectedRetro}" />
+							<f:setPropertyActionListener value="#{retro.id}" target="#{retroMB.selectedId}" />
+						</p:commandLink>
+						
+						<p:commandLink global="false"
+							styleClass="ui-panel-titlebar-icon ui-corner-all"
+							rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', homeBean.teamId)}"
+							onclick="editRetro(#{retro.id});panel#{retro.id}.expand()">
+							<h:outputText styleClass=" ui-icon ui-icon-pencil" />
+						</p:commandLink>
+					</f:facet>
+					
+					<div id="before-#{retro.id}" class="primeRetroDetail#{retro.id} wrap-sad-face">
+						<span>#{retro.description}</span> <br />
+						<h:outputText value="#{retro.date}">
+							<f:convertDateTime pattern="MM/dd/yyyy" />
+						</h:outputText>
+						<p:commandLink global="false" 
+							id="btnChangeImpedimentStatus"
+							update=":data:changeDialog"
+							oncomplete="if(#{custom:isUserNotInRoles('STAKEHOLDER', homeBean.teamId) or custom:isOwnerOfProject(homeBean.projectId)}) changeDlg.show();">
+							<h:graphicImage
+								styleClass="sad-smile-face"
+								value="/#{request.contextPath}/resources/img/Sad.png"
+								rendered="#{retro.status=='Unsolved'}"
+								alt="sad image" />
+							<f:setPropertyActionListener value="#{retro}" target="#{retroMB.selectedRetro}" />
+							<f:setPropertyActionListener value="#{retro.id}" target="#{retroMB.selectedId}" />
+						</p:commandLink>
+
+						<h:graphicImage value="resources/img/Smile.png"
+							rendered="#{retro.status=='Solved'}"
+							styleClass="sad-smile-face"
+							alt="solved image" />
+					</div>
+					
+					<div id="after-#{retro.id}" class="editRetroSession#{retro.id}"
+						style="margin-top: 10px; display: none;">
+						<p:inputTextarea id="desc" value="#{retro.description}" cols="30"
+							styleClass="input-block-level" rows="7" required="true"
+							label="Description" valueChangeListener="#{retroMB.changeRetro}"
+							onkeyup="if($(this).val().trim().length!=0) {$('.error-desc-edit').hide();} if(255 > $(this).val().trim().length){$('.error-desc-edit-length').hide();}">
+
+						</p:inputTextarea>
+						<div
+							class="error-desc-edit ui-message-error ui-widget ui-corner-all"
+							style="display: none; font-size: 13px !important;">
+							<span class="ui-message-error-icon"></span>#{msg['myagile.home.ImpedimentNullDesc']}
+						</div>
+						<div
+							class="error-desc-edit-length ui-message-error ui-widget ui-corner-all"
+							style="display: none; font-size: 13px !important;">
+							<span class="ui-message-error-icon"></span>#{msg['myagile.home.ImpedimentMaxlength']}
+						</div>
+
+						<p:commandButton value="Save" icon="icon-save"
+							style="margin-right: 5px;"
+							onclick="if($(this).parent().find('textarea').val().trim().length==0){ $(this).parent().find('.error-desc-edit').show(); return false;} else if($(this).parent().find('textarea').val().trim().length>255){$('.error-desc-edit-length').show(); return false;}"
+							action="#{retroMB.updateRetro(retro.id)}"
+							update=":data:dataRetro, @form" global="false" />
+						<p:commandButton value="Cancel"
+							onclick="closeRetroEdit(#{retro.id});clearForm();return false;"
+							styleClass="secondary" />
+					</div>
+				</p:panel>
+			</ui:repeat>
+
+		</h:panelGrid>
+		<p:confirmDialog widgetVar="changeDlg" id="changeDialog" width="400"
+			modal="true" closable="false" severity="alert">
+			<f:facet name="header">
+				<h:outputFormat value="#{msg['myagile.ChangeDialog']}">
+					<f:param value="status of Impediment" />
+				</h:outputFormat>
+			</f:facet>
+			<f:facet name="message">
+				<h:outputFormat value="#{msg['myagile.home.ChangeStatus']}">
+					<f:param value="##{retroMB.selectedId}" />
+				</h:outputFormat>
+			</f:facet>
+			<h:panelGroup layout="block" style="text-align: right">
+				<p:commandButton global="false" id="btnUpdateImpedimentStatusYes"
+					value="Yes" action="#{retroMB.updateStatus}"
+					update=":data:dataRetro" oncomplete="changeDlg.hide();" />
+				<p:commandButton global="false" id="btnUpdateImpedimentStatusNo"
+					action="#{retroMB.cancel}" value="No"
+					oncomplete="changeDlg.hide();" />
+			</h:panelGroup>
+		</p:confirmDialog>
+
+		<p:confirmDialog widgetVar="deleteDlg" id="deleteDialogRetro"
+			width="400" modal="true" closable="false" severity="alert">
+			<f:facet name="header">
+				<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+					<f:param value="Impediment" />
+				</h:outputFormat>
+			</f:facet>
+			<f:facet name="message">
+				<h:outputFormat value="#{msg['myagile.home.Delete']}">
+					<f:param value="impediment" />
+					<f:param value="##{retroMB.selectedId}" />
+				</h:outputFormat>
+			</f:facet>
+			<h:panelGroup layout="block" style="text-align: right">
+				<p:commandButton global="false" id="btnImpedimentDeleteYes"
+					value="Yes" action="#{retroMB.deleteRetro}"
+					oncomplete="deleteDlg.hide();" update=":data:dataRetro" />
+				<p:commandButton global="falses" id="btnImpedimentDeleteNo"
+					action="#{retroMB.cancel}" value="No"
+					oncomplete="deleteDlg.hide();" />
+			</h:panelGroup>
+		</p:confirmDialog>
+	</h:form>
+</ui:composition>

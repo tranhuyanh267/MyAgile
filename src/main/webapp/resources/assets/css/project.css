@@ -1,0 +1,39 @@
+.ui-row-toggler {
+	width: 25px;
+	height: 25px;
+	margin-top: 2px !important;
+}
+
+.ui-icon-circle-triangle-e:before {
+	font-size: 1.2em;
+}
+.project-logo img {
+    width: 200px;
+    height: 200px;
+}
+
+.project-link {
+	color: #0096d6 !important;
+}
+@media (max-width: 768px) {
+    body {
+        min-width: 718px;
+    }
+    #body-div.container {
+        min-width: 718px;
+    }
+}
+
+.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-icon{
+	
+	top: 17px;
+	right:-33px;
+}
+
+.ui-selectonemenu-panel .ui-selectonemenu-filter {
+  width: 111%;
+}
+
+.ui-selectonemenu-panel .ui-selectonemenu-list-item{
+	margin: 1px 13px 0px 3px;
+}

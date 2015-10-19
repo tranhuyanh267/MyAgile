@@ -1,0 +1,31 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	template="/WEB-INF/layouts/template.xhtml">
+	
+<ui:define name="layoutTitle">
+	Active Alternate Email
+</ui:define>
+<ui:define name="layoutBody">
+
+	<h:form id="fActive">
+		<h:panelGrid columns="1" cellpadding="5">  
+			<p:commandButton id="bActive" value="Active" style="display:none"
+				actionListener="#{profileMB.activeEmail}" update="fActive" />
+			<p:messages id="msgs" />
+		</h:panelGrid>
+	</h:form>
+<div>Come back <a href="#{request.contextPath}/profile">Your Profile</a> page</div>
+
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		$('#fActive\\:bActive').click();
+	});
+</script>
+</ui:define>
+
+</ui:composition>

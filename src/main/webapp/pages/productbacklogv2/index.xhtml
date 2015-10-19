@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/layouts/template.xhtml">
+	<ui:define name="layoutTitle">
+		Product Backlog
+	</ui:define>		
+	<ui:define name="layoutHead">
+	    <script type="text/javascript" src="#{request.contextPath}/resources/assets/js/productbacklogv2.js" />
+	    <script type="text/javascript" src="#{request.contextPath}/resources/assets/js/dialogOverlay.js" />	
+	    <script type="text/javascript" src="#{request.contextPath}/resources/assets/js/main.js" />
+	    <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/css/productbacklogv2.css"/>
+	</ui:define>
+	<ui:define name="metadata">
+		<f:metadata>
+	    	<f:event listener="#{productBacklogBeanV2.initPreview}" type="preRenderView"/>
+		</f:metadata>
+	</ui:define>
+	<ui:define name="layoutBody">	
+	<h:panelGroup layout="block" styleClass="row">
+		<ui:include src="_selector.xhtml"/>
+		<center><ui:include src="_view.xhtml"/></center>
+	  	<ui:include src="_list.xhtml"/>
+	  	<ui:include src="_confirmDialog.xhtml"/>
+	 </h:panelGroup>
+	</ui:define>
+	<ui:define name="layoutFooter">
+		<h:form>
+			<p:remoteCommand name="resetForm" actionListener="#{productBacklogBeanV2.resetForm}" global="false"/>
+			<p:remoteCommand name="selectUserStory" actionListener="#{productBacklogBeanV2.selectUserStory}" global="false"/>
+			<p:remoteCommand name="unSelectUserStory" actionListener="#{productBacklogBeanV2.unSelectUserStory}" global="false"/>
+			<p:remoteCommand name="selectOrUnSelectAllUserStory" actionListener="#{productBacklogBeanV2.selectOrUnSelectAllUserStory}" update=":form-userStoryTable"/>
+		</h:form>
+	    <p:ajaxStatus>  
+			<f:facet name="start">
+			 <h:panelGroup styleClass="ajaxPopUp" >
+			 	<p:graphicImage alt="ajax loader" styleClass="imgAjax" value="resources/img/ajax_loader/ajax_loader.gif" />
+			 </h:panelGroup>
+			</f:facet>  
+	 		<f:facet name="complete"><h:outputText value="" /></f:facet>  	   			
+		</p:ajaxStatus>
+	</ui:define>
+</ui:composition>
+</html>

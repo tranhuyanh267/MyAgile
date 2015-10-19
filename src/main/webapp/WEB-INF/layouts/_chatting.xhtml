@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	<f:event type="preRenderView" listener="#{onlineSessionBean.initial}" />
+	<h:form id="remoteForm" style="display:none;">
+		<p:remoteCommand name="online" actionListener="#{onlineSessionBean.on}" global="false" />
+		<p:remoteCommand name="offline"	actionListener="#{onlineSessionBean.off}" global="false" />
+        <p:socket channel="/onlineUsers" onMessage="receiveMemberStatus"/>
+        <p:growl  widgetVar="notification" for="notification" id="notification" life="3000" showDetail="false" sticky="false" globalOnly="true"/>
+		<p:growl widgetVar="notifiSkype" for="notifiSkype" id="notifiSkype" life="3000"  showDetail="false" sticky="false" />
+	</h:form>
+	<div id="chatPanel">
+		<div class="searchbox">
+			<i class="icon-search"/> 
+			<input type="text" placeholder="Search friends..." class="searchboxInput" id="searchFriend"/>
+		</div>	
+		<div class="flyoutBody">
+			<p:panel id="chat-list">
+				<ul class="chat-friendlist">
+					<h:form id="chat-list-wrapper-form" style="margin-top:-20px" styleClass="chat-list">
+						<p:socket channel="/skypeNotification" onMessage="handleMessage" widgetVar="socketSkype"/>
+						<p:socket channel="/${request.getUserPrincipal().getName()}" onMessage="handleMessage"  widgetVar="socketMyagile" />
+						<h:panelGroup id="chat-wrapper">
+							
+							<ui:repeat value="#{onlineSessionBean.relatedMembers}" var="member">
+								<li class="chat-item related" style="display: list-item; position: relative">
+									<h:panelGroup id="systemStatus" styleClass="systemStatus">
+										<a title="#{onlineSessionBean.showTitle(member)}" style="width: 90%;"> 
+											<h:graphicImage alt="user.png"
+												value="/resources/img/imageMember/user.png"
+												class="pic avatar img-circle"
+												rendered="#{empty member.avatar}" /> 
+											<h:graphicImage
+												alt="#{member.avatar}"
+												value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+												class="pic avatar img-circle"
+												rendered="#{not empty member.avatar}" /> 
+											<span class="name" id="Username_#{member.username}">
+												<h:outputText value="#{onlineSessionBean.showName(member)}" />
+											</span> 
+											<h:panelGroup rendered="#{onlineSessionBean.checkHasUnreadMessageFromUser(member)}" styleClass="unreadIcon-#{member.memberId} unreadIcon-chatlist img-circle"></h:panelGroup>
+											<span class="chatStatusIcon"> 
+												
+												<span class="sysStatusIcon">
+													<h:outputText rendered="#{onlineMembersBean.isMemberOnline(member)}">
+	                                                    <i id="member-#{member.memberId}" data-member-id="#{member.memberId}" style="color: #7fba00;"/>
+	                                                </h:outputText>
+	                                                <h:outputText rendered="#{not onlineMembersBean.isMemberOnline(member)}">
+	                                                    <i id="member-#{member.memberId}" data-member-id="#{member.memberId}" class="icon-ok-sign"/>
+	                                                </h:outputText>
+												</span>
+											</span>
+										</a>
+									</h:panelGroup> 
+									<h:panelGroup id="skypeStatus" styleClass="skypeStatus">
+										<a href="#"	style="padding: 0; margin: 0; display: inline; position: absolute; right: 0; top: 6px; z-index: 99999">
+											<i class="icon-skype #{onlineMembersBean.getSkypeStatusType(member.memberId)}" id="Skype_#{member.skype}"/>
+										</a>
+									</h:panelGroup>
+								</li>
+							</ui:repeat>
+							<script type="text/javascript">
+								 $(document).ready(function () {
+						        	attachEvents();
+						        });
+							</script>
+						</h:panelGroup>
+					</h:form>
+				</ul>
+				<h:outputText rendered="#{empty onlineSessionBean.relatedMembers and empty onlineSessionBean.membersInScrumTeam}">
+					<span class="no-contact-text">No contact</span>
+				</h:outputText>
+			</p:panel>
+		</div>
+	</div>
+</ui:composition>

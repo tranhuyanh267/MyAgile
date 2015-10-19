@@ -1,0 +1,110 @@
+#footer {
+	margin-bottom: -20px;
+}
+
+#wrap,#footer {
+	min-width: 940px;
+}
+
+#body-div.container {
+	width: 940px;
+}
+
+.issue-desc-input {
+	margin-bottom: 10px;
+}
+
+.issue-desc-input .ui-editor {
+	width: 620px !important;
+}
+
+.issue-desc-input iframe {
+	width: 620px !important;
+}
+
+.sprint-backlog .ui-selectonemenu-label {
+	width: 195px !important;
+	text-overflow: ellipsis !important;
+}
+
+.ui-chkbox-icon {
+	position: relative !important;
+}
+
+@media ( min-width : 1200px) {
+	#body-div.container {
+		width: 1170px;
+	}
+	.issue-desc-input .ui-editor {
+		width: 735px !important;
+	}
+	.issue-desc-input iframe {
+		width: 735px !important;
+	}
+}
+
+@media ( min-width : 768px) and (max-width: 979px) {
+	.row {
+		padding-left: 25px !important;
+		padding-right: 25px !important;
+	}
+}
+
+#listIssues {
+	border: 1px solid #d9d9d9;
+	width:100%;
+	margin-top:25px;
+}
+
+#listIssues th{
+	text-align: center;
+	cursor: default;
+	background: #38A8B1;
+	height: 20px;
+	padding:4px 10px;
+	color:white;
+	border: 1px solid #ccc;
+}
+.th-id, .th-subject, .th-value {
+	display: inline !important;
+	margin-left:3px;
+}
+
+.header-sort{
+	cursor: pointer !important;
+}
+#listIssues td{
+	padding:4px 10px;
+	border: 1px solid #ccc;
+}
+.td-view,
+.td-selected,
+.td-button-delete,
+.td-button-view {
+	text-align: center;
+}
+
+.ui-progressbar-value{
+	margin:0px !important;
+}
+.ui-progressbar-label {
+	margin-top:-1px;
+}
+
+.td-button-delete .ui-button-icon-left, .td-button-view .ui-button-icon-left{
+	margin-left:-5px !important;
+}
+.wrap-search-filter{margin-bottom:10px;}
+/* style for filter */
+.wrap-search{float:left;padding-right:7px;border-right:1px solid #ccc;margin-right:7px;}
+.wrap-search label{display: inline;margin-right:3px;}
+.wrap-search input{padding:4px 6px;margin-bottom:0px;}
+
+.wrap-filter-status{float:left;margin-top:3px;}
+
+#listIssues tbody tr:hover{
+	background: #A4E4E9;
+	cursor: default;
+	
+}
+

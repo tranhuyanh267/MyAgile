@@ -1,0 +1,291 @@
+<ui:composition	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:custom="http://myagile.com/custom">
+<style>
+	.teaminfo-column {
+		vertical-align: top;
+	}
+	
+	.ui-state-disabled {
+		background-color: #eaeded !important;
+		border-color: transparent !important;
+	}
+	
+	.icon-margin-right-5 {
+		margin-right: 5px;
+	}
+	
+	div.ui-panel-content {
+		padding-left: 0px !important;
+	}
+</style>
+<h:form style="text-align:right;margin-bottom: -10px;" id="newFrmBtn" rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', issueBean.teamId)}">	
+	<p:remoteCommand name="resetProperties" autoRun="true" actionListener="#{issueBean.resetProperties}"/>
+</h:form>
+
+<p:fieldset id="show-issue-form" style="margin-top: 20px; margin-left: 0px;display:#{issueBean.issue.issueId == null ? 'none' :'block'}" rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', issueBean.teamId)}">
+	<h:form id="issueForm" styleClass="editform">
+		<h:panelGroup rendered="#{issueBean.sprint.status == 'closed'}" layout="block" styleClass="ui-message-warn ui-widget ui-corner-all">
+			<span class="ui-message-warn-icon" />
+			<span class="ui-message-warn-detail"><h:outputLabel value='&#160;Status of sprint "#{issueBean.sprint.sprintName}" is "#{issueBean.issue.sprint.status}".' /></span>
+		</h:panelGroup>	
+		<h:panelGroup rendered="#{issueBean.sprint.status == 'open' and empty issueBean.issueParentList}" layout="block" styleClass="ui-message-warn ui-widget ui-corner-all">
+			<span class="ui-message-warn-icon" />
+			<span class="ui-message-warn-detail"><h:outputLabel value='&#160;There is no sprint backlog in "#{issueBean.sprint.sprintName}".' /></span>
+		</h:panelGroup>	
+		<h:outputText value="#{issueBean.issue.issueId == null ? 'New Issue' : 'Edit Issue: #'}#{issueBean.issue.displayIssueId}" style="font-weight:bold;margin-left:5px;color:#45a1de" />
+		<p:separator style="margin:5px" />
+		<p:panelGrid style="width:80%" styleClass="noborder margin-center form-editor">
+			<p:row>
+				<p:column width="50%" style="vertical-align: top;">
+					<p:panelGrid style="width:100%">
+						<p:row>
+							<p:column width="10%">
+								<h:outputText value="Project: "/>
+							</p:column>
+							<p:column width="90%">					
+								<p:selectOneMenu rendered="#{empty issueBean.projectList}">
+						               <f:selectItem  noSelectionOption="true" itemLabel="No project"/>
+						        </p:selectOneMenu>
+								<p:selectOneMenu id="projectSelect" value="#{issueBean.projectId}" rendered="#{not empty issueBean.projectList}" 
+									disabled="#{issueBean.sprint.status == 'closed'}">					  
+									<f:selectItems value="#{issueBean.projectList}" var="p" itemValue="#{p.projectId}" itemLabel="#{p.projectName}"/>
+									<p:ajax event="change" listener="#{issueBean.handleProjectChange}" update="issueForm"/>														
+							    </p:selectOneMenu>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="Type: " for="typeSelect" />
+							</p:column>
+							<p:column>
+								<p:selectOneMenu id="typeSelect" disabled="#{issueBean.sprint.status == 'closed' or empty issueBean.issueParentList}" value="#{issueBean.issue.type}">
+									<f:selectItem itemLabel="Task" itemValue="Task" />
+									<f:selectItem itemLabel="Bug" itemValue="Bug" />
+								</p:selectOneMenu>
+							</p:column>
+						</p:row>
+						<p:row rendered="#{issueBean.issue.userStory == null}">
+							<p:column>
+								<h:outputText value="Sprint Backlog: " for="userStorySelect" style="margin-right:5px" />
+							</p:column>
+							<p:column>
+								<h:panelGroup id="userStorySelectPanel">
+									<p:selectOneMenu value="#{issueBean.issue.parent}" required="true" disabled="#{issueBean.sprint.status == 'closed' or empty issueBean.issueParentList}"
+										requiredMessage="There are no userstory for sprint: '#{issueBean.issue.sprint.sprintName}'" style="margin-right:5px"
+										rendered="#{empty issueBean.issueParentList}">						
+										<f:selectItem noSelectionOption="true" itemLabel="No sprint backlog"/>
+									</p:selectOneMenu>	
+									<p:selectOneMenu id="userStorySelect" value="#{issueBean.issue.parent}" required="true" 
+										disabled="#{issueBean.sprint.status == 'closed' or empty issueBean.issueParentList}"
+										requiredMessage="There are no userstory for sprint: '#{issueBean.issue.sprint.sprintName}'" styleClass="sprint-backlog" style="margin-right:5px"
+										rendered="#{!empty issueBean.issueParentList}">
+										<f:selectItems value="#{issueBean.issueParentList}" var="u" itemLabel="#{u.subject}" />
+										<p:ajax event="change" update="userStoryMsgs" oncomplete="removeError('userStorySelect');" global="false"/>
+									</p:selectOneMenu>
+								</h:panelGroup>
+							</p:column>						
+						</p:row>
+						<p:row>
+							<p:column colspan="2" styleClass="nopadding"><p:message for="userStorySelect" id="userStoryMsgs" /></p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="Priority: " for="prioritySelect" style="margin-right:5px" />
+							</p:column>		
+							<p:column>
+								<p:selectOneMenu id="prioritySelect" disabled="#{issueBean.sprint.status == 'closed' or empty issueBean.issueParentList}" value="#{issueBean.issue.priority}">
+									<f:selectItem itemLabel="--Select a priority--" itemValue="NONE" />
+									<f:selectItem itemLabel="Must" itemValue="MUST" />
+									<f:selectItem itemLabel="Should" itemValue="SHOULD" />
+									<f:selectItem itemLabel="Could" itemValue="COULD" />
+									<f:selectItem itemLabel="Wont" itemValue="WONT" />
+								</p:selectOneMenu>
+							</p:column>						
+						</p:row>						
+						<p:row>
+							<p:column>
+								<h:outputLabel for="subject" value="Subject(*): " />
+							</p:column>
+							<p:column>
+								<p:inputText id="subject" readonly="#{issueBean.sprint.status == 'closed' or empty issueBean.issueParentList}" value="#{issueBean.issue.subject}" style="width:216px;" maxlength="255" required="true" styleClass="remove-html-control-character"
+									requiredMessage="#{msg['myagile.issue.ErrorEmptySubject']}">
+									<p:ajax event="keyup" update="subjectMsgs" oncomplete="removeError('subject');" global="false"/>
+								</p:inputText>
+							</p:column>						
+						</p:row>
+						<p:row>
+							<p:column colspan="2" styleClass="nopadding"><p:message for="subject" id="subjectMsgs" /></p:column>							
+						</p:row>
+					</p:panelGrid>
+				</p:column>
+				<p:column width="50%" style="vertical-align: top;">
+					<p:panelGrid style="width:100%">
+						<p:row>
+							<p:column>
+								<h:outputText value="Status: " for="statusSelect" />
+							</p:column>
+							<p:column>					
+								<p:selectOneMenu id="statusSelect" disabled="#{issueBean.sprint.status == 'closed' or empty issueBean.issueParentList}" value="#{issueBean.issue.status}" rendered="#{issueBean.issue.issueId == null or !issueBean.isPastSprint(issueBean.sprint)}">						
+									<f:selectItems value="#{issueBean.statusList}" var="s" itemLabel="#{s.name}" />
+									<p:ajax event="change" update="estimate,remain,estimateMsg,remainMsg" global="false"/>
+								</p:selectOneMenu>
+								<h:outputText rendered="#{issueBean.issue.issueId != null and issueBean.isPastSprint(issueBean.sprint) and !issueBean.canChangeToAccepted(issueBean.issue)}" value="#{issueBean.issue.status.name}"/> <h:outputText rendered="#{issueBean.issue.issueId != null and issueBean.isPastSprint(issueBean.sprint) and !issueBean.canChangeToAccepted(issueBean.issue)}" value=" (You can not update the status of task in the past Sprint)" style="font-style: italic;  color:#e6bb0d;"></h:outputText>
+								<p:selectOneMenu id="statuses" disabled="#{issueBean.sprint.status == 'closed' or empty issueBean.issueParentList}" value="#{issueBean.issue.status}" rendered="#{issueBean.issue.issueId != null and issueBean.isPastSprint(issueBean.sprint) and issueBean.canChangeToAccepted(issueBean.issue)}">
+									<f:selectItems value="#{issueBean.getDoneAndAcceptedStatusOfSprint()}" var="s" itemLabel="#{s.name}" >
+										
+									</f:selectItems>
+									<p:ajax event="change" update="estimate,remain,estimateMsg,remainMsg" global="false"/>
+								</p:selectOneMenu>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="Assign To: " for="memberSelect" />
+							</p:column>	
+							<p:column>
+								<p:selectOneMenu id="memberSelect" disabled="#{issueBean.sprint.status == 'closed' or empty issueBean.issueParentList}" value="#{issueBean.issue.assigned}">
+									<f:selectItem itemLabel="--Select a member--" itemValue="#{null}" />
+									<f:selectItems value="#{issueBean.memberList}" var="m" itemLabel="#{m.lastName} #{m.firstName}" />
+								</p:selectOneMenu>
+							</p:column>
+						</p:row>	
+						<p:row>
+							<p:column>
+								<h:outputLabel for="estimate" value="Estimate: " />
+							</p:column>
+							<p:column>
+								<p:inputText id="estimate" style="width:217px;" readonly="#{(issueBean.issue.status.type != null  and issueBean.issue.status.type != 'START') or (issueBean.sprint.status == 'closed') or (issueBean.issue.isParent)}" validator="#{issueBean.checkPointEstimate}"
+									value="#{issueBean.issue.estimate}" maxlength="8">
+									<p:ajax event="keyup" update="estimateMsg" oncomplete="removeError('estimate');" global="false"/>	
+								</p:inputText>
+							</p:column>
+						</p:row>
+						<p:row>							
+							<p:column colspan="2" styleClass="nopadding"><p:message for="estimate" id="estimateMsg" display="default" /></p:column>				
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputLabel for="remain" value="Remain: " />
+							</p:column>
+							<p:column>
+								<p:inputText readonly="#{(issueBean.issue.status.type == null or issueBean.issue.status.type == 'START') or (issueBean.sprint.status == 'closed') or (issueBean.issue.isParent)}" id="remain" style="width:217px;" validator="#{issueBean.checkPointRemain}"
+									value="#{issueBean.issue.remain}" maxlength="8">
+									<p:ajax event="keyup" update="remainMsg" oncomplete="removeError('remain');" global="false"/>
+								</p:inputText>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column colspan="2" styleClass="nopadding"><p:message for="remain" id="remainMsg" display="default" /></p:column>
+						</p:row>
+					</p:panelGrid>
+				</p:column>
+			</p:row>		
+			<p:row>
+				<p:column colspan="2">
+					<p:panelGrid style="width:100%">
+						<p:row>
+							<p:column style="width:10%;">
+								<h:outputLabel for="description" value="Description: " />
+							</p:column>
+							<p:column>
+								<p:editor controls="bold italic underline strikethrough font size color highlight | bullets numbering " id="description" 
+									value="#{issueBean.issue.description}" height="150" style="margin-bottom: 0px;" styleClass="issue-desc-input" widgetVar="editorDescriptionIssue"/>
+							</p:column>
+						</p:row>
+						
+						<p:row>
+							<p:column style="width:10%;">
+								<h:outputLabel for="note" value="Note: " />
+							</p:column>
+							<p:column>
+								<p:editor controls="bold italic underline strikethrough font size color highlight | bullets numbering " id="note" 
+									value="#{issueBean.issue.note}" height="150" style="margin-bottom: 0px;" styleClass="issue-desc-input" widgetVar="editorNoteIssue"/>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column colspan="4">
+								<h:outputText value="Attachment File for this Sprint:" />
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+							</p:column>
+							<p:column colspan="3">
+								<h:panelGroup layout="block" id="team-logo" rendered="#{issueBean.sprint.status == 'open' and !empty issueBean.issueParentList}">
+									<button type="button" id="btnChangeLogo" style="margin-left: 0px; margin-top: 10px; width: 150px;" class="btn btn-small btn-info input-block-level">
+										<i class="icon-picture icon-margin-right-5" /> Add file
+									</button>
+									<div id="team-logo-uploader" style="display: none;"></div>
+									<p:blockUI block="team-logo" widgetVar="teamLogoBlock">Uploading... (<span class="upload-progress">0%</span>)</p:blockUI>
+									<h:panelGroup layout="block" id="team-logo-img" style="text-align: center;">
+										<p:panel id="filelist" style="border: 0px; padding-left: 0px !important;">
+											<ui:repeat value="#{issueBean.attachmentNotAddList}" rendered="#{issueBean.attachmentNotAddList != null}" var="attachment">
+												<p:commandLink rendered="#{attachment.diskFilename != null and attachment.filename != null}" onclick="changeIdPlaceholder(&quot;#{attachment.filename}&quot;);deleteFileNotAddDlg.show();" process="@this">
+													<span class="ui-icon ui-icon-trash" style="float: left; margin-top: 0px !important; padding-right: 7px;"></span>
+													<span style="float: left;">#{attachment.filename}</span>
+													<f:setPropertyActionListener value="#{attachment}" target="#{issueBean.attachmentNotAdd}" />
+												</p:commandLink>
+												<br />
+											</ui:repeat>
+													
+											<ui:repeat value="#{issueBean.attachmentListByIssue}" rendered="#{issueBean.attachmentListByIssue != null}" var="attachment">
+												<p:commandLink rendered="#{attachment.diskFilename != null and attachment.filename != null}" onclick="changeIdPlaceholder(&quot;#{attachment.filename}&quot;);deleteFileDlg.show();">
+													<span class="ui-icon ui-icon-trash" style="float: left; margin-top: 0px !important; padding-right: 7px;"></span>
+													<span style="float: left;">#{attachment.filename}</span>
+													<f:setPropertyActionListener value="#{attachment}" target="#{issueBean.selectedAttachment}" />
+												</p:commandLink>
+												<br />
+											</ui:repeat>
+											
+										</p:panel>
+										<h:inputHidden id="filename" value="#{issueBean.attachment.filename}" />
+									</h:panelGroup>
+								</h:panelGroup> <p:remoteCommand name="updateLogo" actionListener="#{issueBean.uploadFile}" update="team-logo-img" process="@this" />
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</p:column>
+			</p:row>	
+		</p:panelGrid>
+			
+		<h:panelGroup layout="block" style="text-align: center;margin-bottom: -13px;margin-top: -5px;">
+			<p:commandButton id="addbtn" value="Save" update="issueForm,:listIssueForm:listIssues,:form:msgs" disabled="#{issueBean.sprint.status == 'closed' or empty issueBean.issueParentList}" 
+				style="margin-right:5px" icon="icon-save" oncomplete="handleSaveIssue(xhr, status, args)"
+				actionListener="#{issueBean.handleSaveAndUpadteIssue}" />
+			<p:commandButton action="#{issueBean.closeIssueFrm}" value="Close" onclick="closeForm();" styleClass="secondary" global="false" process="@this"/>
+		</h:panelGroup>
+		<script type="text/javascript">	
+			$(function () { 
+				handleDescriptionAndSubject("issueForm","subject","description");
+				initUploadAttachment('#{request.contextPath}/upload'); 
+				$('.plupload').hide();
+				removeHtmlTagWhenPasteInEditorByIdParentAndWidget("#issueForm\\:description",editorDescriptionIssue);
+				removeHtmlTagWhenPasteInEditorByIdParentAndWidget("#issueForm\\:note",editorNoteIssue);
+				setHeightIframeBody();
+ 			});
+		</script>
+		<p:confirmDialog widgetVar="filesizeerror"
+				width="400" modal="true" closable="false" severity="alert"
+				type="hidden">
+				<f:facet name="header">
+					<h:outputFormat value="Warning">
+
+					</h:outputFormat>
+				</f:facet>
+				<f:facet name="message">
+					<h:outputFormat 
+						value="You uploaded a big file size. System supports uploading file size &lt; 10 MB.">
+					</h:outputFormat>
+				</f:facet>
+				<h:panelGroup layout="block" style="text-align: right">
+					<p:commandButton value="Ok" oncomplete="filesizeerror.hide()" />
+				</h:panelGroup>
+			</p:confirmDialog>
+	</h:form>
+</p:fieldset>
+</ui:composition>

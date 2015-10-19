@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE facelet-taglib PUBLIC
+	"-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN"
+	"http://java.sun.com/dtd/facelet-taglib_1_0.dtd">
+<facelet-taglib>
+<namespace>http://myagile.com/custom</namespace>
+	<tag>
+		<tag-name>authorize</tag-name>
+		<handler-class>org.springframework.faces.security.FaceletsAuthorizeTagHandler</handler-class>
+	</tag>
+
+	<function>
+		<function-name>isUserInAnyRoles</function-name>
+		<function-class>com.ant.myagile.utils.CustomELFuntions</function-class>
+		<function-signature>boolean isUserInAnyRoles(java.lang.String, java.lang.Long)</function-signature>
+	</function>
+	<function>
+		<function-name>isUserNotInRoles</function-name>
+		<function-class>com.ant.myagile.utils.CustomELFuntions</function-class>
+		<function-signature>boolean isUserNotInRoles(java.lang.String, java.lang.Long)</function-signature>
+	</function>
+	<function>
+		<function-name>isOwnerOfProject</function-name>
+		<function-class>com.ant.myagile.utils.CustomELFuntions</function-class>
+		<function-signature>boolean isOwnerOfProject(java.lang.Long)</function-signature>
+	</function>
+	<function>
+		<function-name>isSprintClosed</function-name>
+		<function-class>com.ant.myagile.utils.CustomELFuntions</function-class>
+		<function-signature>boolean isSprintClosed(java.lang.Long, java.lang.String)</function-signature>
+	</function>	
+	<function>
+		<function-name>isStackHolder</function-name>
+		<function-class>com.ant.myagile.utils.CustomELFuntions</function-class>
+		<function-signature>boolean isStackHolder(java.lang.Long)</function-signature>
+	</function>
+	<function>
+		<function-name>isAdmin</function-name>
+		<function-class>com.ant.myagile.utils.CustomELFuntions</function-class>
+		<function-signature>boolean isAdmin()</function-signature>
+	</function>
+	<function>
+		<function-name>hasTeam</function-name>
+		<function-class>com.ant.myagile.utils.CustomELFuntions</function-class>
+		<function-signature>boolean hasTeam()</function-signature>
+	</function>	
+</facelet-taglib>

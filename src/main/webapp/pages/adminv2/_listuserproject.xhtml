@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:custom="http://myagile.com/custom">
+<style>
+.form-inline tbody td {
+	padding: 0px;
+	border: none !important;
+}
+
+#projectList .ui-datatable-header {
+	background: white;
+	color: black;
+	border-top-right-radius: 0px;
+	border-top-left-radius: 0px;
+}
+
+#projectList img {
+	padding-right: 3px;
+}
+
+#projectList .capitalized {
+	text-transform: capitalize;
+}
+
+.ui-datatable tbody td {
+	white-space: normal !important;
+}
+</style>
+<p:fieldset styleClass="span12">
+	<h:form id="form-userProjectTable" prependId="false">
+		
+		<h:panelGroup layout="block" styleClass="wrap-search-link">
+			<h:panelGroup styleClass = "wrap-search" layout="block">
+				<h:outputLabel value="Search:"></h:outputLabel>
+				<h:inputText id="txtSearch" value="#{adminBeanV2.lazyLoadingUserProject.filters.value}" onkeyup="ajaxDelay()" onkeypress="if(event.keyCode == 13) return false;" size="20">
+					<p:watermark value="Please enter project name or description" for="txtSearch"></p:watermark>
+				</h:inputText>
+			</h:panelGroup>
+		</h:panelGroup>
+		<ui:param name="sortField" value="#{adminBeanV2.lazyLoadingUserProject.sorters}"></ui:param>
+		<h:panelGroup layout="block" id="wrap-tb-user-project">
+			<table id = "tb-user-project" border = "1">
+				<thead>
+					<tr>
+						<th class = "header-sort" data-field = "projectName">
+							<h:outputText value = "Project Name"/>
+							<h:panelGroup styleClass="th-projectName ui-icon ui-icon-carat-2-n-s" rendered="#{sortField.field ne 'projectName'}"></h:panelGroup>
+							<h:panelGroup styleClass="th-projectName ui-icon ui-icon-triangle-1-n" rendered="#{sortField.field eq 'projectName' and sortField.value eq 'ASC'}"></h:panelGroup>
+							<h:panelGroup styleClass="th-projectName ui-icon ui-icon-triangle-1-s" rendered="#{sortField.field eq 'projectName' and sortField.value eq 'DESC'}"></h:panelGroup>
+						</th>
+						<th><h:outputText value = "Description"/></th>
+						<th class = "header-sort" data-field = "owner.firstName">
+							<h:outputText value = "Product Owner"/>
+							<h:panelGroup styleClass="th-owner ui-icon ui-icon-carat-2-n-s" rendered="#{sortField.field ne 'owner.firstName'}"></h:panelGroup>
+							<h:panelGroup styleClass="th-owner ui-icon ui-icon-triangle-1-n" rendered="#{sortField.field eq 'owner.firstName' and sortField.value eq 'ASC'}"></h:panelGroup>
+							<h:panelGroup styleClass="th-owner ui-icon ui-icon-triangle-1-s" rendered="#{sortField.field eq 'owner.firstName' and sortField.value eq 'DESC'}"></h:panelGroup>
+						</th>
+						<th><h:outputText value = "Role"/></th>
+						<th><h:outputText value = "Team"/></th>
+						<th class = "header-sort" data-field = "dateCreate">
+							<h:outputText value = "Created"/>
+							<h:panelGroup styleClass="th-dateCreate ui-icon ui-icon-carat-2-n-s" rendered="#{sortField.field ne 'dateCreate'}"></h:panelGroup>
+							<h:panelGroup styleClass="th-dateCreate ui-icon ui-icon-triangle-1-n" rendered="#{sortField.field eq 'dateCreate' and sortField.value eq 'ASC'}"></h:panelGroup>
+							<h:panelGroup styleClass="th-dateCreate ui-icon ui-icon-triangle-1-s" rendered="#{sortField.field eq 'dateCreate' and sortField.value eq 'DESC'}"></h:panelGroup>
+						</th>
+						<th class = "header-sort" data-field = "isPublic">
+							<h:outputText value = "Public"/>
+							<h:panelGroup styleClass="th-isPublic ui-icon ui-icon-carat-2-n-s" rendered="#{sortField.field ne 'isPublic'}"></h:panelGroup>
+							<h:panelGroup styleClass="th-isPublic ui-icon ui-icon-triangle-1-n" rendered="#{sortField.field eq 'isPublic' and sortField.value eq 'ASC'}"></h:panelGroup>
+							<h:panelGroup styleClass="th-isPublic ui-icon ui-icon-triangle-1-s" rendered="#{sortField.field eq 'isPublic' and sortField.value eq 'DESC'}"></h:panelGroup>
+						</th>
+						<th><h:outputText value = "Archive"/></th>
+					</tr>
+				</thead>
+				<tbody>
+					<ui:repeat var="project" value="#{adminBeanV2.allProjectOfUser}">
+						<tr>
+							<!-- project name -->
+							<td class = "td-project-name">
+								<h:panelGroup id="avatar-logo-img">
+									<h:graphicImage id="imageAvatar" alt="member-logo"
+										rendered="#{not empty project.imagePath}"
+										value="/file/?type=small-member-logo&amp;filename=#{project.imagePath}"
+										styleClass="avatar img-circle" />
+									<h:graphicImage alt="member-logo"
+										rendered="#{empty project.imagePath}"
+										value="/resources/img/no_image_available.png"
+										styleClass="avatar img-circle" />
+								</h:panelGroup>
+								<h:outputText value="#{project.projectName}" />
+							</td>
+							<!-- description -->
+							<td>
+								<h:outputText value="#{project.description}" />
+							</td>
+							
+							<!-- PO -->
+							<td class = "td-po">
+								<h:outputText value="#{project.owner.firstName} #{project.owner.lastName}" />
+							</td>
+							
+							<!-- role -->
+							<td>
+								<h:outputText value="#{adminBeanV2.getTeamMember(adminBeanV2.idUserForProject,project.teams)}" />
+							</td>
+							
+							<!-- team -->
+							<td>
+								<ui:repeat value="#{project.teams}" var="team" varStatus="status">
+									<h:outputText value="#{team.team.teamName}" />
+									<h:outputText
+										rendered="#{status.index != (project.teams.size() -1)}" value="; " />
+								</ui:repeat>
+							</td>
+							
+							<!-- created -->
+							<td>
+								<h:outputText value="#{project.dateCreate}">
+									<f:convertDateTime pattern="MM/dd/yyyy" />
+								</h:outputText>
+							</td>
+							
+							<!-- public -->
+							<td class = "td-public">
+								<h:outputText value="#{project.isPublic}" styleClass="capitalized" />
+							</td>
+							
+							<!-- archive -->
+							<td class = "td-archive">
+								<p:commandLink
+									action="#{adminBeanV2.archiveProject(project.projectId)}"
+									styleClass="archiveButton"
+									rendered="#{!project.isArchived}"
+									id="archiveButton" title="Unarchived. Click to archive."
+									update=":form-userProjectTable">
+									<i class="icon icon-check-empty"></i>
+								</p:commandLink>
+								<p:commandLink
+									action="#{adminBeanV2.unArchiveProject(project.projectId)}"
+									styleClass="unArchiveButton"
+									rendered="#{project.isArchived}"
+									id="unArchiveButton" title="Archived. Click to unarchive."
+									update=":form-userProjectTable">
+									<i class="icon icon-check"></i>
+								</p:commandLink>
+							</td>
+						</tr>
+					</ui:repeat>
+					<ui:fragment rendered = "#{empty adminBeanV2.allProjectOfUser}">
+						<tr>
+							<td colspan="9"><h:outputText value = "No projects"/></td>
+						</tr>
+					</ui:fragment>
+				</tbody>
+				<tfoot>
+					<tr>
+						<th colspan="8">
+							<h:outputText value="Showing #{adminBeanV2.allProjectOfUser.size()} of #{adminBeanV2.totalRowProjectOfUser} entries" rendered="#{adminBeanV2.totalRowProjectOfUser gt 0}" style="float:right;color:white;font-weight:normal;"/>
+						</th>
+					</tr>
+				</tfoot>
+			</table>
+			<h:panelGroup styleClass="" style="clear:both;" layout="block"/>
+			<h:outputText styleClass="remain-user-project-data" style="display:none;" rendered="#{adminBeanV2.remainUserProject}" />
+		</h:panelGroup>
+		<script>
+			removeTextInPagination();
+			setTextAllInPaginationSelect();
+			var delay = (function() {
+		        var timer = 0;
+		        return function(callback, ms) {
+		            clearTimeout(timer);
+		            timer = setTimeout(callback, ms);
+		        };
+		    })();
+		
+		    function ajaxDelay() {
+		        delay( function() {
+		        	searchUserProject();
+		        }, 300);
+		    };
+		</script>
+		
+		<p:remoteCommand name = "searchUserProject" actionListener="#{adminBeanV2.filterUserProject}" update="wrap-tb-user-project"/>
+		<p:remoteCommand name = "sortUserProject" actionListener="#{adminBeanV2.sortUserProject}" update="wrap-tb-user-project"/>
+		<p:remoteCommand name = "loadMoreUserProject" actionListener="#{adminBeanV2.loadMoreUserProject}" update="wrap-tb-user-project"/>
+	</h:form>
+</p:fieldset>
+</html>

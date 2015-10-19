@@ -1,0 +1,104 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:custom="http://myagile.com/custom">
+	<h:body rendered="#{not sprintBacklogBean.isProjectHasUserStory()}">
+		<div aria-live="polite" class="ui-message-error ui-widget ui-corner-all" id="no-project">
+			<span class="ui-message-error-icon" /> <span class="ui-message-error-detail">#{msg['myagile.sprintBL.NoUs']}</span>
+		</div>
+	</h:body>
+	<h:body rendered="#{sprintBacklogBean.isProjectHasUserStory()}">
+		<ul id="sortable1" class="connectedSortable">
+			<p:dataList pageLinks="5" value="#{sprintBacklogBean.productBacklog}" var="us" id="sortPaginator1" paginator="true" rows="10" paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15,30,50,#{sprintBacklogBean.productBacklog.size()}" type="none" paginatorAlwaysVisible="false">
+				<li class="ui-state-default #{sprintBacklogBean.getStatusUserStory(us)} #{sprintBacklogBean.isUserInAnyRolesSprint ? 'list-us' :''} expand"
+					id="panel_#{us.userStoryId}">
+					<p:panel styleClass="panel_#{us.userStoryId} sticker-low sticker " closable="false" collapsed="true" toggleable="true" style="display:block" widgetVar="widgetVar_#{us.userStoryId}">
+						<f:facet name="header">
+							<div class='sticker-header tooltip_panel_#{us.userStoryId}' title="Drop to add User Story ##{us.getUserStoryId()} to Sprint Backlog">
+								<div class='row row-content'>
+									<div class='header-left span3 pull-left'>
+										<p class='small-lead'>
+											<strong style='text-decoration: underline;'>##{us.getUserStoryId()}:</strong>
+											<h:outputText styleClass="OutputName_#{us.getSortId()}" value=" #{us.name}" />
+										</p>
+									</div>
+									<div class='pull-right'>
+										<p class='small-lead'>
+											Done: <span id="progress_#{us.userStoryId}" />%
+										</p>
+										<div class='task-progress progress_#{us.userStoryId} ' style='width: 0%' />
+										<script>
+										var progress=getDataJSON('#{us.userStoryId}','progress');
+										$('#progress_#{us.userStoryId}').html(progress);
+										$('.progress_#{us.userStoryId}').css('width',progress+'%');
+										</script>
+									</div>
+								</div>
+							</div>
+						</f:facet>
+						<div class='sticker-inner'>
+							<h:outputText styleClass="OutputDes_#{us.getSortId()}" value="#{us.description}" escape="false" />
+							<div class="PanelEdit_#{us.getSortId()} disableDrag" style="display: none;">
+								<p:inputText styleClass="InputName_#{us.getSortId()} remove-html-control-character" value="#{us.name}" style="width:98%;"  />
+								<div id="msn#{us.userStoryId}" style="display: none;" class="error-desc-edit ui-message-error ui-corner-all">
+									<span class="ui-message-error-icon"></span>#{msg['myagile.backlog.NullName']}
+								</div>
+								<div id="ms2n#{us.userStoryId}" class="error-desc-edit ui-message-error ui-corner-all" style="display: none;">
+									<span class="customMsg">#{msg['myagile.backlog.Exists']}</span>
+								</div>
+								<BR />
+								<div class="InputDes_#{us.getSortId()}">#{us.description}</div>
+							</div>
+						</div>
+						<div class='sticker-footer'>
+							<div class='row'>
+								<div class='span2 point OutputValue_#{us.getSortId()}' style="width: 170px !important;">V:#{us.value} R:#{us.risk}
+									<p:commandButton id="setVoidbtn" update=":form2" oncomplete="handleVoidDestroyVoid(xhr, status, args)" value="Set Void" icon="icon-ok-sign" actionListener="#{productBacklogHomeBean.setVoid(us.userStoryId)}"
+										rendered="#{(us.status=='TODO' or us.status=='IN_PROGRESS') and sprintBacklogBean.isUserInAnyRolesSprint}" style="background-color: #297DB6 !important;font-size: 12px; margin-left: 5px;" />
+									<p:commandButton id="desVoidbtn" update=":form2" oncomplete="handleVoidDestroyVoid(xhr, status, args)" value="Destroy Void" icon="icon-ban-circle" actionListener="#{productBacklogHomeBean.destroyVoid(us.userStoryId)}"
+										rendered="#{us.status=='VOID'}" style="background-color: #297DB6 !important;font-size: 12px; margin-left: 5px;" />
+								</div>
+								<span class="span2 point InputValue_#{us.getSortId()}" style="display: none; width: 100%">
+									<span style="margin-left:5px !important">Value:</span>
+									<p:spinner label="Value2" id="InputValue_#{us.getSortId()}"
+										styleClass="disableDrag spinerEdit InputValue_#{us.getSortId()}" value="#{us.value}" min="0" max="1000" required="true" style="display:none;" />
+										
+									<span style="margin-left:5px !important">Risk:</span>
+									<p:spinner label="Value3" id="InputValue_#{us.getSortId()}_Risk"
+										styleClass="disableDrag spinerEdit InputValue_#{us.getSortId()}" value="#{us.risk}" min="0" max="1000" required="true" style="display:none;" />
+								</span>
+								<p:commandButton value="&#160;Save" icon="icon-save" onclick="actionUpdate(#{us.getSortId()},#{us.userStoryId});" styleClass="SaveBtn_#{us.getSortId()}" style="display:none;font-size: 12px; margin-left: 5px;background-color: #297DB6 !important; margin-bottom: -15px;" global="false" title="Save">
+									<p:remoteCommand name="executeUpdate" actionListener="#{productBacklogHomeBean.updatePBLOnBacklogPage()}" oncomplete="handleCompleteUpdate(xhr, status, args)" />
+								</p:commandButton>
+								<p:commandButton value="Cancel" styleClass="CancelBtn_#{us.getSortId()} secondary" onclick="controlCancelUS(#{us.getSortId()})" style="display:none;font-size: 12px; margin-left:1px; margin-bottom: -15px;" global="false" title="Cancel"/>
+								<h:panelGroup rendered="#{sprintBacklogBean.isUserInAnyRolesSprint}">
+									<ul class="span2 icon-wrapper unstyled inline pull-right text-right">
+										<li>
+											<p:commandLink style="margin-top:4px;" styleClass="EditBtn_#{us.getSortId()}" onclick="controlEditUS(#{us.getSortId()},#{us.value});" global="false" title="Edit User Story">
+												<i class="icon-pencil" style="font-size: 17px;" />
+											</p:commandLink>
+										</li>
+									</ul>
+								</h:panelGroup>
+							</div>
+							<div id="ms3n#{us.userStoryId}" style="display: none" class="error-desc-edit ui-message-error ui-corner-all">
+								<span class="ui-message-error-icon"></span>#{msg['myagile.backlog.RangeOfValue']}
+							</div>
+						</div>
+					</p:panel>
+					</li>
+				<script type="text/javascript">
+					sortable();
+					showTaskStickerDetails(widgetVar_#{us.userStoryId});
+					function actionUpdate(sortId,Id){
+						var name = $('.InputName_'+sortId).val();
+						var description = $('.InputDes_'+sortId).code();
+						var value = $('.InputValue_'+sortId+'>input').val();
+						var risk = $('.InputValue_'+sortId+':eq(2) > input').val();
+						executeUpdate([{name:'Id',value: Id},{name: 'name',value:name},{name : 'description',value : description},{name:'value',value: value},{name:'risk',value: risk}]);
+					}
+				</script>
+			</p:dataList>
+		</ul>
+	</h:body>
+</ui:composition>

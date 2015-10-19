@@ -1,0 +1,169 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<script>
+		navigate(2);
+		$('#saveBtn').css('display','none');
+	</script>
+	<p:fieldset id="sprintTab">
+		<p:progressBar id="progressBarSprint" widgetVar="pbSprint" value="75" labelTemplate=" Progress: 3/4"/>
+		<h:outputText value="Sprint Details" style="font-weight:bold;margin-left:5px;color:#45a1de;font-size: 15px" />	
+		<p:separator style="margin:5px" />
+		<h:outputText value="No team was assigned" style="font-weight:bold;margin-left:5px;color:#45a1de" rendered="#{empty wizardBean.getCombinedTeamList()}"/>	
+		<div class="row-fluid">
+			<div class="span3">
+				<h:panelGroup id="listTeams" rendered="#{not empty wizardBean.getCombinedTeamList()}">
+					<p:fieldset id="fieldListTeams">
+					<h:outputText value="Team List" style="font-weight:bold;margin-left:5px;color:#45a1de" />
+					<p:separator style="margin:5px" />
+						<div class="teams-selector">					
+						  <ul class="team-list">
+							<ui:repeat var="team" value="#{wizardBean.combinedTeamList}" varStatus="index">
+								<li style="cursor: pointer;" onclick="createNewSprint([{name: 'groupMail', value: '#{team.mailGroup}'}]);">
+									<span style="width: 90%;">
+										<h:graphicImage rendered="#{team.logo != null}" alt="ava-img" value="/file/?type=team-logo&amp;filename=#{team.logo}&amp;t=#{team.teamId}" styleClass="img-circle avatar" />
+										<h:graphicImage rendered="#{team.logo == null}" alt="ava-img" value="/resources/img/team.jpg" styleClass="img-circle avatar" />	
+										<h:outputText value="#{team.teamName}" style="padding-left: 10px"/>
+									</span>
+									<span style="width: 10%;" class="pull-right">
+										<h:graphicImage alt="stick icon" rendered="#{wizardBean.checkCreatedSprint(team.mailGroup)}" value="/resources/img/tick_16.png" style="width:10px; height:10px;"/>
+									</span>												
+								</li>
+							</ui:repeat>
+						 </ul>
+						</div>
+					</p:fieldset>
+				</h:panelGroup>
+			</div>
+			<div class="span6">
+				<p:fieldset id="newSprint" rendered="#{not empty wizardBean.getCombinedTeamList()}" style="width: 600px;">
+					<span style="width: 95%;">
+						<h:outputText id="tittleSprint" value="Create Sprint for Team #{wizardBean.selectTeam}" style="font-weight:bold;margin-left:5px;color:#45a1de" />
+					</span>					
+					<p:separator style="margin-bottom: 10px" />
+					<div style="position: relative;">
+						<h:panelGroup id="pgSprint" >				
+							<p:panelGrid id="sprintForm" styleClass="panelGridSprint">
+								<p:row>
+									<p:column>	
+										<h:outputLabel for="sprintName" value="Sprint Name:" />				
+									</p:column>
+									<p:column>
+											<p:inputText id="sprintName"  
+												value="#{sprintBean.sprint.sprintName}" required="false" style="width:130px" 
+												maxlength="255">
+												<p:ajax event="keyup" update="sprintNameMsgs" />
+												<f:validator binding="#{sprintValidator}"  />																	
+											</p:inputText>				
+									</p:column>
+									<p:column>	
+										<h:outputLabel for="sprintstatus" value="Sprint Status:"/>				
+									</p:column>
+									<p:column>	
+										<p:selectOneMenu id="sprintstatus" style="width:140px"
+											value="#{sprintBean.sprint.status}" styleClass="text-left">
+											<f:selectItem itemLabel="Open" itemValue="open" />
+											<f:selectItem itemLabel="Closed" itemValue="closed" />
+										</p:selectOneMenu>				
+									</p:column>
+								</p:row>
+								<p:row>
+									<p:column colspan="4">
+										<p:message for="sprintName" id="sprintNameMsgs" />
+									</p:column>
+								</p:row>
+								<p:row>
+									<p:column>
+											<h:outputLabel for="startDate" value="Date Start:"/>
+									</p:column>
+									<p:column>
+										<p:calendar styleClass="calendar" value="#{sprintBean.sprint.dateStart}" 
+													id="startDate" navigator="true" effect="fadeIn" required="true"
+													pattern="MM/dd/yyyy" requiredMessage="#{msg['myagile.sprint.ErrorEmptyStartDate']}"									
+													converterMessage="Date is invalid. Date format MM/dd/yyyy"
+													maxlength="255">
+											<f:convertDateTime type="date" pattern="MM/dd/yyyy"	timeZone="#{sprintBean.timeZone}" />
+											<p:ajax event="dateSelect"	listener="#{sprintBean.handleDateStartSelect}" update="startDateMsgs,sprintForm"/>	
+											<f:validator binding="#{sprintValidator}"/>	
+										</p:calendar>
+									</p:column>
+									<p:column>
+										<h:outputLabel for="endDate" value="Date End:" />
+									</p:column>
+									<p:column>
+										<p:calendar styleClass="calendar" value="#{sprintBean.sprint.dateEnd}"
+											id="endDate" navigator="true" effect="fadeIn" required="true"
+											pattern="MM/dd/yyyy" requiredMessage="#{msg['myagile.sprint.ErrorEmptyEndDate']}"
+											
+											converterMessage="Date is invalid. Date format MM/dd/yyyy"
+											maxlength="100">
+											<f:convertDateTime type="date" pattern="MM/dd/yyyy"	timeZone="#{sprintBean.timeZone}" />
+											<f:validator binding="#{sprintValidator}"></f:validator>
+											<p:ajax event="dateSelect" update="endDateMsgs"/>
+										</p:calendar>
+									</p:column>
+								</p:row>
+								<p:row>
+									<p:column colspan="4">
+										<p:message for="startDate" id="startDateMsgs" />
+									</p:column>											
+								</p:row>	
+								<p:row>						
+									<p:column colspan="4">
+										<p:message for="endDate" id="endDateMsgs" />	
+									</p:column>						
+								</p:row>		
+							</p:panelGrid>
+						</h:panelGroup>
+						<p:commandButton process="@this" style="position: absolute;right: 0px;top: 0px;" update="@([id$=pgSprint], [id$=listTeams])" value="X" actionListener="#{wizardBean.removeSprintWithoutTeam}"/>
+					</div>
+					<h:panelGroup id="listSprints">			
+						<h:body rendered="#{wizardBean.flagTeamId != ''}">
+							<p:fieldset>
+								<h:outputText id="tittleSprintList" value="Sprint List of Team #{wizardBean.selectTeam}" style="font-weight:bold;margin-left:5px;color:#45a1de" />
+								<p:separator style="margin:5px" />
+								<p:dataTable id="lstSprsOfTeam" var="sprint"
+									value="#{sprintBean.sprintList}" scrollable="true"
+									scrollHeight="200">
+									<p:column sortBy="#{sprint.sprintName}" headerText="Sprint Name"
+										style="width:40%">
+										<h:outputText value="#{sprint.sprintName}" />
+									</p:column>
+									<p:column sortBy="#{sprint.dateStart}" headerText="Date Start"
+										style="width:20%">
+										<h:outputText value="#{sprint.dateStart}">
+											<f:convertDateTime timeZone="#{sprintBean.timeZone}"
+												pattern="MM/dd/yyyy"></f:convertDateTime>
+										</h:outputText>
+									</p:column>
+									<p:column sortBy="#{sprint.dateEnd}" headerText="Date End"
+										style="width:20%">
+										<h:outputText value="#{sprint.dateEnd}">
+											<f:convertDateTime timeZone="#{sprintBean.timeZone}"
+												pattern="MM/dd/yyyy"></f:convertDateTime>
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Status" style="width:20%">
+										<h:outputText value="#{sprint.status}" />
+									</p:column>
+								</p:dataTable>
+							</p:fieldset>
+						</h:body>
+					</h:panelGroup>		
+				</p:fieldset>
+			</div>
+		</div>
+	</p:fieldset>
+	<script>
+		$(function(){
+			var isLoad='#{wizardBean.checkFirstLoad()}';
+			if(isLoad=="false"){
+				$('.team-list').find("li").eq(0).trigger('click');
+			}
+			setScrollableForTeamList();
+		})
+	</script>
+</ui:composition>

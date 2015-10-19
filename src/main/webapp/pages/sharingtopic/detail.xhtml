@@ -1,0 +1,63 @@
+<ui:composition template="/WEB-INF/layouts/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">	
+	<ui:define name="layoutTitle">
+		Topic detail
+	</ui:define>
+	<ui:define name="layoutHead">
+		<link rel="stylesheet" type="text/css"
+			href="#{request.contextPath}/resources/assets/css/sharingtopic.css" />
+		<script type="text/javascript"
+			src="#{request.contextPath}/resources/assets/js/topic.js" />
+	</ui:define>
+	<ui:define name="layoutBody">
+		<div class="row">
+			<div id="topic-title">
+				<h3>
+					<h:outputText id="title-content" escape="false"
+						value="#{sharingTopicBean.title}" />
+				</h3>
+				
+				<h:form id="form-command">
+					<p:commandButton value="Edit" action="#{sharingTopicBean.edit}" style="margin-right: 5px;" />
+					<p:commandButton value="Delete" onclick="DeleteDialog.show()"/>
+					<p:confirmDialog header="Delete Topic" severity="alert"
+						widgetVar="DeleteDialog">
+						<f:facet name="message">
+							<h:outputText value="Do you want delete this topic?" />
+						</f:facet>
+						<p:commandButton value="Yes"
+							action="#{sharingTopicBean.delete}"/>
+						<p:commandButton value="No" onclick="DeleteDialog.hide();"
+							type="button" />
+					</p:confirmDialog>
+					
+				</h:form>
+			</div>
+			<div id="topic-detail-content" class="clearfix">
+				<p:outputPanel style="text-align:left;" layout="block">
+					<h:outputText escape="false" value="#{sharingTopicBean.contentPreview}" />
+				</p:outputPanel>
+				<div class="panel-footer">
+					<small class="pull-right">
+						<h:outputText id="last-member-modify" 
+							value="Last modified: #{sharingTopicBean.currentTopic.lastModifyMember.lastName} #{sharingTopicBean.currentTopic.lastModifyMember.firstName}, "/>
+							<h:outputText id="last-date-modify" value="#{sharingTopicBean.currentTopic.lastModifyDate}">
+								<f:convertDateTime pattern="MMM-dd-yyyy HH:mm" />
+							</h:outputText>
+					</small>
+				</div>
+			</div>
+			<h:form>
+				<p:remoteCommand name="sendData" actionListener="#{sharingTopicBean.redirectTopicEdit}"></p:remoteCommand>
+			</h:form>
+		</div>
+        <div class="row">
+			<ui:include src="_attachments-detail.xhtml" />
+		</div>
+		
+	</ui:define>
+</ui:composition>

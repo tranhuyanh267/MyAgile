@@ -1,0 +1,344 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:custom="http://myagile.com/custom">
+	<style>
+.test {
+	position: relative;
+}
+</style>
+
+	<p:panel id="setting-form" style="display:none;"
+		header="Kanban Setting">
+		<h:form id="setting-kanban" style="margin-bottom: 2px;">
+			<div style="text-align: center; width: 100%;">
+				<h:panelGroup>
+					<p:commandButton id="addMoreField" value="Add More Field"
+						global="false" action="#{kanbanBean.handleAddField}"
+						update=":setting-kanban" oncomplete="focusOnNewField();"/>
+					<h:outputText value="&#160;" />
+					<p:commandButton id="addMoreSwimLine" value="Add More Swimline"
+						update=":setting-kanban" global="false"
+						action="#{kanbanBean.handleAddSwimline}" oncomplete="focusOnNewSwimline();"/>
+				</h:panelGroup>
+			</div>
+			<p:scrollPanel
+				style="height:250px;margin-top:10px;margin-bottom:10px; padding-right:10px; padding-bottom: 30px;"
+				mode="native" styleClass="wrap-kanban-status">
+				<p:remoteCommand name="deleteColumn"
+					action="#{kanbanBean.removeStatus}" update=":setting-kanban"
+					global="false" immediate="true"></p:remoteCommand>
+			Field
+			<p:separator style="margin-bottom:10px;margin-top:0px" />
+
+				<ui:repeat var="status" value="#{kanbanBean.kanbanStatusTempList}"
+					varStatus="loop">
+					<h:panelGroup rendered="#{status.type=='START'}">
+						<div class="form-inline">
+							<p:inputText value="#{status.name}" required="true" id = "statusNameStart"
+								requiredMessage="#{msg['myagile.dashboard.ErrorEmptyField']}" styleClass="txtNameStatus"
+								maxlength="30" onkeypress="if(event.keyCode == 13) return false;">
+							</p:inputText>
+							<label>Width (%)</label> <span class="mySpinner widthSpinner">
+								<p:spinner value="#{status.width}"
+									validator="#{kanbanBean.validateValue}" required="true"
+									immediate="true" min="10" max="50"
+									requiredMessage="#{msg['myagile.dashboard.ErrorEmptyField']}" onkeypress="if(event.keyCode == 13) return false;">
+									<f:validateDoubleRange minimum="10" maximum="50"></f:validateDoubleRange>
+								</p:spinner>
+							</span>
+							<p:selectBooleanCheckbox value="#{status.columnDone}"
+								itemLabel="Done">
+							</p:selectBooleanCheckbox>
+
+							<label title="Work in Progress limit">WIP</label> <span class="mySpinner"> <p:spinner
+									size="2" value="#{status.weightPoint}"
+									validator="#{kanbanBean.validateValue}" required="true"
+									immediate="true" min="1" max="20"
+									requiredMessage="#{msg['myagile.dashboard.ErrorEmptyField']}" onkeypress="if(event.keyCode == 13) return false;">
+									<f:validateDoubleRange minimum="1" maximum="20">
+									</f:validateDoubleRange>
+								</p:spinner>
+							</span>
+
+							<div style="float: right;">
+								<p:colorPicker value="#{status.color}" />
+								<p:commandButton type="button" style="visibility: hidden;"
+									icon="icon-remove" update=":setting-kanban" immediate="true"
+									global="false">
+								</p:commandButton>
+							</div>
+						</div>
+						<div>
+							<div class="ui-message-error ui-widget ui-corner-all error-kanban-statusname display-none">
+								<span class="ui-message-error-icon"></span>
+								<span class="ui-message-error-detail">Please enter name status</span>
+							</div>
+							<p:message for="statusNameStart"/>
+						</div>
+					</h:panelGroup>
+
+					<h:panelGroup rendered="#{status.type=='IN_PROGRESS'}">
+						<div class="form-inline">
+							<p:inputText value="#{status.name}" required="true" id = "statusNameInProgress"
+								requiredMessage="Please enter name status"
+								maxlength="30" onkeypress="if(event.keyCode == 13) return false;" styleClass="txtNameStatus">
+							</p:inputText>
+							<label>Width (%)</label> <span class="mySpinner widthSpinner">
+								<p:spinner value="#{status.width}"
+									validator="#{kanbanBean.validateValue}" required="true"
+									immediate="true" min="10" max="50" id="statusWidth" styleClass="txtWidthStatus"
+									requiredMessage="Please enter width column status" onkeypress="if(event.keyCode == 13) return false;">
+									<f:validateDoubleRange minimum="10" maximum="50"></f:validateDoubleRange>
+								</p:spinner>
+							</span>
+							<p:selectBooleanCheckbox value="#{status.columnDone}"
+								itemLabel="Done">
+							</p:selectBooleanCheckbox>
+
+							<label title="Work in Progress limit">WIP</label> <span class="mySpinner"> <p:spinner
+									size="2" value="#{status.weightPoint}"
+									validator="#{kanbanBean.validateValue}" required="true"
+									immediate="true" min="1" max="20"
+									requiredMessage="#{msg['myagile.dashboard.ErrorEmptyField']}" onkeypress="if(event.keyCode == 13) return false;">
+									<f:validateDoubleRange minimum="1" maximum="20">
+									</f:validateDoubleRange>
+								</p:spinner>
+							</span>
+
+
+
+							<div style="float: right;">
+								<p:colorPicker value="#{status.color}" />
+								<p:commandButton type="button" icon="icon-remove"
+									update=":setting-kanban"
+									rendered="#{status.type=='IN_PROGRESS' and custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', kanbanBean.currentTeam.teamId)}"
+									immediate="true" global="false"
+									onclick="deleteColumn([{name: 'statusId', value: '#{status.statusId}'}])">
+								</p:commandButton>
+							</div>
+						</div>
+						<div>
+							<div class="ui-message-error ui-widget ui-corner-all error-kanban-statusname display-none">
+								<span class="ui-message-error-icon"></span>
+								<span class="ui-message-error-detail">Please enter name status</span>
+							</div>
+							<p:message for="statusNameInProgress"/>
+						</div>
+					</h:panelGroup>
+
+					<h:panelGroup rendered="#{status.type=='DONE'}">
+						<div class="form-inline">
+							<p:inputText value="#{status.name}" required="true" id = "statusNameDone"
+								requiredMessage="#{msg['myagile.dashboard.ErrorEmptyField']}" styleClass="txtNameStatus"
+								maxlength="30" onkeypress="if(event.keyCode == 13) return false;">
+							</p:inputText>
+							<label>Width (%)</label> <span class="mySpinner widthSpinner">
+								<p:spinner value="#{status.width}"
+									validator="#{kanbanBean.validateValue}" required="true"
+									immediate="true" min="10" max="50"
+									requiredMessage="#{msg['myagile.dashboard.ErrorEmptyField']}" onkeypress="if(event.keyCode == 13) return false;">
+									<f:validateDoubleRange minimum="10" maximum="50"></f:validateDoubleRange>
+								</p:spinner>
+							</span>
+							<div style="float: right;">
+								<p:colorPicker value="#{status.color}" />
+								<p:commandButton type="button" style="visibility: hidden;"
+									icon="icon-remove" update=":setting-kanban" immediate="true"
+									global="false">
+								</p:commandButton>
+							</div>
+						</div>
+						<div>
+							<div class="ui-message-error ui-widget ui-corner-all error-kanban-statusname display-none">
+								<span class="ui-message-error-icon"></span>
+								<span class="ui-message-error-detail">Please enter name status</span>
+							</div>
+							<p:message for="statusNameDone"/>
+						</div>
+					</h:panelGroup>
+
+					<h:panelGroup rendered="#{status.type=='ACCEPTED_HIDE'}">
+						<div class="form-inline">
+							<p:inputText value="#{status.name}" id="statusNameAcept"
+								styleClass="acceptedStatusText txtNameStatus" required="true"
+								requiredMessage="#{msg['myagile.dashboard.ErrorEmptyField']}"
+								maxlength="30">
+							</p:inputText>
+							<label>Width (%)</label> <span class="mySpinner widthSpinner">
+								<p:spinner value="#{status.width}"
+									validator="#{kanbanBean.validateValue}" required="true"
+									immediate="true" min="10" max="50"
+									requiredMessage="#{msg['myagile.dashboard.ErrorEmptyField']}" onkeypress="if(event.keyCode == 13) return false;">
+									<f:validateDoubleRange minimum="10" maximum="50"></f:validateDoubleRange>
+								</p:spinner>
+							</span>
+							<div style="display: inline; margin-left: 10px;">
+								<label title="Hidden tasks after 1-4 weeks">Hidden After(W)</label> 
+								<span class="mySpinner widthSpinner"> 
+									<p:spinner widgetVar="hiddenValue" value="#{kanbanBean.disappearTaskConfiguration.week}"
+									   required="true" immediate="true" min="1" max="4"
+										requiredMessage="#{msg['myagile.dashboard.ErrorEmptyField']}">
+										<f:validateDoubleRange minimum="1" maximum="4"></f:validateDoubleRange>
+									</p:spinner>
+								</span>
+							</div>
+							<div style="float: right;">
+								<span class="fixColorPicker"> <p:colorPicker
+										style="width: 40px;" value="#{status.color}" />
+								</span>
+								<button
+									class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only"
+									onclick="toggleShowAcceptedStatus(this)" type="button">
+									<span class="ui-button-icon-left ui-icon ui-c icon-eye-close"></span><span
+										class="ui-button-text ui-c">ui-button</span>
+								</button>
+
+								<p:selectBooleanCheckbox widgetVar="showAcceptedStatus"
+									style="display: none" immediate="true" global="false"
+									value="#{kanbanBean.showAcceptedStatus}">
+								</p:selectBooleanCheckbox>
+								<script>
+									$('.acceptedStatusText').prop('disabled',
+											true);
+								</script>
+							</div>
+						</div>
+						<div>
+							<div class="ui-message-error ui-widget ui-corner-all error-kanban-statusname display-none">
+								<span class="ui-message-error-icon"></span>
+								<span class="ui-message-error-detail">Please enter name status</span>
+							</div>
+							<p:message for="statusNameAcept"/>
+						</div>
+					</h:panelGroup>
+					<h:panelGroup rendered="#{status.type=='ACCEPTED_SHOW'}">
+						<div class="form-inline">
+							<p:inputText value="#{status.name}"
+								id="statusNameAceptShow"
+								styleClass="acceptedStatusText txtNameStatus" required="true"
+								requiredMessage="#{msg['myagile.dashboard.ErrorEmptyField']}"
+								maxlength="30" onkeypress="if(event.keyCode == 13) return false;">
+							</p:inputText>
+							<label>Width (%)</label> <span class="mySpinner widthSpinner">
+								<p:spinner value="#{status.width}"
+									required="true" immediate="true" min="10" max="50"
+									requiredMessage="#{msg['myagile.dashboard.ErrorEmptyField']}" onkeypress="if(event.keyCode == 13) return false;">
+									<f:validateDoubleRange minimum="10" maximum="50"></f:validateDoubleRange>
+								</p:spinner>
+							</span>
+							<div style="display: inline; margin-left: 10px;">
+								<label title="Hidden tasks after 1-4 weeks">Hidden After(W)</label>
+								<span class="mySpinner widthSpinner"> 
+									<p:spinner widgetVar="hiddenValue" value="#{kanbanBean.disappearTaskConfiguration.week}"
+										 required="true" immediate="true" min="1" max="4"
+										requiredMessage="#{msg['myagile.dashboard.ErrorEmptyField']}">
+										<f:validateDoubleRange minimum="1" maximum="4"></f:validateDoubleRange>
+									</p:spinner>
+								</span>
+							</div>
+							
+							<p:selectBooleanCheckbox widgetVar="showAcceptedStatus"
+								style="display: none" immediate="true" global="false"
+								value="#{kanbanBean.showAcceptedStatus}">
+							</p:selectBooleanCheckbox>
+							<div style="float: right;" class="fixColorPicker">
+								<p:colorPicker value="#{status.color}" />
+								<button
+									class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only"
+									onclick="toggleShowAcceptedStatus(this)" type="button">
+									<span class="ui-button-icon-left ui-icon ui-c icon-eye-open"></span><span
+										class="ui-button-text ui-c">ui-button</span>
+								</button>
+
+								<p:commandButton type="button" icon="icon-remove"
+									update=":setting-kanban"
+									rendered="#{status.type=='IN_PROGRESS' and custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', kanbanBean.currentTeam.teamId)}"
+									immediate="true" global="false"
+									onclick="deleteColumn([{name: 'statusId', value: '#{status.statusId}'}])">
+								</p:commandButton>
+
+							</div>
+						</div>
+						<div>
+							<div class="ui-message-error ui-widget ui-corner-all error-kanban-statusname display-none">
+								<span class="ui-message-error-icon"></span>
+								<span class="ui-message-error-detail">Please enter name status</span>
+							</div>
+							<p:message for="statusNameAceptShow"/>
+						</div>
+					</h:panelGroup>
+
+				</ui:repeat>
+			
+			Swimline
+			<p:separator style="margin-bottom:10px;margin-top:0px" />
+				<p:remoteCommand name="deleteSwimline"
+					action="#{kanbanBean.removeSwimline}" update=":setting-kanban"
+					global="false" immediate="true"></p:remoteCommand>
+				<ui:repeat var="swimline" value="#{kanbanBean.kanbanSwimlinesTemp}"
+					varStatus="loopIndex">
+					<div class="form-inline">
+						<p:inputText value="#{swimline.name}"
+							id="swimline_name" required="true"
+							requiredMessage="Please enter name swimline"
+							maxlength="30" onkeypress="if(event.keyCode == 13) return false;" styleClass="txtNameSwimline">
+						</p:inputText>
+						
+						<div style="display: inline; margin-left: 10px;">
+							<label title="Swimline WIP must be less than 21">Swimline WIP</label>
+							<span class="mySpinner widthSpinner"> 
+								<p:spinner value="#{swimline.weightPoint}"
+									 required="true" immediate="true" min="0" max="20"
+									requiredMessage="#{msg['myagile.dashboard.ErrorEmptyField']}" onkeypress="if(event.keyCode == 13) return false;">
+									<f:validateDoubleRange minimum="0" maximum="20"></f:validateDoubleRange>
+								</p:spinner>
+							</span>
+						</div>
+							
+						<div style="float: right;">
+							<p:colorPicker value="#{swimline.color}" />
+
+							<h:panelGroup rendered="#{loopIndex.index==0}">
+								<p:commandButton type="button" style="visibility: hidden;"
+									icon="icon-remove" update=":setting-kanban" immediate="true"
+									global="false">
+								</p:commandButton>
+							</h:panelGroup>
+
+							<h:panelGroup rendered="#{loopIndex.index!=0}">
+								<p:commandButton type="button" icon="icon-remove"
+									update=":setting-kanban"
+									rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', kanbanBean.currentTeam.teamId)}"
+									immediate="true" global="false"
+									onclick="deleteSwimline([{name: 'swimlineId', value: '#{swimline.swimlineId}'}])">
+								</p:commandButton>
+							</h:panelGroup>
+						</div>
+					</div>
+					<div>
+                        <div class="ui-message-error ui-widget ui-corner-all error-kanban-swimlinename display-none">
+                                <span class="ui-message-error-icon"></span>
+                                <span class="ui-message-error-detail">Please enter name swimline</span>
+                        </div>
+                        <p:message for = "swimline_name"/>
+                    </div>
+				</ui:repeat>
+			</p:scrollPanel>
+			<div style="text-align: center; width: 100%;">
+				<p:commandButton id="saveBtn" value="Save" styleClass="save-setting"
+					action="#{kanbanBean.handleSaveSettingForm}"
+					update=":setting-kanban,:id-block-kanban,:script"
+					oncomplete="handleSaveRequestFormSetting(xhr, status, args)" style="display:none;"/>
+				<p:button id="saveButton" value="Save" styleClass="save-setting-button" onclick="return false;"/>
+				<h:outputText value="&#160;" />
+				<p:commandButton id="closeBtn" value="Close" global="false"
+					styleClass="secondary" action="#{kanbanBean.handleCloseSettingForm}" update = ":setting-kanban, :script" onstart="hideSettingForm()" immediate="true"/>
+			</div>
+		</h:form>
+	</p:panel>
+</ui:composition>

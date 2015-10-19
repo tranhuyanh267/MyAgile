@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:custom="http://myagile.com/custom">
+<p:fieldset id="fieldset-projectForm"
+	style="display: none; margin-bottom:5px" styleClass="span12">
+	<h:form id="projectForm">
+		<c:set var="project" value="#{adminBeanV2.selectedProject}"></c:set>
+		<!-- 	<h:outputLabel value = "#{project.projectName}"></h:outputLabel> -->
+		<p:messages for="msgs" id="msgs" showDetail="true" closable="true"
+						showSummary="false" />
+			
+		<div style="width: 24%; height: 200px; float: left">
+			<h:graphicImage alt="No Image" rendered="#{empty project.imagePath}"
+				value="/resources/img/no_image_available.png"
+				styleClass="img-rounded img-polaroid input-block-level"
+				style="width:200px;height:200px" />
+			<h:graphicImage rendered="#{not empty project.imagePath}"
+				styleClass="img-rounded img-polaroid input-block-level"
+				style="width:200px;height:200px"
+				value="/file/?type=project-logo&amp;filename=#{project.imagePath}&amp;pId=#{project.projectId}"></h:graphicImage>
+		</div>
+		<div style="width: 76%; float: left">
+			<p:panelGrid style="width:100%" layout="grid" styleClass="noborder">
+			
+				<p:row>
+					<p:column style="width:30%">
+						<h:outputText value="Project Name:" />
+					</p:column>
+					<p:column style="width:70%">
+						<h:outputText value="#{project.projectName}" />
+					</p:column>
+				</p:row>
+
+				<p:row rendered="#{!adminBeanV2.edit}">
+					<p:column style="width:30%; height: 30px;">
+						<h:outputText value="Project Owner:"/>
+					</p:column>
+					<p:column style="width:70%; height: 30px;">
+						<h:outputText
+							value="#{project.owner.firstName} #{project.owner.lastName} ( #{project.owner.username} )" />
+					</p:column>
+				</p:row>
+				
+				<p:row  rendered="#{adminBeanV2.edit}">
+					<p:column style="width:30%; height: 30px; padding-top: 17px;">
+						<h:outputText value="Old Owner:" rendered="#{adminBeanV2.edit}"  />
+					</p:column>
+					<p:column style="width:70%; height: 30px;">
+							<h:outputText
+							value="#{project.owner.firstName} #{project.owner.lastName} ( #{project.owner.username} )"/>
+					</p:column>
+				</p:row>
+				
+				<p:row rendered="#{adminBeanV2.edit}">
+					<p:column style="width:30%; height: 58px">
+						<h:outputText value="New Owner:" />
+					</p:column>
+					<p:column style="width:70%; height: 58px">
+						<p:selectOneMenu styleClass="text-left" value="#{adminBeanV2.newOwner}" effect="drop" height="150" 
+							editable="false" filter="true" filterMatchMode="startsWith" style="margin-top: 10px;">
+							<f:selectItems value="#{adminBeanV2.owners}"
+								var="owner" itemLabel="#{owner.firstName} #{owner.lastName} ( #{owner.username} )" 
+								itemValue="#{owner.memberId}">
+							</f:selectItems>
+							<p:ajax event="change">
+								</p:ajax>
+						</p:selectOneMenu>
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column style="width:30%; float: left">
+						<h:outputText value="Description:" />
+					</p:column>
+					<p:column style="width:70%">
+						<h:inputTextarea style="width: 300px; height: 60px;"
+							value="#{project.description}" readonly="true" />
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column style="width:30%;">
+						<h:outputText value="Teams:" />
+					</p:column>
+					<p:column style="width:70%">
+						<ui:repeat value="#{project.teams}" var="team" varStatus="status">
+							<h:outputText value="#{team.team.teamName}" />
+							<h:outputText
+								rendered="#{status.index != (project.teams.size() -1)}"
+								value=", " />
+						</ui:repeat>
+					</p:column>
+				</p:row>
+				
+			</p:panelGrid>
+
+			<p:commandLink id="closebtn" title="close"
+				onclick="hideProjectForm();resetForm()" update=":projectForm"
+				styleClass="secondary" global="false" process="@this" ajax="true">
+				<i class="icon icon-resize-small"
+					style="font-size: 1.6em; float: right"></i>
+				<f:setPropertyActionListener value="#{false}"
+					target="#{adminBeanV2.edit}" />
+			</p:commandLink>
+			<p:commandLink id="savebtn" title="save" rendered="#{adminBeanV2.edit}"
+				action ="#{adminBeanV2.saveNewOwner()}" update=":projectForm :form-projectTable :projectForm:msgs"
+				styleClass="secondary" global="false" process="@this" ajax="true">
+				<i class="icon icon-save"
+					style="font-size: 1.6em; float: right; margin-right:5px;"></i>
+				<f:setPropertyActionListener value="#{false}"
+					target="#{adminBeanV2.edit}" />
+			</p:commandLink>
+			<p:commandLink id="edit" title="edit" rendered="#{!adminBeanV2.edit}"
+			 update=":projectForm" styleClass="secondary" global="false" process="@this" ajax="true">
+				<i class="icon icon-edit"
+					style="font-size: 1.6em; float: right; margin-right:5px;"></i>
+				<f:setPropertyActionListener value="#{true}"
+					target="#{adminBeanV2.edit}" />
+			</p:commandLink>
+
+
+
+		</div>
+		<!-- 	<div style ="background-color: red; width: 30%; height: 200px; float: left"></div>	 -->
+	</h:form>
+</p:fieldset>
+
+</html>

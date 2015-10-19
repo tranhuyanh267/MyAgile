@@ -1,0 +1,162 @@
+.selector-wrapper {
+    display: inline-block;
+    width: 330px;
+    height: 35px;
+}
+
+.selector-wrapper > div {
+    text-align: left;
+}
+
+#list-form .issue-id-column {
+    min-width: 70px;
+}
+@media screen and (max-width:1024px){
+	#list-form .issue-id-column {
+	    min-width: 90px;
+	}
+}
+
+/* increate issue id column min width in firefox */
+@-moz-document url-prefix() {
+    #list-form .issue-id-column {
+	    min-width: 90px;
+	}
+}
+
+#footer {
+    margin-bottom: -20px;
+}
+
+@media (max-width: 655px) {
+    body {
+        min-width: 600px;
+    }
+    #body-div.container {
+        min-width: 600px;
+    }
+}
+
+/* style for issue list*/
+#add-form_header {
+	background-color: #297DB6 !important;
+}
+
+.parent-issue {
+	background-color: #ECECEC;
+}
+
+.child-issue {
+	background-color: white;
+}
+
+.id_header {
+	color: #297DB6 !important;
+	font-weight: bold;
+}
+
+.id_header:hover {
+	text-decoration: underline !important;
+}
+
+.ui-dialog {
+	z-index: 16000 !important;
+}
+
+.ui-editor {
+	width: 100% !important;
+	height:110px !important;
+}
+.ui-editor iframe{
+	height:80px !important;
+}
+
+.ui-button-icon-only .ui-icon {
+	left: 50%;
+	margin-left: -5px;
+}
+
+.ui-message-error {
+	margin: 0 !important;
+}
+#loadSpinnerImage {
+	top: 12px;
+	left: 350px;
+}
+
+.move-child-task{
+	color:black !important;
+	margin-right:2px;
+	position:relative;
+	top:-2px;
+	font-size:0.8em;
+	cursor: pointer;
+}
+#footer{
+	margin-top:40px;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0){
+	.ui-treetable-footer{
+		border-top:1px solid #ccc !important;
+	}
+}
+
+/* style for table */
+.tb-issue-meeting {
+	width:100%;	
+	border-collapse: collapse;
+}
+.tb-issue-meeting th{
+	text-align: center;
+	cursor: default;
+	background: #38A8B1;
+	height: 20px;
+	padding:4px 10px;
+	color:white;
+	border:1px solid #ccc;
+}
+.tb-issue-meeting td{
+	padding:4px 10px;
+	border:1px solid #ccc;
+}
+
+.th-id, .th-subject {
+	display: inline !important;
+	margin-left:3px;
+}
+.header-sort{
+	cursor: pointer !important;
+}
+.wrap-search {margin-bottom:10px;}
+.wrap-search label{display: inline;margin-right:3px;}
+.wrap-search input{padding:4px 6px;margin-bottom:0px;}
+
+.issue-id-column{width:100px;}
+.issue-subject-column {width:250px;}
+.issue-estimate-column,
+.issue-remove-column,
+.issue-add-column {
+	width:50px;
+	text-align: center;
+}
+.td-icon-expand {
+	float:left;
+	position: relative;
+	top:5px;
+	cursor:pointer;
+}
+.child-issue .issue-id-column {
+	padding-left:30px;
+}
+.parent-issue .issue-id-column {
+	padding-left:10px;
+}
+
+.child-issue .move-subtask-selector {
+	top: auto !important;
+	left:auto !important;
+}
+.visible-hidden {
+	visibility: hidden;
+}

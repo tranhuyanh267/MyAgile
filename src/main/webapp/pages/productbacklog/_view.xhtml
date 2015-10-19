@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:custom="http://myagile.com/custom">
+<style>
+#userStoryTable .ui-datatable-header {
+	background: white;
+	color: black;
+	border-top-right-radius: 0px;
+	border-top-left-radius: 0px;
+}
+</style>
+<p:fieldset id="fieldset-userStoryForm"
+	style="display: none; margin-bottom:5px" styleClass="span12">
+	<h:form id="userStoryForm">
+		<c:set var="userStory" value="#{productBacklogBean.userStory}"></c:set>
+		<p:panelGrid id="userStoryPnl"
+			styleClass="user-story-table-fixed noborder">
+			<p:row>
+				<p:column style="width:100%" colspan="4">
+					<p:messages for="msgs" id="msgs" showDetail="true" closable="true"
+						showSummary="false" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column style="width:10%">
+					<h:outputLabel for="usNameTxt" value="Name:"
+						style="margin-bottom: 0px !important;" />
+				</p:column>
+				<p:column style="width:30%">
+					<h:outputText id="outputNameTxt" value="#{userStory.name}"
+						rendered="#{!productBacklogBean.edit}" />
+					<p:inputText value="#{userStory.name}" id="usNameTxt"
+						style="width: 290px; margin-bottom: 0px !important;"
+						rendered="#{productBacklogBean.edit and productBacklogBean.createMode}"
+						validator="#{productBacklogBean.validateUserStory}"
+						required="true" maxlength="255" onkeyup="removeError('usNameTxt')"
+						requiredMessage="#{msg['myagile.backlog.NullName']}"
+						immediate="true" styleClass="remove-html-control-character">
+						<p:ajax event="keyup" update="usNameMsgs" global="false" />
+						<f:validateLength maximum="255" />
+					</p:inputText>
+					<p:inputText value="#{userStory.name}" id="usNameEditTxt"
+						style="width: 290px; margin-bottom: 0px !important;"
+						rendered="#{productBacklogBean.edit and !productBacklogBean.createMode}"
+						validator="#{productBacklogBean.validateUserStoryWhenEdit}"
+						required="true" maxlength="255"
+						requiredMessage="#{msg['myagile.backlog.NullName']}"
+						onkeyup="removeError('usNameEditTxt')" immediate="true"
+						styleClass="remove-html-control-character">
+						<p:ajax event="keyup" update="usNameEditMsgs" global="false" />
+						<f:validateLength maximum="255" />
+					</p:inputText>
+				</p:column>
+				<p:column style="width:10%">
+					<h:outputText value="ID:" />
+				</p:column>
+				<p:column id="usIdTxt" style="width:30%">
+					<h:outputText value="##{productBacklogBean.userStory.userStoryId}" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column></p:column>
+				<p:column>
+					<p:message for="usNameTxt" id="usNameMsgs" />
+					<p:message for="usNameEditTxt" id="usNameEditMsgs" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column style="width:10%">
+					<h:outputText value="Priority:"
+						style="margin-bottom: 0px !important;" />
+				</p:column>
+				<p:column style="width:30%">
+					<h:panelGroup rendered="#{!productBacklogBean.edit}"
+						style="width: 290px; margin-bottom: 0px !important;">
+						<h:outputText rendered="#{userStory.priority == 'MUST'}"
+							value="Must"></h:outputText>
+						<h:outputText rendered="#{userStory.priority == 'COULD'}"
+							value="Could"></h:outputText>
+						<h:outputText rendered="#{userStory.priority == 'SHOULD'}"
+							value="Should"></h:outputText>
+						<h:outputText rendered="#{userStory.priority == 'WONT'}"
+							value="Wont"></h:outputText>
+						<h:outputText rendered="#{userStory.priority == 'NONE'}"
+							value="None"></h:outputText>
+					</h:panelGroup>
+					<p:selectOneMenu rendered="#{productBacklogBean.edit}"
+						value="#{userStory.priority}"
+						style="width: 298px; margin-bottom: 0px !important;">
+						<f:selectItem itemLabel="--Select a priority--" itemValue="NONE" />
+						<f:selectItem itemLabel="Must" itemValue="MUST" />
+						<f:selectItem itemLabel="Could" itemValue="COULD" />
+						<f:selectItem itemLabel="Should" itemValue="SHOULD" />
+						<f:selectItem itemLabel="Wont" itemValue="WONT" />
+					</p:selectOneMenu>
+				</p:column>
+				<p:column style="width:10%">
+					<h:outputText value="Project:" />
+				</p:column>
+				<p:column style="width:30%">
+					<h:outputText id="usProjectTxt"
+						value="#{productBacklogBean.userStory.project}" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputText value="Value:" />
+				</p:column>
+				<p:column>
+					<h:outputText value="#{userStory.value}"
+						rendered="#{!productBacklogBean.edit}" />
+					<p:spinner id="usValueSpner" value="#{userStory.value}"
+						rendered="#{productBacklogBean.edit}"
+						validator="#{productBacklogBean.validateValue}"
+						style="margin-bottom: 0px !important;" immediate="true">
+						<p:ajax event="change" update="msgValue" global="false" />
+						<p:ajax event="keyup" update="msgValue" global="false" />
+					</p:spinner>
+				</p:column>
+				<p:column>
+					<h:outputText value="Status:" />
+				</p:column>
+				<p:column id="usStatusTxt" style="padding-bottom: 2px;">
+					<h:panelGroup layout="block" styleClass="form-inline">
+						<h:outputText rendered="#{userStory.status == 'TODO'}"
+							value="To do"></h:outputText>
+						<h:outputText rendered="#{userStory.status == 'IN_PROGRESS'}"
+							value="In progress (#{productBacklogBean.progressOfCurrentUserStory}% )"></h:outputText>
+						<h:outputText rendered="#{userStory.status == 'DONE'}"
+							value="Done"></h:outputText>
+						<h:outputText rendered="#{userStory.status == 'VOID'}"
+							value="Void"></h:outputText>
+						<p:commandButton id="setVoidbtn" value="Set Void"
+							icon="icon-ok-sign"
+							actionListener="#{productBacklogBean.onSetVoidButton()}"
+							global="false" update=":userStoryForm"
+							rendered="#{productBacklogBean.edit and !productBacklogBean.createMode and (userStory.status=='TODO' or userStory.status=='IN_PROGRESS')}"
+							style="font-size: 12px; margin-left: 5px;" />
+						<p:commandButton id="desVoidbtn" value="Destroy Void"
+							icon="icon-ban-circle"
+							actionListener="#{productBacklogBean.onDestroyVoidButton()}"
+							global="false" update=":userStoryForm"
+							rendered="#{productBacklogBean.edit and userStory.status=='VOID' }"
+							style="font-size: 12px; margin-left: 5px;" />
+					</h:panelGroup>
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column></p:column>
+				<p:column>
+					<p:message for="usValueSpner" id="msgValue" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputText value="Risk:" />
+				</p:column>
+				<p:column>
+					<h:outputText value="#{userStory.risk}"
+						rendered="#{!productBacklogBean.edit}" />
+					<p:spinner id="usRiskSpner" value="#{userStory.risk}"
+						rendered="#{productBacklogBean.edit}"
+						validator="#{productBacklogBean.validateValue}"
+						style="margin-bottom: 0px !important;" immediate="true">
+						<p:ajax event="change" update="msgRisk" global="false" />
+						<p:ajax event="keyup" update="msgRisk" global="false" />
+					</p:spinner>
+				</p:column>
+				<p:column>
+					<h:outputText value="Issues:" />
+				</p:column>
+				<p:column rendered="#{productBacklogBean.relatedIssues.size() gt 0}">
+					<a onclick="relatedIssueDialog.show();return false;"
+						style="color: grey;"><i class="icon-sitemap"></i></a>
+				</p:column>
+				<p:column rendered="#{productBacklogBean.relatedIssues.size() eq 0}">
+					No subIssue
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column></p:column>
+				<p:column>
+					<p:message for="usRiskSpner" id="msgRisk" />
+				</p:column>
+			</p:row>
+			<p:row rendered="#{!productBacklogBean.edit}">
+				<p:column colspan="4">
+					<p:separator style="border-width: 2px; margin: 4px 4px;" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel for="usDescTxt" value="Decription:" />
+				</p:column>
+				<p:column colspan="3">
+					<h:outputText value="#{userStory.description}"
+						rendered="#{!productBacklogBean.edit}" escape="false" />
+					<p:editor id="usDescTxt" value="#{userStory.description}"
+						styleClass="fix-max-width"
+						controls="bold italic underline strikethrough font size color highlight | bullets numbering "
+						width="731" height="150" rendered="#{productBacklogBean.edit}"
+						maxlength="2000">
+					</p:editor>
+				</p:column>
+			</p:row>
+
+			<!-- <p:row>
+				<p:column>
+					<h:outputLabel value="Note:" />
+				</p:column>
+				<p:column colspan="3">
+					<h:outputText value="Note" rendered="#{!productBacklogBean.edit}" escape="false"/>
+					<p:editor id="usNoteTxt"  styleClass="fix-max-width"
+							  controls="bold italic underline strikethrough font size color highlight | bullets numbering " width="731"
+							  height="150" rendered="#{productBacklogBean.edit}" maxlength="2000">
+					</p:editor>
+				</p:column>
+			</p:row> -->
+
+			<p:row>
+				<p:column>
+					<h:outputLabel for="usNoteTxt" value="Note:" />
+				</p:column>
+				<p:column colspan="3">
+					<h:outputText value="#{userStory.note}"
+						rendered="#{!productBacklogBean.edit}" escape="false" />
+					<p:editor id="usNoteTxt" value="#{userStory.note}"
+						styleClass="fix-max-width"
+						controls="bold italic underline strikethrough font size color highlight | bullets numbering "
+						width="731" height="150" rendered="#{productBacklogBean.edit}"
+						maxlength="2000">
+					</p:editor>
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputText value="Attachment:" />
+				</p:column>
+				<p:column colspan="3">
+					<div>
+						<p:messages for="downloadMsgs" id="downloadMsgs" showDetail="true"
+							closable="true" showSummary="false" />
+					</div>
+					<h:panelGroup layout="block" rendered="#{!productBacklogBean.edit}">
+						<ui:repeat value="#{productBacklogBean.attachmentList}"
+							var="attachment">
+							<p:commandLink
+								rendered="#{attachment.diskFilename != null and attachment.filename != null}"
+								styleClass="ui-panel-titlebar-icon ui-corner-all"
+								action="#{downloadBean.download}" ajax="false">
+								<h:outputText styleClass="ui-icon icon-download-alt" />
+								<f:setPropertyActionListener value="#{attachment.diskFilename}"
+									target="#{downloadBean.fileName}" />
+								<f:setPropertyActionListener
+									value="#{productBacklogBean.projectId}"
+									target="#{downloadBean.projectId}" />
+								<h:outputText value=" #{attachment.filename}" />
+							</p:commandLink>
+							<br />
+						</ui:repeat>
+					</h:panelGroup>
+					<h:panelGroup layout="block" id="usAttachment"
+						rendered="#{productBacklogBean.edit}">
+						<script type="text/javascript">
+							$(document).ready(function(){
+								initUploadAttachment('#{request.contextPath}/upload'); 
+								setHeightIframeBody();
+								removeHtmlTagWhenPasteInEditor();
+							});
+						</script>
+						<button id="pickfiles"
+							class="btn btn-small btn-info input-block-level"
+							style="width: 200px;">
+							<i class="icon-picture"></i> Add file
+						</button>
+
+						<p:blockUI block="usAttachment" widgetVar="uploadAttBlock"
+							style="width: 200px;">
+							Uploading... (<span class="upload-progress">0%</span>)
+						</p:blockUI>
+					</h:panelGroup>
+					<p:remoteCommand name="updateAtt"
+						actionListener="#{productBacklogBean.uploadAttachment}"
+						update="us-attachment-list" process="@this" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column></p:column>
+				<p:column colspan="3">
+					<h:panelGroup layout="block" id="us-attachment-list"
+						rendered="#{productBacklogBean.edit}">
+						<p:panel id="filelist" style="border:0px;">
+							<!-- Not Added List-->
+							<ui:repeat value="#{productBacklogBean.notAddedAttachmentList}"
+								rendered="#{not empty productBacklogBean.notAddedAttachmentList}"
+								var="attachment">
+								<p:commandLink
+									rendered="#{attachment.diskFilename != null and attachment.filename != null}"
+									onclick="changeIdPlaceholder(&quot;#{attachment.filename}&quot;);deleteNotAddedFileDlg.show();"
+									process="@this">
+									<span class="ui-icon ui-icon-trash"
+										style="float: left; margin-top: 1px !important; padding-right: 7px;"></span>
+									<span style="float: left;">#{attachment.filename}</span>
+									<f:setPropertyActionListener value="#{attachment.attachmentId}"
+										target="#{productBacklogBean.notAddAttachmentId}" />
+								</p:commandLink>
+								<br />
+							</ui:repeat>
+
+							<!-- Added List-->
+							<ui:repeat value="#{productBacklogBean.attachmentList}"
+								rendered="#{not empty productBacklogBean.attachmentList}"
+								var="attachment">
+								<p:commandLink
+									rendered="#{attachment.diskFilename != null and attachment.filename != null}"
+									onclick="changeIdPlaceholder(&quot;#{attachment.filename}&quot;);deleteFileDlg.show();">
+									<span class="ui-icon ui-icon-trash"
+										style="float: left; margin-top: 1px !important; padding-right: 7px;"></span>
+									<span style="float: left;">#{attachment.filename}</span>
+									<f:setPropertyActionListener value="#{attachment.attachmentId}"
+										target="#{productBacklogBean.selectedAttachmentId}" />
+								</p:commandLink>
+								<br />
+							</ui:repeat>
+						</p:panel>
+					</h:panelGroup>
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+				</p:column>
+				<p:column colspan="3" style="text-align:center">
+					<p:commandButton id="savebtn" value="Save"
+						rendered="#{productBacklogBean.edit and !custom:isStackHolder(productBacklogBean.projectId)}"
+						style="margin-right:5px;"
+						actionListener="#{productBacklogBean.saveUserStory}"
+						oncomplete="handleCreateComplete(xhr, status, args);userStoryTableVar.filter();"
+						update=":userStoryForm, :form-userStoryTable" icon="icon-save">
+						<f:setPropertyActionListener value="#{false}"
+							target="#{productBacklogBean.edit}" />
+					</p:commandButton>
+					<p:commandButton id="cancelbtn" value="Cancel"
+						update=":userStoryForm"
+						rendered="#{productBacklogBean.edit and !empty productBacklogBean.userStory.userStoryId}"
+						process="@this" styleClass="secondary" global="false"
+						onclick="resetForm()"
+						actionListener="#{productBacklogBean.onCancelButton()}">
+						<f:setPropertyActionListener value="#{false}"
+							target="#{productBacklogBean.edit}" />
+					</p:commandButton>
+					<p:commandButton id="editbtn" value="Edit"
+						rendered="#{!productBacklogBean.edit and !empty productBacklogBean.userStory.userStoryId and !custom:isStackHolder(productBacklogBean.projectId)}"
+						process="@this" update=":userStoryForm" global="false"
+						style="margin-right:5px;" icon="icon-edit">
+						<f:setPropertyActionListener value="#{true}"
+							target="#{productBacklogBean.edit}" />
+						<f:setPropertyActionListener value="#{false}"
+							target="#{productBacklogBean.createMode}" />
+					</p:commandButton>
+					<p:commandButton id="closebtn" value="Close"
+						rendered="#{!productBacklogBean.edit or empty productBacklogBean.userStory.userStoryId}"
+						onclick="hideUserStoryForm();resetForm()" update=":userStoryForm"
+						styleClass="secondary" global="false" process="@this">
+						<f:setPropertyActionListener value="#{false}"
+							target="#{productBacklogBean.edit}" />
+					</p:commandButton>
+				</p:column>
+			</p:row>
+		</p:panelGrid>
+		<p:dialog id="issueDialog" widgetVar="relatedIssueDialog"
+			showHeader="FALSE" styleClass="relatedIssue" closeOnEscape="TRUE"
+			style="max-width: 95%; max-height: 95%; padding-bottom: 10px;"
+			position="center">
+			<h:panelGrid id="display" cellpadding="6" style="position: relative;">
+
+				<p:commandLink style="position: absolute; top: 1px; right: 4px;"
+					onclick="relatedIssueDialog.hide()">
+					<i class="icon-remove"> </i>
+				</p:commandLink>
+
+				<h5 class="text-center lead"
+					style="left: 40%; top: -10px; bottom: 10px; position: absolute; font-weight: bold;">
+					Issues of user story ##{userStory.userStoryId}</h5>
+				<p:dataTable id="issueTable" var="issue"
+					value="#{productBacklogBean.relatedIssues}"
+					style="color:white; bottom: 10px; top: 20px;" scrollable="true"
+					scrollHeight="475">
+					<p:column style="text-align:center;width: 6%;"
+						sortBy="#{issue.issueId}">
+						<f:facet name="header">
+							#ID
+						</f:facet>
+
+						<h:commandLink styleClass="id_header" id="viewbtn"
+							style="color:#45A1DE;" action="#{issueBean.toViewIssuePage}"
+							value="##{issue.displayIssueId}" target="_new">
+							<f:setPropertyActionListener value="#{issue}"
+								target="#{issueBean.viewIssue}" />
+						</h:commandLink>
+					</p:column>
+
+					<p:column headerText="Subject" style="width: 24%;"
+						sortBy="#{issue.subject}">
+						<h:outputText value="#{issue.subject}" />
+					</p:column>
+
+					<p:column headerText="Type" style="text-align:center; width: 8%;"
+						sortBy="#{issue.type}">
+						<h:outputText value="#{issue.type}" />
+					</p:column>
+
+					<p:column headerText="Sprint" style="text-align:center; width: 8%;"
+						sortBy="#{issue.sprint.sprintId}">
+						<h:outputText value="#{issue.sprint.sprintName}" />
+					</p:column>
+
+					<p:column headerText="Assigned"
+						style="text-align:center; width: 20%;"
+						sortBy="#{issue.assigned.firstName}">
+						<h:outputText
+							value="#{productBacklogBean.getAssignedMember(issue.assigned)}" />
+					</p:column>
+
+					<p:column headerText="Status" style="text-align:center; width: 8%;">
+						<h:outputText value="#{issue.status.name}" />
+					</p:column>
+
+					<p:column headerText="% Done"
+						style="text-align:center; width: 10%;">
+						<script type="text/javascript">
+	            			fillZeroTextInProgressBar();
+	            		</script>
+						<p:progressBar
+							value="#{productBacklogBean.findProgressOfIssue(issue.issueId)}"
+							labelTemplate="{value}%" displayOnly="true" rendered="true" />
+					</p:column>
+
+					<p:column headerText="Estimate"
+						style="text-align:center; width: 8%;" sortBy="#{issue.estimate}">
+						<h:outputText
+							value="#{productBacklogBean.findPointOfIssue(issue, true)}" />
+					</p:column>
+
+					<p:column headerText="Remain" style="text-align:center; width: 8%;"
+						sortBy="#{issue.remain}">
+						<h:outputText
+							value="#{productBacklogBean.findPointOfIssue(issue, false)}" />
+					</p:column>
+
+				</p:dataTable>
+			</h:panelGrid>
+		</p:dialog>
+	</h:form>
+	<h:form>
+		<p:remoteCommand name="refreshPage" autoRun="true"
+			actionListener="#{productBacklogBean.onRefreshPage()}"
+			update=":userStoryForm,:form-userStoryTable"
+			oncomplete="userStoryTableVar.filter();" />
+	</h:form>
+	<p:confirmDialog widgetVar="pblfilesizeerror" width="400" modal="true"
+		closable="false" severity="alert" type="hidden">
+		<f:facet name="header">
+			<h:outputFormat value="Warning" />
+		</f:facet>
+		<f:facet name="message">
+			<h:outputFormat
+				value="You uploaded a big file size. System supports uploading file size &lt; 10 MB.">
+			</h:outputFormat>
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Ok" oncomplete="pblfilesizeerror.hide()"
+				global="false" />
+		</h:panelGroup>
+	</p:confirmDialog>
+</p:fieldset>
+<!-- Load plupload and all it's runtimes and finally the jQuery queue widget -->
+<script type="text/javascript"
+	src="#{request.contextPath}/bundles/plupload.js" />
+
+</html>

@@ -1,0 +1,76 @@
+.assignButton {
+	width: 100px;
+}
+
+#usersList img {
+	padding-right: 3px;
+}
+
+.admin-link-user-project {
+	float: right;
+	margin-top: 7px;
+}
+
+.admin-link-user-project a {
+	color: #45a1de !important;
+}
+
+.admin-link-user-project .selected-link {
+	font-weight: bold;
+}
+
+.ui-datatable tbody td {
+	white-space: normal !important;
+}
+
+.wrap-search {
+	float: left;
+}
+.wrap-search label {
+	display:inline;
+	margin-right: 5px;
+	position: relative;
+	top: -3px;
+}
+.wrap-search input {
+	padding: 4px 6px;
+}
+
+#tb-users {
+	float:left;
+	width:100%;
+	border:1px solid #d9d9d9;
+	border-collapse: collapse;
+}
+
+
+
+#tb-users th{
+	text-align: center;
+	cursor: default;
+	background: #38A8B1;
+	height: 20px;
+	padding:4px 10px;
+	color:white;
+}
+.th-username,
+.th-firstName,
+.th-lastName,
+.th-company,
+.th-tokenDate {
+	display: inline !important;
+	margin-left:3px;
+}
+
+.header-sort{
+	cursor: pointer !important;
+}
+#tb-users td{
+	padding:4px 10px;
+}
+.td-role,
+.td-admin,
+.td-lock,
+.td-project {
+	text-align: center;
+}

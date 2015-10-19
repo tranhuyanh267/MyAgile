@@ -1,0 +1,299 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:custom="http://myagile.com/custom">
+	<h:form id="userStoryForm" rendered="#{kanbanIssueBean.getViewKanbanIssue().isSubIssue == false}">
+		<c:set var="kanbanIssue" value="#{kanbanIssueBean.getViewKanbanIssue()}"></c:set>
+		<c:set var="userStory" value="#{userStoryBean.getUserStory()}"></c:set>
+		<p:fieldset legend="View Task">
+				<p:panelGrid style="width:90%; margin-left:auto; margin-right:auto">
+				<p:row>
+					<p:column style=" border-style: hidden; width:10%">
+						<h:outputLabel value="Name:"/>
+					</p:column>
+					<p:column style=" border-style: hidden; width:40%">
+						<h:outputText>#{kanbanIssue.subject}</h:outputText>
+					</p:column>
+					<p:column style=" border-style: hidden; width:10%">
+						<h:outputLabel value="ID:"/>
+					</p:column>
+					<p:column style=" border-style: hidden; width:40%">
+						<h:outputText value="##{userStory.userStoryId}" />
+					</p:column>
+				</p:row>
+				<p:row >
+					<p:column style=" border-style: hidden;">
+						<h:outputLabel value="Priority:"/>
+					</p:column>
+					<p:column style=" border-style: hidden;">
+						<h:panelGroup>
+							<h:outputText rendered="#{kanbanIssue.priority == 'MUST'}" value="Must"/>
+							<h:outputText rendered="#{kanbanIssue.priority == 'COULD'}" value="Could"/>
+							<h:outputText rendered="#{kanbanIssue.priority == 'SHOULD'}" value="Should"/>
+							<h:outputText rendered="#{kanbanIssue.priority == 'WONT'}" value="Wont"/>
+							<h:outputText rendered="#{kanbanIssue.priority == 'NONE'}" value="None"/>
+						</h:panelGroup>
+					</p:column>
+					<p:column style=" border-style: hidden;">
+						<h:outputLabel value="Project:"/>
+					</p:column>
+					<p:column style=" border-style: hidden;">
+						<h:outputText value="#{kanbanIssue.userStory.project}" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column style=" border-style: hidden;">
+						<h:outputLabel value="Type:"/>
+					</p:column> 
+					<p:column style=" border-style: hidden;">
+						<h:outputText value="#{kanbanIssue.type}" />
+					</p:column>
+					<p:column style=" border-style: hidden;">
+						<h:outputLabel value="Status:"/>
+					</p:column>
+					<p:column style=" border-style: hidden;">
+						<h:outputText value="#{kanbanIssue.kanbanStatus.type}" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column style=" border-style: hidden;">
+						<h:outputLabel value="Estimate:"/>
+					</p:column>
+					<p:column style=" border-style: hidden;">
+						<h:outputText value="#{kanbanIssue.estimate}" />
+					</p:column>
+					<p:column style=" border-style: hidden;">
+						<h:outputLabel value="Remain:"/>
+					</p:column>
+					<p:column style=" border-style: hidden;">
+						<h:outputText value="#{kanbanIssue.remain}" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column style=" border-style: hidden;">
+						<h:outputLabel value="Team:"/>
+					</p:column>
+					<p:column style=" border-style: hidden;">
+						<h:outputText value="#{kanbanIssue.team.teamName}" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column colspan="4" style=" border-style: hidden;">
+						<p:separator style="border-width: 2px; margin: 4px 4px;" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column style=" border-style: hidden;">
+						<h:outputLabel value="Decription:"/>
+					</p:column>
+					<p:column colspan="3" style=" border-style: hidden;">
+						<h:outputText escape="false" value="#{kanbanIssue.description}" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column style=" border-style: hidden;">
+						<h:outputLabel value="Note:"/>
+					</p:column>
+					<p:column colspan="3" style=" border-style: hidden;">
+						<h:outputText escape="false" value="#{kanbanIssue.note}" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column>
+						<h:outputLabel value="Attachment:"/>
+					</p:column>
+					<p:column colspan="3" style="border-style:hidden;">
+						<div>
+						<p:messages for="downloadMsgs" id="downloadMsgs" showDetail="true"
+							closable="true" showSummary="false" />
+						</div>
+						<h:panelGroup rendered="#{kanbanIssueBean.getAttachmentsOfKanbanIssue(kanbanIssue).size() gt 0}">
+							<ui:repeat value="#{kanbanIssueBean.getAttachmentsOfKanbanIssue(kanbanIssue)}" var="attachment">
+								<h:panelGroup layout="block" styleClass="ok" rendered="#{attachment.diskFilename != null and attachment.filename != null and kanbanIssueBean.isExistedFile(attachment.diskFilename,userStory.project.projectId)}">
+									<p:commandLink  styleClass="ui-panel-titlebar-icon ui-corner-all link-download"
+									ajax="false" action="#{downloadBean.download()}">
+										<h:outputText styleClass="ui-icon icon-download-alt" />
+										<f:setPropertyActionListener value="#{attachment.diskFilename}"
+												target="#{downloadBean.fileName}" />
+										<f:setPropertyActionListener value="#{userStory.project.projectId}"
+												target="#{downloadBean.projectId}" />
+										<h:outputText value=" #{attachment.filename}" />
+										<f:param name="userStory" value="#{userStory.userStoryId}" />
+										<f:param name="kanbanIssueId" value="#{kanbanIssue.issueId}"></f:param>
+									</p:commandLink>
+									<br />
+									</h:panelGroup>
+								</ui:repeat>
+						</h:panelGroup>
+					</p:column>
+				</p:row>	
+				<p:row>
+					<p:column colspan="4">
+						<p:commandButton value="Edit" actionListener="#{kanbanIssueBean.goToEditKanbanIssue(kanbanIssue.issueId)}">
+							<f:param name="userStory" value="#{userStory.userStoryId}" />
+							<f:param name="kanbanIssueId" value="#{kanbanIssue.issueId}" />
+						</p:commandButton>
+					</p:column>
+				</p:row>	
+			</p:panelGrid>
+			
+			</p:fieldset>
+			
+			<p:dialog id="issueDialog" widgetVar="relatedIssueDialog"
+			showHeader="FALSE" styleClass="relatedIssue" closeOnEscape="TRUE"
+			style="max-width: 95%; max-height: 95%; padding-bottom: 10px;"
+			position="center">
+			<h:panelGrid id="display" cellpadding="6" style="position: relative;">
+				
+				<p:commandLink style="position: absolute; top: 1px; right: 4px;"
+					onclick="relatedIssueDialog.hide()">
+					<i class="icon-remove"> </i>
+				</p:commandLink>
+				
+				<h5 class="text-center lead"
+					style="left: 40%; top: -10px; bottom: 10px; position: absolute; font-weight: bold;">
+					Issues of user story ##{userStory.userStoryId}</h5>
+				<p:dataTable id="issueTable" var="issue"
+					value="#{userStoryBean.getRelatedIssuesOfUserStory(userStory.userStoryId)}"
+					style="color:white; bottom: 10px; top: 20px;" scrollable="true"
+					scrollHeight="475">
+					<p:column style="text-align:center;width: 6%;"
+						sortBy="#{issue.issueId}">
+						<f:facet name="header">
+							#ID
+						</f:facet>
+
+						<h:commandLink styleClass="id_header" id="viewbtn"
+							style="color:#45A1DE;" action="#{issueBean.toViewIssuePage}"
+							value="##{issue.displayIssueId}" target="_blank">
+							<f:setPropertyActionListener value="#{issue}"
+								target="#{issueBean.viewIssue}" />
+							<f:param name="userStory" value="#{userStory.userStoryId}" />
+						</h:commandLink>
+					</p:column>
+
+					<p:column headerText="Subject" style="width: 24%;"
+						sortBy="#{issue.subject}">
+						<h:outputText value="#{issue.subject}" />
+					</p:column>
+
+					<p:column headerText="Type" style="text-align:center; width: 8%;"
+						sortBy="#{issue.type}">
+						<h:outputText value="#{issue.type}" />
+					</p:column>
+
+					<p:column headerText="Sprint" style="text-align:center; width: 8%;"
+						sortBy="#{issue.sprint.sprintId}">
+						<h:outputText value="#{issue.sprint.sprintName}" />
+					</p:column>
+
+					<p:column headerText="Assigned"
+						style="text-align:center; width: 20%;"
+						sortBy="#{issue.assigned.firstName}">
+						<h:outputText
+							value="#{userStoryBean.getAssignedMember(issue.assigned)}" />
+					</p:column>
+
+					<p:column headerText="Status" style="text-align:center; width: 8%;">
+						<h:outputText value="#{issue.status.name}" />
+					</p:column>
+
+					<p:column headerText="Done (%)"
+						style="text-align:center; width: 10%;">
+						<script type="text/javascript">
+// 	            			fillZeroTextInProgressBar();
+ 	            		</script> 
+						<p:progressBar
+							value="#{userStoryBean.findProgressOfIssue(issue.issueId)}"
+							labelTemplate="{value}%" displayOnly="true" rendered="true" />
+					</p:column>
+
+					<p:column headerText="Estimate"
+						style="text-align:center; width: 8%;" sortBy="#{issue.estimate}">
+						<h:outputText
+							value="#{userStoryBean.findPointOfIssue(issue, true)}" />
+					</p:column>
+
+					<p:column headerText="Remain" style="text-align:center; width: 8%;"
+						sortBy="#{issue.remain}">
+						<h:outputText
+							value="#{userStoryBean.findPointOfIssue(issue, false)}" />
+					</p:column>
+
+				</p:dataTable>
+			</h:panelGrid>
+		</p:dialog>
+	</h:form>
+	
+
+		
+		<p:fieldset legend="History">
+				<ui:repeat var="history" value="#{kanbanIssueBean.getKanbanHistoryOfKanbanIssue(kanbanIssue)}">
+					<div style="color: #297DB6; width: 100%;">
+						<h:graphicImage alt="user avatar" value="/file/?type=small-member-logo&amp;filename=#{history.author.avatar}"  rendered="#{!empty history.author.avatar}" atl="#{history.author.memberId}" styleClass="avatar img-circle"/>	
+						<h:graphicImage alt="user avatar default" value="/#{request.contextPath}/resources/img/user.png" rendered="#{empty history.author.avatar}" atl="#{history.author.memberId}" styleClass="avatar img-circle"/>		
+						<h:outputText value="&#160;&#160;"/>
+						<h:outputText value="Updated by " rendered="#{history.actionType == 'Update' or history.actionType == 'Upfile'}"/>
+						<h:outputText value="Created by " rendered="#{history.actionType == 'Create'}"/>			
+						<h:outputText value="#{history.author.lastName} #{history.author.firstName}" style="font-weight: bold; font-size: 15px;"/>
+						<h:outputText value=" on "/>
+						<h:outputText value="#{history.dateCreated}">
+							<f:convertDateTime pattern="MM/dd/yyyy"/>
+						</h:outputText>
+						<h:outputText value="&#160;at "/>	
+						<h:outputText value="#{history.dateCreated}">
+							<f:convertDateTime pattern="HH:mm"/>
+						</h:outputText>		
+					</div>
+					<p:panel rendered="#{history.actionType == 'Update'}" style="margin: 0px 0px; padding: 0px 0px; border: none;">
+						<ul style="margin:0 0 0px 25px">
+							<ui:repeat var="change" value="#{history.kanbanHistoryFieldChanges}">
+								<ui:fragment rendered = "#{change.fieldName ne 'Assign' and change.fieldName ne 'Unassign'}">
+									<li style="margin-left: 30px;">			
+										<h:outputText value="#{change.fieldName}" style="font-weight: bold;"/>	
+										<h:outputText value="changed from" style="text-decoration: underline;margin:0px 5px;"/>				
+										<h:outputText value="#{change.oldValue}" escape="false"/>
+										<h:outputText value="to" style="text-decoration: underline;margin:0px 5px;"/>
+										<h:outputText value=" #{change.newValue}" escape="false"/>
+									</li>
+								</ui:fragment>
+								<ui:fragment rendered = "#{change.fieldName eq 'Assign' or change.fieldName eq 'Unassign'}">
+									<li style="margin-left: 30px;">			
+										<h:outputText value="#{change.fieldName}" style="font-weight: bold;"/>	
+										<h:outputText value=" #{change.newValue}" escape="false"/>
+									</li>
+								</ui:fragment>
+								
+							</ui:repeat>
+						</ul>
+					</p:panel>
+					<p:panel rendered="#{history.actionType == 'Upfile'}" style="margin: 0px 0px; padding: 0px 0px; border: none;">
+						<ul style="margin:0 0 0px 25px">
+							<ui:repeat var="change" value="#{history.kanbanHistoryFieldChanges}">
+								<li style="margin-left: 30px;">			
+									<h:outputText value="#{change.fieldName}" style="font-weight: bold;"/>	
+									<h:outputText value=" #{change.newValue}" />
+									<h:outputText value=" was Added"/>
+								</li>
+							</ui:repeat>
+						</ul>
+					</p:panel>
+					<p:panel rendered="#{history.actionType == 'Deletefile'}" style="margin: 0px 0px; padding: 0px 0px; border: none;">
+						<ul style="margin:0 0 0px 25px">
+							<ui:repeat var="change" value="#{history.kanbanHistoryFieldChanges}">
+								<li style="margin-left: 30px;">			
+									<h:outputText value="#{change.fieldName}" style="font-weight: bold;"/>	
+									<h:outputText value=" #{change.newValue}" />
+									<h:outputText value=" was Deleted"/>
+								</li>
+							</ui:repeat>
+						</ul>
+					</p:panel>
+					<p:separator style="border-width: 2px; margin: 4px 4px;"/>
+				</ui:repeat>
+		</p:fieldset>
+</ui:composition>

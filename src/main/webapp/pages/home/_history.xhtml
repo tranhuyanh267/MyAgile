@@ -1,0 +1,534 @@
+<ui:composition 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<style>
+.ui-scrollpanel-content {
+	width: 100% !important;
+}
+
+.ui-tabs .ui-tabs-panel {
+	display: block;
+	border-width: 0;
+	padding: 1em 1.4em 0em 0em;
+	background: none;
+}
+
+#historyPanel .ui-fieldset-content{
+	padding-bottom: 3px;
+}
+#historyPanel\:tabView\:tab3{
+	margin-top: 0px;
+}
+div[aria-hidden='true']{
+	display: none;
+}
+#historyPanel\:tabView\:issueHistoryStart_input, #historyPanel\:tabView\:issueHistoryEnd_input{
+	width: 80px;
+}
+#historyPanel\:tabView\:tab3 .ui-panel-content .ui-widget-content{
+	padding: 3px 3px 0px 0px;
+}
+.date-select-kanbanissue > input {
+	width: 80px;
+}
+</style>
+
+	<br/>
+	<p:fieldset legend="History" styleClass="history history-panel">
+		<p:tabView id="tabView" activeIndex="0" dynamic="true" styleClass="history-panel-content"> 
+			<p:ajax event="tabChange" global="false" listener="#{homeBean.setHourForEndDateIssueHistory}"/>
+			
+			<!-- PROJECT -->
+			<p:tab id="tab1" title="Project" rendered="true">
+				<p:panel styleClass="history-list">
+					<h:outputText value="No history to be showed" rendered="#{empty homeBean.historyOfProject}"/>
+					<ui:repeat var="history" value="#{homeBean.historyOfProject}">
+						<!-- Title of history -->
+						<div class="histories">
+							<h:graphicImage alt="user avatar" value="/file/?type=small-member-logo&amp;filename=#{history.author.avatar}" rendered="#{!empty history.author.avatar}" atl="#{history.author.memberId}" styleClass="avatar img-circle"/>
+							<h:graphicImage alt="user avatar" value="resources/img/user.png" rendered="#{empty history.author.avatar}" atl="#{history.author.memberId}" styleClass="avatar img-circle"/>
+							<h:outputText value="&#160;&#160;Updated by " rendered="#{history.actionType == 'Update' or history.actionType =='DeleteFile' or history.actionType =='AddFile' or history.actionType == 'Detele' or history.actionType =='AddUs' or history.actionType =='DeleteUs' or history.actionType == 'Add' or history.actionType == 'Remove' or history.actionType =='Assign' or history.actionType =='ReAssign'}"/>
+							<h:outputText value="&#160;&#160;Created by " rendered="#{history.actionType == 'Create'}"/>
+							<h:outputText value="#{history.author.lastName} #{history.author.firstName}" styleClass="author-change"/>
+							<h:outputText value=" on "/>
+							<h:outputText value="#{history.createdOn}">
+								<f:convertDateTime pattern="MM/dd/yyyy"/>
+							</h:outputText>
+							<h:outputText value="&#160;at "/>
+							<h:outputText value="#{history.createdOn}">
+								<f:convertDateTime pattern="HH:mm"/>
+							</h:outputText>
+						</div>
+						
+						<!-- Content of history -->
+						<p:panel rendered="#{history.containerType == 'Project' and history.actionType == 'Create'}" styleClass="wrapper-change-content">
+							<ui:repeat var="change" value="#{history.historyFieldChanges}">
+								<li class="word-break-break-word margin-left-28">
+									<h:outputText value="#{change.fieldName}:" styleClass="bold"/>
+									<h:outputText value="&#160;&#160;"/>
+									<h:outputText value="##{change.oldValue}&#160;-&#160;#{change.newValue}" styleClass="status-of-userstory"/>
+									<h:outputText value="&#160;&#160;was created."/>
+								</li>
+							</ui:repeat>
+						</p:panel>
+						
+						<p:panel rendered="#{history.actionType == 'AddUs'}" styleClass="wrapper-change-content">
+							<ui:repeat var="change" value="#{history.historyFieldChanges}">
+								<li class="word-break-break-word margin-left-28">
+									<h:outputText value="#{change.fieldName}:" styleClass="bold"/>
+									<h:outputText value="&#160;&#160;"/>
+									<h:outputText value="##{change.oldValue}&#160;-&#160;#{change.newValue}" styleClass="status-of-userstory"/>
+									<h:outputText value="&#160;&#160;was created."/>
+								</li>
+							</ui:repeat>
+						</p:panel>
+						
+						<p:panel rendered="#{history.actionType == 'DeleteUs'}" styleClass="wrapper-change-content">
+							<ui:repeat var="change" value="#{history.historyFieldChanges}">
+								<li class="word-break-break-word margin-left-28">
+									<h:outputText value="#{change.fieldName}:" styleClass="bold"/>
+									<h:outputText value="&#160;&#160;"/>
+									<h:outputText value="##{change.oldValue}&#160;-&#160;#{change.newValue}" styleClass="status-of-userstory"/>
+									<h:outputText value="&#160;&#160;was&#160;deleted."/>
+								</li>
+							</ui:repeat>
+						</p:panel>
+						
+						<p:panel rendered="#{history.actionType == 'AddFile'}" styleClass="wrapper-change-content">
+							<ui:repeat var="change" value="#{history.historyFieldChanges}">
+								<li class="word-break-break-word margin-left-28">
+									<h:outputText value="#{change.fieldName}:" styleClass="bold"/>
+									<h:outputText value="&#160;#{change.newValue}" styleClass="status-of-userstory"/>
+									<h:outputText value="&#160;&#160;was added."/>
+								</li>
+							</ui:repeat>
+						</p:panel>
+						
+						<p:panel rendered="#{history.actionType == 'DeleteFile'}" styleClass="wrapper-change-content">
+							<ui:repeat var="change" value="#{history.historyFieldChanges}">
+								<li class="word-break-break-word margin-left-28">
+									<h:outputText value="#{change.fieldName}:" styleClass="bold"/>
+									<h:outputText value="&#160;#{change.newValue}" styleClass="status-of-userstory"/>
+									<h:outputText value="&#160;&#160;was removed."/>
+								</li>
+							</ui:repeat>
+						</p:panel>
+						
+						<!-- Each history -->
+						<p:panel rendered="#{history.actionType == 'Update'}" styleClass="wrapper-change-content-box">
+							 <ui:repeat var="change" value="#{history.historyFieldChanges}">
+							  <p:panel rendered="#{change.oldValue != 'Description'}" styleClass="wrapper-change-content">
+								<li class="word-break-break-word history-status">
+									<h:outputText value="#{change.fieldName}:" styleClass="bold"/> 
+									<h:outputText value="&#160;changed&#160;from&#160;"/> 
+									<h:outputText escape="false" value="#{change.oldValue}" styleClass="status-of-userstory"/>
+									<h:outputText value="&#160;&#160;to "/>
+									<h:outputText value="#{change.newValue}" styleClass="status-of-userstory" escape="false"/>
+								</li>
+							  </p:panel>
+							
+							 <p:panel rendered="#{change.oldValue == 'Description'}" styleClass="wrapper-change-content">
+								<li class="word-break-break-word history-status">
+									<h:outputText value="#{change.fieldName}:" styleClass="bold"/> 
+									<h:outputText value="&#160;changed&#160;to&#160;"/> 
+									<h:outputText value="#{change.newValue}" styleClass="status-of-userstory" escape="false"/>
+								</li>
+							  </p:panel>
+							 </ui:repeat>
+						</p:panel>
+						
+						<p:panel rendered="#{history.actionType == 'Assign'}" styleClass="wrapper-change-content">
+							<ui:repeat var="change" value="#{history.historyFieldChanges}">
+								<li class="word-break-break-word history-status margin-left-28">
+									<h:outputText value="#{change.fieldName}:" styleClass="bold"/> 
+									<h:outputText value="&#160;&#160;"/> 
+									<h:outputText value="#{change.newValue} " styleClass="status-of-userstory"/> 
+									<h:outputText value="&#160;&#160;was&#160;assigned"/>
+								</li>
+							</ui:repeat>
+						</p:panel>
+						
+						<p:panel rendered="#{history.actionType == 'Remove'}" styleClass="wrapper-change-content">
+							<ui:repeat var="change" value="#{history.historyFieldChanges}">
+								<li class="word-break-break-word margin-left-28">
+									<h:outputText value="#{change.fieldName}:" styleClass="bold"/> 
+									<h:outputText value="&#160;&#160;"/> 
+									<h:outputText value="#{change.newValue} " styleClass="status-of-userstory"/> 
+									<h:outputText value="&#160;&#160;was&#160; removed"/>
+								</li>
+							</ui:repeat>
+						</p:panel>
+						
+						<p:panel rendered="#{history.actionType == 'ReAssign'}" styleClass="wrapper-change-content">
+							<ui:repeat var="change" value="#{history.historyFieldChanges}">
+								<li class="word-break-break-word history-status margin-left-28">
+									<h:outputText value="#{change.fieldName}:" styleClass="bold"/> 
+									<h:outputText value="&#160;&#160;"/> 
+									<h:outputText value="#{change.newValue} " styleClass="status-of-userstory"/> 
+									<h:outputText value="&#160;&#160;was&#160; reAssigned"/>
+								</li>
+							</ui:repeat>
+						</p:panel>
+						<p:separator styleClass="separator-histories"/>
+					</ui:repeat>
+				</p:panel>
+				<p:commandButton global="false" 
+					value="Show more..." 
+					actionListener="#{homeBean.getMoreHistoryProject}" 
+					icon="icon-mail-reply-all" 
+					rendered="#{homeBean.showMoreBtnP}" 
+					update="tabView" 
+					styleClass="btn-show-more"/>
+			</p:tab>
+
+			<!-- TEAM -->
+			<p:tab id="tab2"  title="Team">
+				<p:panel styleClass="history-list" mode="native">
+					<h:outputText value="No history to be showed" rendered="#{empty homeBean.historyOfTeam}"/>
+					<ui:repeat var="history" value="#{homeBean.historyOfTeam}">
+						<div class="histories">
+							<h:graphicImage value="/file/?type=small-member-logo&amp;filename=#{history.author.avatar}" rendered="#{!empty history.author.avatar}" atl="#{history.author.memberId}" styleClass="avatar img-circle"/>
+							<h:graphicImage value="resources/img/user.png" rendered="#{empty history.author.avatar}" atl="#{history.author.memberId}" styleClass="avatar img-circle"/>
+							<h:outputText value="&#160;&#160;Updated by " rendered="#{history.actionType == 'Update' or history.actionType =='RoleMember' or history.actionType =='RemoveMember' or history.actionType =='AddMember' or history.actionType == 'Detele' or history.actionType == 'Add' or history.actionType == 'Remove' or history.actionType =='Assign' or history.actionType =='ReAssign'}"/>
+							<h:outputText value="&#160;Created by " rendered="#{history.actionType == 'Create' or history.actionType =='CreateSprint'}"/>
+							<h:outputText value="#{history.author.lastName} #{history.author.firstName}" styleClass="author-change"/>
+							<h:outputText value=" on "/>
+							<h:outputText value="#{history.createdOn}">
+								<f:convertDateTime pattern="MM/dd/yyyy"/>
+							</h:outputText>
+							<h:outputText value="&#160;at "/>
+							<h:outputText value="#{history.createdOn}">
+								<f:convertDateTime pattern="HH:mm"/>
+							</h:outputText>
+						</div>
+						
+						<p:panel rendered="#{history.containerType == 'Team' and history.actionType == 'Create'}" styleClass="wrapper-change-content">
+							<ui:repeat var="change" value="#{history.historyFieldChanges}">
+								<li class="word-break-break-word margin-left-28">
+									<h:outputText value="#{change.fieldName}:" styleClass="bold"/>
+									<h:outputText value="&#160;&#160;"/>
+									<h:outputText value="##{change.oldValue}&#160;-&#160;#{change.newValue}" styleClass="status-of-userstory"/>
+									<h:outputText value="&#160;&#160;was created."/>
+								</li>
+							</ui:repeat>
+						</p:panel>
+						
+						<p:panel rendered="#{history.actionType == 'CreateSprint'}" styleClass="wrapper-change-content">
+							<ui:repeat var="change" value="#{history.historyFieldChanges}">
+								<li class="word-break-break-word margin-left-28">
+									<h:outputText value="#{change.fieldName}:" styleClass="bold"/>
+									<h:outputText value="&#160;&#160;"/>
+									<h:outputText value="##{change.oldValue}&#160;-&#160;#{change.newValue}" styleClass="status-of-userstory"/>
+									<h:outputText value="&#160;&#160;was created."/>
+								</li>
+							</ui:repeat>
+						</p:panel>
+						
+						<p:panel rendered="#{history.actionType == 'Update'}" styleClass="wrapper-change-content">
+							<ui:repeat var="change" value="#{history.historyFieldChanges}">
+								<li class="word-break-break-word history-status margin-left-28">
+									<h:outputText value="#{change.fieldName}:" styleClass="bold"/> 
+									<h:outputText value="&#160;changed&#160;from&#160;"/> 
+									<h:outputText value="#{change.oldValue}" styleClass="status-of-userstory"/> 
+									<h:outputText value="&#160;&#160;to "/> 
+									<h:outputText value="#{change.newValue}" styleClass="status-of-userstory" escape="false"/>
+								</li>
+							</ui:repeat>
+						</p:panel>
+						
+						<p:panel rendered="#{history.actionType == 'AddMember'}" styleClass="wrapper-change-content">
+							<ui:repeat var="change" value="#{history.historyFieldChanges}">
+								<li class="word-break-break-word margin-left-28">
+									<h:outputText value="#{change.fieldName}:" styleClass="bold"/> 
+									<h:outputText value="&#160;#{change.newValue} " styleClass="status-of-userstory"/> 
+									<h:outputText value="&#160;was&#160;added"/>
+								</li>
+							</ui:repeat>
+						</p:panel>
+						
+						<p:panel rendered="#{history.actionType == 'RemoveMember'}" styleClass="wrapper-change-content">
+							<ui:repeat var="change" value="#{history.historyFieldChanges}">
+								<li class="word-break-break-word margin-left-28">
+									<h:outputText value="#{change.fieldName}:" styleClass="bold"/> 
+									<h:outputText value="&#160;"/> 
+									<h:outputText value="#{change.newValue} " styleClass="status-of-userstory"/> 
+									<h:outputText value="&#160;was&#160;removed"/>
+								</li>
+							</ui:repeat>
+						</p:panel>
+						
+						<p:panel rendered="#{history.actionType == 'RoleMember'}" styleClass="wrapper-change-content">
+							<ui:repeat var="change" value="#{history.historyFieldChanges}">
+								<li class="word-break-break-word history-status margin-left-28">
+									<h:outputText value="Position: " styleClass="bold"/>
+									<h:outputText value="#{change.fieldName}" styleClass="status-of-userstory"/>
+									<h:outputText value="&#160;changed from &#160;"/>
+									<h:outputText value="#{change.oldValue}&#160;" styleClass="status-of-userstory"/>
+									<h:outputText value="&#160;to&#160;"/>
+									<h:outputText value="&#160;#{change.newValue}" styleClass="status-of-userstory"/>
+								</li>
+							</ui:repeat>
+						</p:panel>
+						
+						<p:panel rendered="#{history.actionType == 'Assign'}" styleClass="wrapper-change-content">
+							<ui:repeat var="change" value="#{history.historyFieldChanges}">
+								<li class="word-break-break-word history-status margin-left-28">
+									<h:outputText value="#{change.fieldName}:" styleClass="bold"/> 
+									<h:outputText value="&#160;&#160;"/> 
+									<h:outputText value="#{change.newValue}" styleClass="status-of-userstory"/> 
+									<h:outputText value="&#160;&#160;was&#160;assigned"/>
+								</li>
+							</ui:repeat>
+						</p:panel>
+						
+						<p:panel rendered="#{history.actionType == 'Remove'}" styleClass="wrapper-change-content">
+							<ui:repeat var="change" value="#{history.historyFieldChanges}">
+								<li class="word-break-break-word margin-left-28">
+									<h:outputText value="#{change.fieldName}:" styleClass="bold"/> 
+									<h:outputText value="&#160;&#160;"/> 
+									<h:outputText value="#{change.newValue}" styleClass="status-of-userstory"/> 
+									<h:outputText value="&#160;&#160;was&#160; removed"/>
+								</li>
+							</ui:repeat>
+						</p:panel>
+						
+						<p:panel rendered="#{history.actionType == 'ReAssign'}" styleClass="wrapper-change-content">
+							<ui:repeat var="change" value="#{history.historyFieldChanges}">
+								<li class="word-break-break-word history-status">
+									<h:outputText value="#{change.fieldName}:" styleClass="bold"/> 
+									<h:outputText value="&#160;&#160;"/> 
+									<h:outputText value="#{change.newValue}" styleClass="status-of-userstory"/> 
+									<h:outputText value="&#160;&#160;was&#160; reAssigned"/>
+								</li>
+							</ui:repeat>
+						</p:panel>
+						<p:separator styleClass="separator-histories"/>
+					</ui:repeat>
+				</p:panel>
+				<p:commandButton 
+					global="false" 
+					value="Show more..." 
+					actionListener="#{homeBean.getMoreHistoryTeam}" 
+					icon="icon-mail-reply-all" 
+					rendered="#{homeBean.showMoreBtnT}" 
+					update="tabView" 
+					styleClass="btn-show-more"/>
+			</p:tab>
+			
+			<!-- ISSUES -->
+			<p:tab id="tab3"  title="Issue">
+				<p:panel styleClass="history-list" mode="native">
+				
+				<h:outputText value="From&#160;&#160;" styleClass="date-bold"/>
+				<p:calendar id="issueHistoryStart" 
+					value="#{homeBean.dateStartFilterHistoryIssue}" 
+					mindate="#{homeBean.minAndMaxDate[0]}" 
+					maxdate="#{homeBean.minAndMaxDate[1]}" 
+					styleClass="date-width" 
+					pattern="MM/dd/yyyy" 
+					readonlyInput="true">
+					<p:ajax update=":historyPanel" event="dateSelect" oncomplete="handleChangeForIssueHistory();" global="false" listener="#{homeBean.handleChangeDateStartIssueHistory}"/>
+				</p:calendar>
+				
+				<h:outputText value="&#160;&#160;to&#160;&#160;" styleClass="date-bold"/>
+				<p:calendar id="issueHistoryEnd" 
+					value="#{homeBean.dateEndFilterHistoryIssue}" 
+					mindate="#{homeBean.minAndMaxDate[0]}" 
+					maxdate="#{homeBean.minAndMaxDate[1]}" 
+					styleClass="date-width" 
+					pattern="MM/dd/yyyy" 
+					readonlyInput="true">
+					<p:ajax update=":historyPanel" listener="#{homeBean.handleChangeDateEndIssueHistory}" event="dateSelect" oncomplete="handleChangeForIssueHistory();" global="false"/>
+				</p:calendar>
+				
+				<br/>
+				
+				<h:outputText value="No history to be showed" rendered="#{empty homeBean.historyOfIssue}" styleClass="no-history"/>
+				
+				<ui:repeat var="history" value="#{homeBean.historyOfIssue}">
+					<div class="histories">
+						<h:graphicImage value="/file/?type=small-member-logo&amp;filename=#{history[0].author.avatar}" rendered="#{!empty history[0].author.avatar}" atl="#{history[0].author.memberId}" styleClass="avatar img-circle"/>
+						<h:graphicImage value="resources/img/user.png" rendered="#{empty history[0].author.avatar}" atl="#{history[0].author.memberId}" styleClass="avatar img-circle"/>
+						<h:outputText value="&#160;&#160;##{history[1].displayIssueId}&#160;"/>
+						<h:outputText value="#{history[0].actionType=='Update'?'updated by ':'created by '}"/>
+						<h:outputText value="#{history[0].author.lastName} #{history[0].author.firstName}" styleClass="author-change"/>
+						<h:outputText value="&#160;on&#160;"/>
+						<h:outputText value="#{history[0].createdOn}">
+							<f:convertDateTime pattern="MM/dd/yyyy"/>
+						</h:outputText>
+						<h:outputText value="&#160;at&#160;"/>
+						<h:outputText value="#{history[0].createdOn}">
+							<f:convertDateTime pattern="HH:mm"/>
+						</h:outputText>
+					</div>
+					
+					<p:panel rendered="#{history[0].actionType == 'Update'}" styleClass="wrapper-change-content">
+						<ui:repeat var="field" value="#{history[0].historyFieldChanges}">
+							<p:panel rendered="#{field.fieldName != 'Description'}" styleClass="wrapper-change-content">
+								<li class="word-break-break-word history-status margin-left-28">
+									<h:outputText value="#{field.fieldName}" styleClass="bold"/>
+									<h:outputText value="&#160;changed from&#160;"/>
+									<h:outputText value="#{field.oldValue==''?'None':field.oldValue}" styleClass="italic" escape="false"/>
+									<h:outputText value="&#160;&#160;to&#160;"/>
+									<h:outputText value="#{field.newValue==''? 'None' : field.newValue}" styleClass="italic" escape="false"/>
+								</li>
+							 </p:panel>
+							  
+							  <p:panel rendered="#{field.fieldName == 'Description'}" styleClass="wrapper-change-content">
+								  <li  class="word-break-break-word history-status">
+									<h:outputText value="#{field.fieldName}" styleClass="bold"/>
+									<br/>
+									<h:outputText value="#{field.newValue}" styleClass="italic" escape="false"/>
+								</li>
+							  </p:panel>
+						</ui:repeat>
+					</p:panel>
+					
+					<p:panel rendered="#{history[0].actionType == 'Add'}" styleClass="wrapper-change-content">
+						<ui:repeat var="change" value="#{history[0].historyFieldChanges}">		
+							<li class="word-break-break-word history-status">			
+								<h:outputText value="#{change.fieldName}" styleClass="bold"/>	
+								<h:outputText value="&#160;&#160;"/>				
+								<h:outputText value="#{change.newValue}" styleClass="italic"/>
+								<h:outputText value="&#160;&#160;was " styleClass="bold"/>
+								<h:outputText value="Added" styleClass="italic"/>
+							</li>			
+						</ui:repeat>			
+					</p:panel>
+					
+					<p:panel rendered="#{history[0].actionType == 'Remove'}" styleClass="wrapper-change-content">
+						<ui:repeat var="change" value="#{history[0].historyFieldChanges}">		
+							<li class="word-break-break-word history-status">			
+								<h:outputText value="#{change.fieldName}" styleClass="bold"/>	
+								<h:outputText value="&#160;&#160;"/>				
+								<h:outputText value="#{change.oldValue}" styleClass="italic"/>
+								<h:outputText value="&#160;&#160;was " styleClass="bold"/>
+								<h:outputText value="Removed" styleClass="italic"/>
+							</li>			
+						</ui:repeat>			
+					</p:panel>
+					<p:separator styleClass="separator-histories"/>
+				</ui:repeat>
+				</p:panel>
+				<p:commandButton 
+					global="false" 
+					value="Show more..." 
+					actionListener="#{homeBean.getMoreHistoryIssue}" 
+					icon="icon-mail-reply-all" 
+					update="tabView" 
+					oncomplete="handleChangeForIssueHistory();" 
+					rendered="#{homeBean.showMoreIssueHistoryButton==true}" 
+					styleClass="btn-show-more"/>
+			</p:tab>
+			
+			<!--KANBAN ISSUES -->
+			<p:tab id="tab4"  title="Kanban Issue">
+				<p:panel styleClass="history-list" mode="native">
+				
+				<h:outputText value="From&#160;&#160;" styleClass="date-bold"/>
+				<p:calendar id="kanbanIssueHistoryStart" 
+					value="#{homeBean.dateStartFilterHistoryKanbanIssue}" 
+					mindate="#{homeBean.minAndMaxDateKanbanIssue[0]}" 
+					maxdate="#{homeBean.minAndMaxDateKanbanIssue[1]}" 
+					styleClass="date-width date-select-kanbanissue" 
+					pattern="MM/dd/yyyy" 
+					readonlyInput="true">
+					<p:ajax update=":historyPanel" oncomplete="handleChangeForKanbanIssueHistory();" event="dateSelect" global="false" listener="#{homeBean.handleChangeDateStartKanbanIssueHistory}"/>
+				</p:calendar>
+				
+				<h:outputText value="&#160;&#160;to&#160;&#160;" styleClass="date-bold"/>
+				<p:calendar id="KanbanIssueHistoryEnd" 
+					value="#{homeBean.dateEndFilterHistoryKanbanIssue}" 
+					mindate="#{homeBean.minAndMaxDateKanbanIssue[0]}" 
+					maxdate="#{homeBean.minAndMaxDateKanbanIssue[1]}" 
+					styleClass="date-width date-select-kanbanissue" 
+					pattern="MM/dd/yyyy" 
+					readonlyInput="true">
+					<p:ajax update=":historyPanel" oncomplete="handleChangeForKanbanIssueHistory();" listener="#{homeBean.handleChangeDateEndKanbanIssueHistory}" event="dateSelect" global="false"/>
+				</p:calendar>
+				
+				<br/>
+				
+				<h:outputText value="No history to be showed" rendered="#{empty homeBean.kanbanIssueHistories}" styleClass="no-history"/>
+				
+				<ui:repeat var="history" value="#{homeBean.kanbanIssueHistories}">
+					<div style="color: #297DB6; width: 100%;" class = "histories">
+						<h:graphicImage alt="user avatar" value="/file/?type=small-member-logo&amp;filename=#{history.author.avatar}"  rendered="#{!empty history.author.avatar}" atl="#{history.author.memberId}" styleClass="avatar img-circle"/>	
+						<h:graphicImage alt="user avatar default" value="/#{request.contextPath}/resources/img/user.png" rendered="#{empty history.author.avatar}" atl="#{history.author.memberId}" styleClass="avatar img-circle"/>		
+						<h:outputText value="&#160;&#160;"/>
+						<h:outputText value="##{history.containerId} Updated by " rendered="#{history.actionType == 'Update' or history.actionType == 'Upfile' or history.actionType == 'Deletefile'}"/>
+						<h:outputText value="##{history.containerId} Created by " rendered="#{history.actionType == 'Create'}"/>			
+						<h:outputText value="#{history.author.lastName} #{history.author.firstName}" style="font-weight: bold; font-size: 15px;"/>
+						<h:outputText value=" on "/>
+						<h:outputText value="#{history.dateCreated}">
+							<f:convertDateTime pattern="MM/dd/yyyy"/>
+						</h:outputText>
+						<h:outputText value="&#160;at "/>	
+						<h:outputText value="#{history.dateCreated}">
+							<f:convertDateTime pattern="HH:mm"/>
+						</h:outputText>		
+					</div>
+					<p:panel rendered="#{history.actionType == 'Update'}" style="margin: 0px 0px; padding: 0px 0px; border: none;">
+						<ul style="margin:0 0 0px 25px">
+							<ui:repeat var="change" value="#{history.kanbanHistoryFieldChanges}">
+								<ui:fragment rendered = "#{change.fieldName ne 'Assign' and change.fieldName ne 'Unassign'}">
+									<li style="margin-left: 30px;">			
+										<h:outputText value="#{change.fieldName}" style="font-weight: bold;"/>	
+										<h:outputText value="changed from" style="text-decoration: underline;margin:0px 5px;"/>				
+										<h:outputText value="#{change.oldValue}" escape="false"/>
+										<h:outputText value="to" style="text-decoration: underline;margin:0px 5px;"/>
+										<h:outputText value=" #{change.newValue}" escape="false"/>
+									</li>
+								</ui:fragment>
+								<ui:fragment rendered = "#{change.fieldName eq 'Assign' or change.fieldName eq 'Unassign'}">
+									<li style="margin-left: 30px;">			
+										<h:outputText value="#{change.fieldName}" style="font-weight: bold;"/>	
+										<h:outputText value=" #{change.newValue}" escape="false"/>
+									</li>
+								</ui:fragment>
+								
+							</ui:repeat>
+						</ul>
+					</p:panel>
+					<p:panel rendered="#{history.actionType == 'Upfile'}" style="margin: 0px 0px; padding: 0px 0px; border: none;">
+						<ul style="margin:0 0 0px 25px">
+							<ui:repeat var="change" value="#{history.kanbanHistoryFieldChanges}">
+								<li style="margin-left: 30px;">			
+									<h:outputText value="#{change.fieldName}" style="font-weight: bold;"/>	
+									<h:outputText value=" #{change.newValue}" />
+									<h:outputText value=" was Added"/>
+								</li>
+							</ui:repeat>
+						</ul>
+					</p:panel>
+					<p:panel rendered="#{history.actionType == 'Deletefile'}" style="margin: 0px 0px; padding: 0px 0px; border: none;">
+						<ul style="margin:0 0 0px 25px">
+							<ui:repeat var="change" value="#{history.kanbanHistoryFieldChanges}">
+								<li style="margin-left: 30px;">			
+									<h:outputText value="#{change.fieldName}" style="font-weight: bold;"/>	
+									<h:outputText value=" #{change.newValue}" />
+									<h:outputText value=" was Deleted"/>
+								</li>
+							</ui:repeat>
+						</ul>
+					</p:panel>
+					<p:separator style="border-width: 2px; margin: 4px 4px;"/>
+				</ui:repeat>
+				</p:panel>
+				<p:commandButton 
+					global="false" 
+					value="Show more..." 
+					actionListener="#{homeBean.getMoreHistoryKanbanIssue}" 
+					icon="icon-mail-reply-all" 
+					update="tabView" 
+					oncomplete="handleChangeForKanbanIssueHistory();"
+					rendered="#{homeBean.showMoreKanbanIssueHistoryButton}" 
+					styleClass="btn-show-more" process="@this"/>
+			</p:tab>
+		</p:tabView>
+	</p:fieldset>
+</ui:composition>

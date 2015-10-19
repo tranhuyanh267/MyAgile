@@ -1,0 +1,76 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:composite="http://java.sun.com/jsf/composite">
+
+	<p:confirmDialog widgetVar="confirmUpdateUserStoryWhenUpdateIssue" id="idConfirmUpdateUserStoryWhenUpdateIssue" width="400" modal="true" closable="false" severity="alert">
+		<f:facet name="header">
+				<h:outputFormat value="Confirm Update Issue" />
+		</f:facet>
+		<f:facet name="message">
+			<h:outputFormat styleClass="msgWithIdPlaceHolder" value="Do you want to update UserStory related to this Issue?">
+			</h:outputFormat>
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes" action="#{issueBeanV2.updateUserStoryWhenUpdateIssue}" update="issueForm,listIssueForm:wrap-listIssues,:form:msgs" oncomplete="confirmUpdateUserStoryWhenUpdateIssue.hide();handleSaveIssue(xhr, status, args);" />
+			<p:commandButton value="No" action="#{issueBeanV2.updateIssueOnly}" update="issueForm,listIssueForm:wrap-listIssues,:form:msgs" oncomplete="confirmUpdateUserStoryWhenUpdateIssue.hide();handleSaveIssue(xhr, status, args);" />
+		</h:panelGroup>
+	</p:confirmDialog>
+	
+	<p:confirmDialog widgetVar="deleteFileDlg" id="deleteFileDialog" width="400" modal="true" closable="false" severity="alert">
+		<f:facet name="header">
+					<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+						<f:param value="Attachment" />
+					</h:outputFormat>
+		</f:facet>
+		<f:facet name="message">
+			<h:outputFormat styleClass="msgWithIdPlaceHolder" value="#{msg['myagile.project.DeleteFile']}">
+				<f:param value="ID_PLACEHOLDER" />
+			</h:outputFormat>
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes" action="#{issueBeanV2.deleteAttachmentOfIssue}" update="issueForm:filelist" oncomplete="deleteFileDlg.hide();revertIdPlaceholder();" />
+			<p:commandButton value="No" oncomplete="deleteFileDlg.hide();revertIdPlaceholder();" />
+		</h:panelGroup>
+	</p:confirmDialog>
+
+	<p:confirmDialog widgetVar="deleteFileNotAddDlg" id="deleteFileNotAddDialog" width="400" modal="true" closable="false" severity="alert">
+		<f:facet name="header">
+					<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+						<f:param value="Attachment" />
+					</h:outputFormat>
+		</f:facet>
+		<f:facet name="message">
+			<h:outputFormat styleClass="msgWithIdPlaceHolder" value="#{msg['myagile.project.DeleteFile']}">
+				<f:param value="ID_PLACEHOLDER" />
+			</h:outputFormat>
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes" action="#{issueBeanV2.deleteAttachmentNotAddById}" update="issueForm:filelist" oncomplete="deleteFileNotAddDlg.hide();revertIdPlaceholder();" />
+			<p:commandButton value="No" oncomplete="deleteFileNotAddDlg.hide();revertIdPlaceholder();" />
+		</h:panelGroup>
+	</p:confirmDialog>
+
+	<p:confirmDialog modal="true" closable="false" width="400" header="Export Warning!" severity="alert" widgetVar="exportError">
+		<f:facet name="message">
+			<h:outputFormat styleClass="msgWithIdPlaceHolder" value="#{msg['myagile.issue.ExportCaution']}" />
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="OK" type="button" onclick="exportError.hide();" />
+		</h:panelGroup>
+	</p:confirmDialog>
+
+	<p:confirmDialog id="ExcelDialog" modal="true" closable="false" width="250" header="Choose format for Excel file" severity="info" widgetVar="exportExcelChoose">
+		<f:facet name="message">
+			<h:form>
+				<h:selectOneRadio id="options" value="#{issueBeanV2.chooseFormatExcel}" layout="pageDirection">
+					<f:ajax event="change" render="@form" />
+					<f:selectItem itemLabel="Plain text" itemValue="1" />
+					<f:selectItem itemLabel="Rich text" itemValue="2" />
+				</h:selectOneRadio>
+			</h:form>
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="OK" type="button" onclick="exportExcel()" />
+			<p:commandButton value="Cancel" styleClass="secondary" type="button" onclick="exportExcelChoose.hide();" />
+		</h:panelGroup>
+	</p:confirmDialog>
+</ui:composition>

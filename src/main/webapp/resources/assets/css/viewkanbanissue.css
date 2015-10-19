@@ -1,0 +1,9 @@
+.table-kanban-issue-view td {
+	word-wrap: break-word;
+	white-space: normal;
+	word-break: break-all;
+}
+
+.link-download {
+	color: #0096D6 !important;
+}

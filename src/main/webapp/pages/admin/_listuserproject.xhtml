@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:custom="http://myagile.com/custom">
+<style>
+.form-inline tbody td {
+	padding: 0px;
+	border: none !important;
+}
+
+#projectList .ui-datatable-header {
+	background: white;
+	color: black;
+	border-top-right-radius: 0px;
+	border-top-left-radius: 0px;
+}
+
+#projectList img {
+	padding-right: 3px;
+}
+
+#projectList .capitalized {
+	text-transform: capitalize;
+}
+
+.ui-datatable tbody td {
+	white-space: normal !important;
+}
+</style>
+<p:fieldset styleClass="span12">
+	<h:form id="form-userProjectTable" prependId="false">
+		<p:dataTable id="projectList" var="project"
+			value="#{adminBean.allProjectOfUser}" paginator="true" rows="10"
+			paginatorPosition="bottom"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="5,10,15,30,50" styleClass="ui-widget-header"
+			widgetVar="userProjectListTableVar" emptyMessage="No projects found."
+			paginatorAlwaysVisible="true" sortBy="#{project.dateCreate}"
+			sortOrder="descending">
+			<p:ajax event="filter" global="false" />
+
+			<f:facet name="header">
+				<h:panelGroup layout="block" styleClass="form-inline"
+					style="padding:5px 0;text-align:left">
+					<h:outputLabel value="Search: " for="globalFilter"
+						style="margin-right:5px" />
+					<p:inputText id="globalFilter"
+						onkeyup="userProjectListTableVar.filter();"
+						onkeypress="if(event.keyCode == 13) return false;">
+					</p:inputText>
+					<p:watermark value="Please enter a keyword" for="globalFilter" />
+				</h:panelGroup>
+			</f:facet>
+
+			<!--  Project Name -->
+			<p:column headerText="Project Name" sortBy="#{project.projectName}"
+				filterBy="#{project.projectName}" filterMatchMode="contains"
+				filterStyle="display:none">
+				<h:panelGroup id="avatar-logo-img">
+					<h:graphicImage id="imageAvatar" alt="member-logo"
+						rendered="#{not empty project.imagePath}"
+						value="/file/?type=small-member-logo&amp;filename=#{project.imagePath}"
+						styleClass="avatar img-circle" />
+					<h:graphicImage alt="member-logo"
+						rendered="#{empty project.imagePath}"
+						value="/resources/img/no_image_available.png"
+						styleClass="avatar img-circle" />
+				</h:panelGroup>
+				<h:outputText value="#{project.projectName}" />
+			</p:column>
+
+			<!-- Description -->
+			<p:column headerText="Description" sortBy="#{project.description}"
+				filterBy="#{project.description}" filterMatchMode="contains"
+				filterStyle="display:none">
+				<h:outputText value="#{project.description}" />
+			</p:column>
+
+			<!-- PO -->
+			<p:column headerText="Product Owner"
+				sortBy="#{project.owner.firstName} #{project.owner.lastName}"
+				filterBy="#{project.owner.firstName} #{project.owner.lastName}"
+				filterMatchMode="contains" filterStyle="display:none">
+				<h:outputText
+					value="#{project.owner.firstName} #{project.owner.lastName}" />
+			</p:column>
+
+			<!-- Role -->
+			<p:column headerText="Role">
+				<h:outputText
+					value="#{adminBean.getTeamMember(adminBean.idUserForProject,project.teams)}" />
+			</p:column>
+
+			<!-- Team -->
+			<p:column headerText="Team">
+				<ui:repeat value="#{project.teams}" var="team" varStatus="status">
+					<h:outputText value="#{team.team.teamName}" />
+					<h:outputText
+						rendered="#{status.index != (project.teams.size() -1)}" value="; " />
+				</ui:repeat>
+			</p:column>
+
+			<!-- Created -->
+			<p:column headerText="Created" sortBy="#{project.dateCreate}"
+				style="text-align:center;">
+				<h:outputText value="#{project.dateCreate}">
+					<f:convertDateTime pattern="MM/dd/yyyy" />
+				</h:outputText>
+			</p:column>
+
+			<!-- Public -->
+			<p:column headerText="Public" sortBy="#{project.isPublic}"
+				style="text-align:center;">
+				<h:outputText value="#{project.isPublic}" styleClass="capitalized" />
+			</p:column>
+
+			<!-- Archive -->
+			<p:column headerText="Archived" style="text-align:center; width:1%">
+				<p:commandLink
+					action="#{adminBean.archiveProject(project.projectId)}"
+					styleClass="archiveButton"
+					rendered="#{!projectBean.isArchived(project.projectId)}"
+					id="archiveButton" title="Unarchived. Click to archive."
+					update=":form-userProjectTable">
+					<i class="icon icon-check-empty"></i>
+				</p:commandLink>
+				<p:commandLink
+					action="#{adminBean.unArchiveProject(project.projectId)}"
+					styleClass="unArchiveButton"
+					rendered="#{projectBean.isArchived(project.projectId)}"
+					id="unArchiveButton" title="Archived. Click to unarchive."
+					update=":form-userProjectTable">
+					<i class="icon icon-check"></i>
+				</p:commandLink>
+			</p:column>
+		</p:dataTable>
+		<script>
+			removeTextInPagination();
+			setTextAllInPaginationSelect();
+		</script>
+	</h:form>
+	<script>
+		$(document).ready(function() {
+			userProjectListTableVar.filter();
+		});
+	</script>
+</p:fieldset>
+</html>

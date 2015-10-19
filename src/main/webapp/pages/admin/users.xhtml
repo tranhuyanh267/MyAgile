@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:custom="http://myagile.com/custom">
+
+<ui:composition template="/WEB-INF/layouts/template.xhtml">
+	<ui:define name="layoutTitle">
+		User management
+	</ui:define>
+	<ui:define name="layoutBody">	
+	<h:panelGroup layout="block" styleClass="row">
+		<ui:fragment rendered = "#{custom:isAdmin()}">
+			<ui:insert name="adminContent">
+				<ui:include src="_listuser.xhtml"/>
+			</ui:insert>
+		</ui:fragment>
+	  	<ui:fragment rendered = "#{not custom:isAdmin()}">
+	  		<ui:include src="_norole.xhtml"/>
+	  	</ui:fragment>
+	 </h:panelGroup>
+	</ui:define>
+	<ui:define name="layoutFooter">
+	    <p:ajaxStatus>  
+			<f:facet name="start">
+			 <h:panelGroup styleClass="ajaxPopUp" >
+			 	<p:graphicImage alt="ajax loader" styleClass="imgAjax" value="/resources/img/ajax_loader/ajax_loader.gif" />
+			 </h:panelGroup>
+			</f:facet>  
+	 		<f:facet name="complete"><h:outputText value="" /></f:facet>  	   			
+		</p:ajaxStatus>
+	</ui:define>
+</ui:composition>
+</html>

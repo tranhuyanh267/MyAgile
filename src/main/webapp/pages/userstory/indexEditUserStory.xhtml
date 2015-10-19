@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	template="/WEB-INF/layouts/template.xhtml"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:custom="http://myagile.com/custom">
+	<ui:define name="layoutTitle">User story</ui:define>
+	<ui:define name="layoutHead">
+	
+    </ui:define>
+	<ui:define name="layoutBody">
+		<h:panelGroup layout="block" id="viewDetail">
+			<ui:include src="editUserStory.xhtml"/>
+		</h:panelGroup>
+	</ui:define>
+	<ui:define name="layoutFooter">
+		<p:ajaxStatus>
+			<f:facet name="start">
+				<h:panelGroup styleClass="ajaxPopUp">
+					<p:graphicImage alt="ajax loader" styleClass="imgAjax"
+						value="/resources/img/ajax_loader/ajax_loader.gif" />
+				</h:panelGroup>
+			</f:facet>
+			
+			<f:facet name="complete">
+				<h:outputText value="" />
+			</f:facet>
+		</p:ajaxStatus>
+		<script type="text/javascript" src="#{request.contextPath}/bundles/plupload.js" />
+		<script type="text/javascript" src="#{request.contextPath}/resources/assets/js/editUserStory.js" />
+	</ui:define>
+</ui:composition>

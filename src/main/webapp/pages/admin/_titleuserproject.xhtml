@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:custom="http://myagile.com/custom">
+
+<!-- 	<p:fieldset legend="User Info" id="fieldset-projectSelector" style="margin-bottom:5px;" styleClass="span12">
+		<h:form styleClass="form-inline" id="form-projectSelector">
+			<h:outputLabel for="projectSelector" value="Full name: " style="margin-right:5px"/>
+			<h:outputLabel for="projectSelector" 
+					value="#{adminBean.getMemberByIduserForProject().firstName} #{adminBean.getMemberByIduserForProject().lastName} (#{adminBean.getMemberByIduserForProject().username})" 
+					style="margin-right:5px"/>
+		</h:form>  
+	</p:fieldset> -->
+
+<style>
+.teaminfo-column {
+	vertical-align: top;
+}
+
+.projectlist>div {
+	border: 0;
+	margin-left: -6px;
+}
+
+fieldset {
+	margin-left: -21px;
+	width: 1162px;
+}
+
+#userInfoFieldset legend {
+	margin-left: 10px !important;
+}
+
+#userInfoFieldset {
+	margin-bottom: 15px;
+	padding-top: 5px !important; 
+	padding-bottom: 0px !important;
+}
+
+#user-info {
+	padding-top: 5px !important; 
+	padding-bottom: 0px !important;
+}
+.nopaddingtop{padding-top:0px;}
+</style>
+
+<p:fieldset legend="User Info" id="userInfoFieldset" styleClass="span12">
+	<h:panelGrid columns="3" cellpadding="20" columnClasses="nopaddingtop,nopaddingtop,nopaddingtop" id="user-info">
+		
+		
+		<h:panelGroup layout="block" style="width:130px; padding-left: 15px;">
+					<h:graphicImage alt="member-logo" rendered="#{not empty adminBean.getMemberByIduserForProject().avatar}"
+						value="/file/?type=small-member-logo&amp;filename=#{adminBean.getMemberByIduserForProject().avatar}" styleClass="img-rounded img-polaroid input-block-level"/>
+					<h:graphicImage alt="member-logo" rendered="#{empty adminBean.getMemberByIduserForProject().avatar}"
+						value="/resources/img/no_image_available.png" styleClass="img-rounded img-polaroid input-block-level"/>
+		</h:panelGroup>
+		
+		<h:panelGroup>
+			<h:panelGrid columns="2" cellpadding="3">
+				<h:outputText value="Full Name: " style="font-weight:bold;" />
+				<h:outputText value="#{adminBean.getMemberByIduserForProject().firstName} #{adminBean.getMemberByIduserForProject().lastName}" />
+
+				<h:outputText value="Gender: " style="font-weight:bold;" />
+				<h:outputText value="#{adminBean.getMemberByIduserForProject().gender}" />
+
+				<h:outputText value="Skyper: " style="font-weight:bold;" />
+				<h:outputText value="#{adminBean.getMemberByIduserForProject().skype}" />
+
+				<h:outputText value="Mobile: " style="font-weight:bold;" />
+				<h:outputText value="#{adminBean.getMemberByIduserForProject().mobile}" />
+			</h:panelGrid>
+		</h:panelGroup>
+
+		<h:panelGroup>
+			<h:panelGrid columns="2" cellpadding="3">
+				<h:outputText value="Company: " style="font-weight:bold;" />
+				<h:outputText value="#{adminBean.getMemberByIduserForProject().company}" />
+				
+				<h:outputText value="Login: " style="font-weight:bold;" />
+				<h:outputText value="#{adminBean.getMemberByIduserForProject().username}" />
+
+				<h:outputText value="Created: " style="font-weight:bold;" />
+				<h:outputText value="#{adminBean.getMemberByIduserForProject().tokenDate}">
+					<f:convertDateTime pattern="MM/dd/yyyy"/>
+				</h:outputText>
+				
+				<h:outputText value="Role: " style="font-weight:bold;" />
+				<h:outputText value="#{adminBean.getRoleAccount(adminBean.getMemberByIduserForProject().memberId)}" />
+			</h:panelGrid>
+		</h:panelGroup>
+	</h:panelGrid>
+</p:fieldset>
+</html>

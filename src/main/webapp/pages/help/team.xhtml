@@ -1,0 +1,92 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+		xmlns:ui="http://java.sun.com/jsf/facelets" 
+		xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui" template="/WEB-INF/layouts/template.xhtml"
+		xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="layoutTitle">
+        Myagile User Guide
+    </ui:define>
+	<ui:define name="layoutHead">
+	</ui:define>
+	<ui:define name="layoutBody">
+		<c:set value="#{request.contextPath}/resources/img/help/team" var="teamSourcePath"></c:set>
+		<div class="content-section">
+			<div class="heading">
+				<h4>Team Overview</h4>
+				<a id="teamOverview"></a>
+			</div>
+			<div class="content-block">
+				<div class="content-block-nav">
+					<p class="content-block-nav-back">
+						<a href="#{request.contextPath}/help"><i class="icon-double-angle-left"></i> Guide</a>
+						<a href="#{request.contextPath}/help/three-backlogs"><i class="icon-double-angle-left"></i> Previous</a>
+					</p>
+					<p class="content-block-nav-forward">
+						<a href="#{request.contextPath}/help/project">Next <i class="icon-double-angle-right"></i></a>
+					</p>
+				</div>
+				<div class="content-block-main">
+					<dl>
+						<dt><a id="createTeam">1. Create team</a></dt>
+						<dd>
+							<p>In “My Team” tab, click on “New Team” button</p>
+							<img alt="team_guide.picture" src="#{teamSourcePath}/new_team_click.png" />
+							<p>Fill in the form information and upload your team logo by clicking on "Change Logo" button</p>
+							<img alt="team_guide.picture" src="#{teamSourcePath}/team_fill_info.png" />
+							<p>
+								Team Name (*): name of your team. e.g: Ant, 7Up,..<br/>
+								Group Mail (*): group email of your team. The mail must be right format.<br/>
+								Description: write something about your team<br/>
+								Project: choose your exist project(s) performed <br/>
+								<br/>	
+								Note: <i>(*) means required field.</i>
+							</p>
+							<p>Click on “Save” button. The created team is also added to table of teams</p>
+							<img alt="team_guide.picture" src="#{teamSourcePath}/team_done_new.png" />
+							<div class="backToTop"><a href="#teamOverview">BACK TO TOP <i class="icon-hand-up"></i></a></div>
+						</dd>
+						<dt><a id="editTeam">2. Edit team</a></dt>
+						<dd>
+							<p>Select a team from “Select a Team” combo box, click on “Edit Team” button</p>
+							<img alt="team_guide.picture" src="#{teamSourcePath}/edit_team_click_button.png" />
+							<p>Also, select a team from table of teams, click on “Edit” button (pencil symbol)</p>
+							<img alt="team_guide.picture" src="#{teamSourcePath}/edit_team_click_table.png" />
+							<p>
+								Likely creating a team, you can fill in the form information and upload your team logo for changes. Click on “Save” button.
+							</p>
+							<p>
+								Note: Click on project name to go to product backlog page
+							</p>
+							<div class="backToTop"><a href="#teamOverview">BACK TO TOP <i class="icon-hand-up"></i></a></div>
+							<br/>
+						</dd>
+						<dt><a id="assignMember">3. Assign member to team</a></dt>
+						<dd>
+							<p>You can set up a team by inviting members via email. Select a team from “Select a Team” combo box. Enter an email or groups of email that its each mail is divided by a semicolon “;”. The email format must be full-filled.</p>
+							<img alt="team_guide.picture" src="#{teamSourcePath}/sendMail_invite_member.png" />
+							<p>Click  on “Send Mail” button. The system will send the mail(s) to member(s).</p>
+							<img alt="team_guide.picture" src="#{teamSourcePath}/done_sendMail_invite_member.png" />
+							<p>The assigned members need to check their email and accept to join the team.</p>
+							<img alt="team_guide.picture" src="#{teamSourcePath}/member_check_email.png" />
+							<p>The member can login with the user name and password are provided and click on the link “click here” to active.</p>
+							<p>The member joined into the team.</p>
+							<img alt="team_guide.picture" src="#{teamSourcePath}/member_join_team_success.png" />
+							<div class="backToTop"><a href="#teamOverview">BACK TO TOP <i class="icon-hand-up"></i></a></div>
+						</dd>
+						<dt><a id="viewTeam">4. View team information</a></dt>
+						<dd>
+							<p>You can view the team information includes the members of team. <br/>
+							Beside that, you can assign or re-assign the role of a member</p>
+							<img alt="team_guide.picture" src="#{teamSourcePath}/chang_role.png" />
+							<p>To remove a member from the team, you can move the mouse to the avatar of member and click on “Remove” link</p>
+							<img alt="team_guide.picture" src="#{teamSourcePath}/remove_member.png" />
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+	<ui:define name="layoutFooter">
+	</ui:define>
+</ui:composition>

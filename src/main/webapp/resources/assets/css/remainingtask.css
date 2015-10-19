@@ -1,0 +1,151 @@
+.ui-progressbar-value {
+	margin: 0px !important;
+}
+.fieldset-selector{
+	padding-bottom:15px !important;
+}
+.icon-ok-sign{
+	margin-left:-6px !important;
+	width:14px;
+}
+
+.assignButton .icon-check,
+.assignButton .icon-check-empty{
+	color: #5b87c6;
+}
+
+.assignButton .icon-check{
+	margin-left:3px;
+}
+
+.ui-treetable-toggler{
+	margin-top:-1px !important;
+}
+@media screen and (-webkit-min-device-pixel-ratio:0){
+	.ui-treetable-footer{
+		border-top:1px solid #ccc !important;
+	}
+}
+.parent-issue{
+	background-color: #ECECEC;
+	border-color:#b2b2b2 !important;	
+}
+.child-issue{
+	border-color:#b2b2b2 !important;
+}
+.child-issue .td-subject{
+	padding-left:30px;
+}
+
+#remaining-task_head tr th:first-child{
+	border-left-color:#ccc !important;
+}
+#remaining-task_head tr th:last-child{
+	border-right-color:#ccc !important;
+}
+
+.td-sprint{
+	text-align:center;
+}
+
+.display-none{
+	display:none;
+}
+.td-icon-expand{
+	float:left;
+	margin-top:-2px !important;
+	cursor:pointer;
+}
+.assignButton{
+	cursor:pointer;
+}
+.ui-datatable-header {
+	background: white !important;
+	color: black !important;
+	border-top-right-radius: 0px;
+	border-top-left-radius: 0px;
+}
+#frmBacklogRemain{
+	margin-top:-15px;
+}
+
+.applyButton span {
+	margin-bottom: 3px;
+}
+
+.td-subject {
+	white-space:normal !important;
+}
+
+/* style for filter */
+.wrap-search label {
+	display: inline;
+	margin-right:5px;
+	position: relative;
+	top: -5px;
+}
+.wrap-search input {
+	padding: 4px 6px;
+	width: 251px;
+}
+/* style tb-remaining */
+#tb-remaining-task {
+	width:100%;
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+}
+
+#tb-remaining-task th{
+	text-align: center;
+	cursor: default;
+	background: #38A8B1;
+	height: 20px;
+	padding:4px 10px;
+	color:white;
+	border-color:#ccc;
+}
+
+#tb-remaining-task .header-sort {
+	cursor: pointer !important;
+}
+
+#tb-remaining-task .th-status,
+#tb-remaining-task .th-subject {
+	display: inline !important;
+	margin-left:3px;
+}
+
+#tb-remaining-task td{
+	padding:4px 10px;
+	border-color:#ccc;
+}
+
+#tb-remaining-task .td-set-void ,
+#tb-remaining-task .td-sprint,
+#tb-remaining-task .td-finished {
+	text-align: center;
+}
+
+#tb-remaining-task .td-status {
+	width:90px;
+}
+
+#tb-remaining-task .td-done {
+	width:100px;
+}
+
+#tb-remaining-task .td-finished {
+	width:150px;
+}
+
+#tb-remaining-task .td-sprint {
+	width:150px;
+}
+#tb-remaining-task .td-set-void {
+	width:60px;
+}
+
+#tb-remaining-task .child-issue .td-subject {
+	padding-left:40px;
+}
+

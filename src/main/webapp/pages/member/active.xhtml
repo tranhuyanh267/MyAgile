@@ -1,0 +1,24 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/layouts/template.xhtml">
+	
+<ui:define name="layoutTitle">
+	Active
+</ui:define>
+<ui:define name="layoutBody">
+	<h:form id="forgetPassForm">
+		<p:remoteCommand name="activeForgetPass" actionListener="#{memberBean.activeForgetPassword}" update="forgetPassForm" />
+		<p:messages id="msgs" />
+		<div><a href="#{request.contextPath}/login">Go to login</a> to continue.</div>
+	</h:form>
+</ui:define>
+<ui:define name="layoutFooter">
+	<script type="text/javascript">
+		activeForgetPass();
+	</script>
+</ui:define>
+</ui:composition>

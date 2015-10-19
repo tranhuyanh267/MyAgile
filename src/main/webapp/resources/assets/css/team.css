@@ -1,0 +1,24 @@
+#wrap {
+	min-width: 665px;
+}
+
+#selectTeamForm fieldset, #teamInfoFieldset, #memberDetail fieldset {
+	margin-left: 0;
+}
+
+fieldset legend {
+	margin-left: 10px;
+}
+
+.project-link {
+	color: #0096d6 !important;
+	text-decoration: none !important;
+}
+
+.project-link:hover, .project-link:active {
+	text-decoration: underline !important;
+}
+
+.project-list {
+	margin: 0px !important;
+}

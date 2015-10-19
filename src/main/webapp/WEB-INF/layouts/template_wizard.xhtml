@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:sec="http://www.springframework.org/security/tags">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+	<link rel="shortcut icon" href="#{request.contextPath}/resources/img/icons/my-agile-icon.png" />
+	<title><ui:insert name="layoutTitle" /></title>
+	
+	<link rel="stylesheet" type="text/css" href="#{request.contextPath}/bundles/myagile.css" />
+	<link rel="stylesheet" type="text/css" href="#{request.contextPath}/bundles/font-awesome.css" />
+<!-- 	hide for improving performance -->
+<!-- 	<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/css/chatting.css" /> -->
+	<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/css/help.css" />
+	<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/css/template.css" />
+	
+	<script type="text/javascript" src="#{request.contextPath}/bundles/myagile.js"></script>
+	<script type="text/javascript" src="#{request.contextPath}/bundles/jqueryuitouch.js"></script>
+	<script type="text/javascript" src="#{request.contextPath}/bundles/jgestures.js"></script>
+	<script type="text/javascript" src="#{request.contextPath}/bundles/hammer.js"></script>
+	<script type="text/javascript" src="#{request.contextPath}/resources/assets/js/profile.js"></script>
+	
+	<h:outputScript library="primefaces" name="jquery/jquery.js"></h:outputScript>
+	<ui:insert name="layoutHead" />
+	<script>
+// 		$(document).ready(function($) {
+// 			checkActivation();
+// 		});
+	</script>
+
+<style>
+.contentNotice {
+	font-family: Arial, sans-serif;
+	padding: 5px 2px 1px 13px;
+	width: 200px;
+}
+
+.menu-or {
+	padding: 15px 0px !important;
+	background-color: #297DB6 !important;
+	cursor: default;
+}
+
+.menu-separator {
+	padding: 24px 0px !important;
+    background: #297DB6 !important;
+    border: #226B9C 1px solid;
+}
+
+/* Menu before login */
+@media (min-width : 980px) and (max-width: 1199px) {
+	.navbar .nav>li>a {
+		padding: 15px 8px;
+		font-size: 13px;
+	}
+	
+	.dropdown-menu a {
+		font-size: 13px;
+	}
+	
+	.avatar-wrapper {
+		padding: 0px !important;
+	}
+	
+	.icon-right-spacing {
+		margin-right: 2px !important;
+	}
+	
+	.navbar .nav {
+		margin: 0px !important;
+	}
+	
+	.logo-myagile {
+		width: 80px !important;
+	}
+}
+
+@media (max-width: 979px) {
+	.menu-separator {
+		display: none !important;
+	}
+	
+	.menu-or { 
+		margin-left: 15px !important;
+		padding: 5px 0px !important;
+	}
+}
+</style>
+
+
+
+<script type="text/javascript">
+                    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    	
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+                    ga('create', 'UA-60128525-1', 'auto');
+                    ga('send', 'pageview');
+                    
+		</script>
+
+
+</h:head>
+<h:body>
+<h:outputText id="root" style="display:none" value="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/" />
+	<div id="wrap">
+		<div class="navbar navbar-static-top">
+			<div class="navbar-inner">
+				<div class="container">
+					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> 
+						<span class="icon-bar"></span> 
+						<span class="icon-bar"></span> <span class="icon-bar"></span>
+					</a> 
+					<a class="brand" href="#{request.contextPath}/"> 
+						<img src="#{request.contextPath}/resources/img/logo.png" />
+					</a>
+					<div class="nav-collapse collapse">
+						<ul class="nav pull-left main-nav">
+							<li	class="#{request.requestURI.contains('/team') ? 'active' : ''}">								
+								<a href="#{request.contextPath}/team">
+									<i class='icon-group icon-right-spacing'></i>
+									My Team
+								</a>
+							</li>
+							
+							<li class="dropdown #{request.requestURI.contains('/project') or request.requestURI.contains('/productbacklog') ? 'active' : ''}">
+								<a href="#{request.contextPath}/project" class="dropdown-toggle" data-hover="dropdown" data-delay="200">
+									<i class="icon-folder-close icon-right-spacing"></i>
+									My Project
+								</a>
+								<ul class="dropdown-menu">
+									<li class="#{request.requestURI.contains('/productbacklog') ? 'active' : ''}">
+										<a href="#{request.contextPath}/productbacklog">
+											<i class='icon-th-list icon-right-spacing'></i>
+											Product Backlog
+										</a>
+									</li>
+									<li>
+										<a href="#{request.contextPath}/wizard">
+											<i class='icon-exchange icon-right-spacing'></i>
+											Wizard
+										</a>
+									</li>
+								</ul>
+							</li>
+							
+							<li class="dropdown #{request.requestURI.contains('/sprintbacklog/*') ? 'active' : ''}">
+								<a href="#{request.contextPath}/sprintbacklog" class="dropdown-toggle" data-hover="dropdown" data-delay="200">
+									<i class='icon-reorder icon-right-spacing'></i>
+									Backlog
+								</a>
+								<ul class="dropdown-menu">
+									<li>
+										<a id="remaining-tasks-link" href="#{request.contextPath}/remaining">
+											<i class='icon-tasks icon-right-spacing'></i>
+											Remaining Task
+										</a>
+									</li>
+								</ul>
+							</li>
+							
+							<li class="dropdown #{request.requestURI.contains('/meeting') ? 'active' : ''}">
+								<a href="#{request.contextPath}/meeting">
+									<i class='icon-sitemap icon-right-spacing'></i>
+									Meeting
+								</a>
+							</li>
+							
+							<li>
+								<a class="menu-separator"></a>
+							</li>
+							
+							<li class="dropdown #{request.requestURI.contains('/dashboard/') 
+										or request.requestURI.contains('/sprint/') 
+										or request.requestURI.contains('/issue/index.xhtml') ? 'active' : ''}">
+								<a href="#{request.contextPath}/sprint" class="dropdown-toggle" data-hover="dropdown" data-delay="200">
+									<i class='icon-time icon-right-spacing'></i>
+									Scrum Board
+								</a>
+								<ul class="dropdown-menu">
+									<li class="#{request.requestURI.contains('/sprint/index.xhtml') ? 'active' : ''}">
+										<a href="#{request.contextPath}/sprint/managesprint">
+											<i class='icon-time icon-right-spacing' style='font-size: 17px;'></i>
+											Manage Sprint
+										</a>
+									</li>
+									<li class="#{request.requestURI.contains('/issue/index.xhtml') ? 'active' : ''}">
+										<a href="#{request.contextPath}/issue">
+											<i class='icon-reorder icon-right-spacing' style='font-size: 17px;'></i>
+											Manage Issue
+										</a>
+									</li>
+									<li class="#{request.requestURI.contains('/statistics/index.xhtml') ? 'active' : ''}">
+										<a href="#{request.contextPath}/statistics">
+											<i class='icon-bar-chart icon-right-spacing'></i>
+											Statistics &amp; Feedbacks
+										</a>
+									</li>
+								</ul>
+							</li>
+							
+							<li>
+								<a class="menu-or"> 
+									OR
+								</a>
+							</li>
+							
+							<li class="#{request.requestURI.contains('/kanbanv2/index.xhtml') ? 'active' : ''}">
+								<a href="#{request.contextPath}/kanban"> 
+									<i class='icon-reorder margin-right-3 rotate-90-degrees'></i>
+										Kanban Board
+								</a>
+							</li>
+							
+							<li>
+								<a class="menu-separator"></a>
+							</li>
+							
+							<li
+								class="dropdown #{request.requestURI.contains('/wiki') ? 'active' : ''}">
+								<a href="#{request.contextPath}/wiki"><i
+									class='icon-th-list icon-right-spacing'></i>
+									Wiki
+								</a>
+							</li>
+							
+							<li class="dropdown #{request.requestURI.contains('/help') ? 'active' : ''}">
+								<a href="#{request.contextPath}/help" class="dropdown-toggle" data-hover="dropdown" data-delay="200">
+									<i class="icon-book icon-right-spacing"></i>
+									Help
+								</a>
+								<ul class="dropdown-menu">
+									<li class="#{request.requestURI.contains('/help/index') ? 'active' : ''}">
+										<a href="#{request.contextPath}/help/document">
+											<i class='icon-file-text-alt icon-right-spacing' style='font-size: 19px;'></i>
+											Document Guide</a>
+									</li>
+									<li class="#{request.requestURI.contains('/video') ? 'active' : ''}">
+										<a href="#{request.contextPath}/help/video">
+											<i class=' icon-film icon-right-spacing'></i>
+											Video Guide
+										</a>
+									</li>
+								</ul>
+							</li>
+							
+							
+							<li class="dropdown #{request.requestURI.contains('/about') ? 'active' : ''}">
+								<a href="#{request.contextPath}/about">
+									<i class='icon-info-sign icon-right-spacing'></i>
+									About Us
+								</a>
+							</li>
+						</ul>
+						<ul class="nav pull-right">
+							<h:panelGroup rendered="#{not empty request.userPrincipal}">
+								<li class="dropdown #{request.requestURI.contains('/profile') ? 'active' : ''}">
+								<a id="info" href="#" data-toggle="dropdown" data-hover="dropdown" data-delay="200" class="dropdown-toggle avatar-wrapper"> 
+									<span class="loggedInName">
+									<h:outputText value="#{profileMB.member.username}" /> </span> 
+									<h:panelGroup id="avatar-logo-img">
+											<h:graphicImage alt="member-logo"
+												rendered="#{not empty profileMB.member.avatar}"
+												value="/file/?type=small-member-logo&amp;filename=#{profileMB.member.avatar}"
+												styleClass="avatar img-circle" />
+											<h:graphicImage alt="member-logo"
+												rendered="#{empty profileMB.member.avatar}"
+												value="/resources/img/user.png"
+												styleClass="avatar img-circle" />
+									</h:panelGroup> 
+									<br style="clear: both" />
+								</a>
+									<ul class="dropdown-menu">
+										<li class="#{request.requestURI.contains('/profile') ? 'active' : ''}">
+											<a href="#{request.contextPath}/profile" id="editProfilelink">Edit profile</a>
+										</li>
+										<li>
+											<a href="#{request.contextPath}/j_spring_security_logout" id="signoutlink">Sign out</a>
+										</li>
+									</ul>
+									<ul class="dropdown-menu" id="notice" accesskey="#{profileMB.member.active}">
+										<a class="linkNotice" href="#{request.contextPath}/profile">
+											<p style="width: 200px;" class="contentNotice"
+												title="#{profileMB.member.accountExpired}"
+												accesskey="#{profileMB.member.passwordExpired}">
+											</p>
+										</a>
+									</ul>
+								</li>
+<!-- 								hide for improving performance -->
+<!-- 								<li class="dropdown" id="chatSymbol"> -->
+<!-- 									<a id="chattingIcon" onclick="toggleChattingForm()">  -->
+<!-- 										<i class="icon-comments" /> -->
+<!-- 										<h:form style="margin: 0;" id="unread-number-form"> -->
+<!-- 											<h:panelGroup id="unread-number" rendered="#{not empty onlineSessionBean.userWithUnreadConversation}" styleClass="badge red"> -->
+<!-- 												<h:outputText -->
+<!-- 													value="#{onlineSessionBean.userWithUnreadConversation.size()}" -->
+<!-- 													styleClass="unread-number-text" /> -->
+<!-- 											</h:panelGroup> -->
+<!-- 										</h:form> -->
+<!-- 									</a> -->
+<!-- 								</li> -->
+							</h:panelGroup>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Just check activation when load topbar -->
+		<script>
+			checkActivation();
+		</script>
+		
+		<div class="content container" id="body-div">
+			<ui:insert name="layoutBody"></ui:insert>
+		</div>
+		<div id="push"></div>
+	</div>
+	<div id="footer">
+		<div class="container">
+			<p class="pull-right text-right copyright">
+				© Copyright <h:outputText value="#{timeBean.getCurrentYear()}"/>. 
+				<a href="http://www.axonactive.vn/" target="_blank" style="color: white;">
+				AXON ACTIVE VIETNAM</a>. All Rights Reserved.
+			</p>
+		</div>
+	</div>
+	<o:conditionalComment if="lt IE 9">
+		<script type="text/javascript" src="#{request.contextPath}/bundles/html5shiv.js"></script>
+	</o:conditionalComment>
+	<o:conditionalComment if="lt IE 9">
+		<script type="text/javascript" src="#{request.contextPath}/bundles/respond.js" />
+	</o:conditionalComment>
+<style>
+.ui-helper-hidden-accessible>[id$=focus] {
+	display: none;
+}
+</style>
+	<ui:insert name="layoutFooter" />
+</h:body>
+</html>

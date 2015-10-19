@@ -1,0 +1,149 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:custom="http://myagile.com/custom">
+<h:form id="relationshipChart" style="margin:0">	 
+	<p:dialog id="tasksRelationshipDialog" resizable="false" draggable="false" showHeader="false" style="max-width: 95%; max-height: 95%;" styleClass="pn-tasks-relationship" widgetVar="pnTasksRelationship" modal="false"> 
+		<h:panelGroup id="pnRelationshipChart" rendered="#{not empty dashboardBean.selectedForShowingRelationship}">
+			<div style="position: relative;">
+				<p:commandLink style="position: absolute; top: -10px; right: 0;" update="tasksRelationshipDialog" oncomplete="pnTasksRelationship.hide()" actionListener="#{dashboardBean.resetSelectedIssue}" >
+					<i class="icon-remove"> </i>
+				</p:commandLink>
+			</div>
+			<h3 class="text-center lead">Relationship Information of Task #<h:outputText value="#{dashboardBean.selectedForShowingRelationship.issueId}" /></h3>
+		
+			<o:tree value="#{dashboardBean.issueTree}" var="issue" varNode="node">
+				<o:treeNode level="0">
+					<o:treeNodeItem>
+						<ul id="org" style="display:none">
+							<li>
+								<p:panel style="margin: 0" styleClass="span4 sticker sticker-medium">
+									<input type="hidden" value="#{issue.issueId}" class="issue-hidden"/>
+									<h:inputHidden value="#{issue.issueId}"/>
+									
+									<f:facet name="header">
+										<div class="sticker-header">
+											<div class="row">
+												<div class="header-left span3 pull-left">
+													<p class="small-lead" title="#{issue.subject}">
+													<h:commandLink styleClass="id_header" action="#{issueBeanV2.toViewIssuePage}" value="#{issue.type}: ##{issue.displayIssueId}:" target="_new">
+														<f:setPropertyActionListener value="#{issue}" target="#{issueBeanV2.viewIssue}" />
+													</h:commandLink>
+													 #{issue.subject}
+													</p>
+												</div>	
+											</div>
+											<div class="task-progress" style="width: #{dashboardBean.calculateProgressForParentIssueTask(issue)}%"></div>																		
+										</div>										
+									</f:facet>		
+									<div class="sticker-inner" style="padding: 10px !important; margin: 0 !important;">	
+										<h:outputText value="#{issue.description}" escape="false" />
+									</div>	
+									<div class="sticker-footer" style="padding: 5px 10px;">
+										<div style="width: 100%; float: left;">
+											<div style="width: 50%;"  class="pull-left">E:
+												<h:outputText value="#{dashboardBean.pointEstimateFormat}" />
+												<p:spacer width="5" />
+												<h:panelGroup rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', dashboardBean.sprint.team.teamId)}">
+													<p:commandLink id="warning" style="color: #f39c12;"
+														global="false"
+														rendered="#{empty issue.parent and meetingBean.findTotalChildEstimatePoint(issue)}">
+														<i old-point="#{issue.estimate}" new-point="#{meetingBean.totalEstimatePoint}" point-format="#{issue.pointFormat}" id="#{issue.issueId}" class="icon-warning-sign"></i>	
+													</p:commandLink>
+												</h:panelGroup>
+											</div>
+											<ul class="icon-wrapper unstyled inline pull-right text-right">
+	    										<li>
+	    											<h:commandLink action="#{issueBeanV2.backToAddIssuePage}" title="Edit Issue" target="_new" rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', dashboardBean.sprint.team.teamId)}">
+		   												<f:setPropertyActionListener value="#{issue}" target="#{issueBeanV2.viewIssue}" />
+		   												<i class="icon-pencil"></i>
+		   											</h:commandLink>
+	    										</li>
+	    									</ul>
+	    								</div>	
+									</div>								
+								</p:panel>
+								<o:treeInsertChildren />
+							</li>
+						
+						</ul>
+					</o:treeNodeItem>
+				</o:treeNode>
+				<o:treeNode>
+					<ul>
+						<o:treeNodeItem>
+							<li>
+								<div id="task-#{issue.issueId}">
+									<p:panel style="margin: 0" styleClass="span4 sticker #{dashboardBean.selectedForShowingRelationship.issueId == issue.issueId ? 'sticker-high' : 'sticker-medium'}" id="issue_sticker_relationship" >
+										<input type="hidden" value="#{issue.issueId}" class="issue-hidden"/>
+										<h:inputHidden value="#{issue.issueId}"/>
+										
+										<f:facet name="header">
+											<div class="sticker-header">
+												<div class="row">
+													<div class="header-left span3 pull-left">
+														<p class="small-lead" title="#{issue.subject}">
+														<h:commandLink styleClass="id_header" action="#{issueBeanV2.toViewIssuePage}" value="#{issue.type}: ##{issue.displayIssueId}:" target="_new">
+															<f:setPropertyActionListener value="#{issue}" target="#{issueBeanV2.viewIssue}" />
+														</h:commandLink>
+														#{issue.subject}
+														</p>
+													</div>								
+													<h:panelGroup id="avatar-wrapper" layout="block" class="pull-right">
+														<h:panelGroup rendered="#{not empty issue.assigned.avatar}">
+															<h:graphicImage alt="avatar-sticker" id="ava_img" value="/file/?type=small-member-logo&amp;filename=#{issue.assigned.avatar}" styleClass="img-circle  avatar-no-link"/>
+														</h:panelGroup>
+														
+														<h:panelGroup rendered="#{empty issue.assigned.avatar}">
+															<h:graphicImage alt="avatar-sticker" id="ava_img_none" value="/resources/img/user.png" styleClass="img-circle avatar-no-link" />
+														</h:panelGroup>	
+													<div class="task-progress" style="width: #{dashboardBean.calculateProgressInit(issue)}%"></div>											
+													</h:panelGroup>																					
+												</div>																			
+											</div>										
+										</f:facet>		
+										<div class="sticker-inner">	
+											<h:outputText value="#{issue.description}" escape="false" />
+										</div>
+										<div class="sticker-footer" style="padding: 5px 10px;">
+											<div style="width: 100%; float: left;">
+												<div style="width: 50%;"  class="pull-left">R:
+													<h:outputText value="#{dashboardBean.pointRemainFormat}" />
+												</div>
+												<ul class="icon-wrapper unstyled inline pull-right text-right">
+		    										<li>
+			    										<h:commandLink action="#{issueBeanV2.backToAddIssuePage}" title="Edit Issue" target="_new" rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', dashboardBean.sprint.team.teamId)}">
+			   												<f:setPropertyActionListener value="#{issue}" target="#{issueBeanV2.viewIssue}" />
+			   												<i class="icon-pencil"></i>
+			   											</h:commandLink>
+		    										</li>
+		    									</ul>
+		    								</div>	
+	    									<div style="width: 100%;">
+												E: <h:outputText value="#{dashboardBean.pointEstimateFormat}" />
+											</div>
+										</div>								
+									</p:panel>
+								</div>
+								<o:treeInsertChildren />
+							</li>
+						</o:treeNodeItem>
+					</ul>
+				</o:treeNode>
+			</o:tree>
+		
+			<div id="chart" class="orgChart" style="margin-bottom: 20px; max-height: 100%;"></div>	
+			
+			<script type="text/javascript">
+				scrollForRelationshipGraph("#{dashboardBean.selectedForShowingRelationship.issueId}");
+				initTooltip();
+			</script>
+		</h:panelGroup>	
+	</p:dialog>	
+</h:form>
+</ui:composition>

@@ -1,0 +1,107 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<style>
+	#projectGrid td{
+		border: none;
+	}
+	#projectMessages{
+		margin: auto 0px;
+	}
+	</style>
+	<p:fieldset>
+	<p:progressBar id="progressBarProject" widgetVar="pbProject" value="25" labelTemplate=" Progress: 1/4"/>
+	<h:outputText value="Project Details" style="font-weight: bold; margin-left: 5px; color: #45a1de; font-size: 15px;"/>
+	<p:separator style="margin:5px" />
+		<div class="media">
+			<div class="pull-left media-action">
+				<h:panelGroup layout="block" id="project-logo-new"
+					class="project-logo-new">
+					<h:panelGroup id="project-logo-sub-new" layout="block">
+						<h:graphicImage alt="project logo" rendered="#{empty projectBean.nameLogoUpdated}"
+							value="/resources/img/no_image_available.png"
+							styleClass="img-rounded img-polaroid input-block-level"
+							style="width:200px;height:200px" />
+						<h:graphicImage alt="project logo"
+							rendered="#{not empty projectBean.nameLogoUpdated}"
+							value="/file/?type=project-logo&amp;filename=#{projectBean.nameLogoUpdated}&amp;pId=#{projectBean.projectId}"
+							styleClass="img-rounded img-polaroid input-block-level"
+							style="width:200px;height:200px" />
+						<div id="upload-add-alert"
+							class="ui-message-error ui-widget ui-corner-all"
+							style="margin-bottom: 5px; margin-top: 5px; display: none">
+							<span id="upload-add-alert-icon" class="ui-message-error-icon"></span>
+							<span id="upload-add-alert-message"
+								class="ui-message-error-detail"></span>
+						</div>
+					</h:panelGroup>
+					<button type="button" id="btnChangeLogoNew" style="margin-top: 10px;max-width: 215px;" class="btn btn-small btn-info input-block-level">Choose
+						Logo</button>
+				</h:panelGroup>
+				<p:blockUI block="project-logo-new" widgetVar="projectLogoBlockNew">
+								Uploading... (<span class="upload-progress-new">0%</span>)
+				</p:blockUI>
+			</div>
+
+			<div class="media-body">
+				<p:panelGrid id="projectGrid">
+				<p:row>
+					<p:column>
+					<h:outputText value="Project Name: " />
+					</p:column>
+					<p:column>
+					<p:inputText id="projectName" value="#{projectBean.projectName}"
+						required="true" style=" width: 300px"
+						requiredMessage="#{msg['myagile.project.NameEmpty']}"
+						validator="#{projectBean.checkExistProject}" styleClass="removeHTMLanControlCharacters remove-html-control-character">
+						<f:validateLength minimum="6" maximum="255" />
+						<p:ajax event="keyup" update="projectMessages" />
+					</p:inputText>
+					
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column colspan="2">
+						<p:message for="projectName" id="projectMessages" display="default" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column>
+					<h:outputText value="Description: " />
+					</p:column>
+					<p:column>
+					<p:inputTextarea id="descriptionp"
+						value="#{projectBean.description}" rows="4" cols="33"
+						style=" width: 200px" >
+						<f:validateLength minimum="0" maximum="500" />
+						<p:ajax event="keyup" update="projectDesc" />
+					</p:inputTextarea>
+					<p:message for="descriptionp" id="projectDesc" display="default" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column><h:outputText value="Public: " /></p:column>
+					<p:column>
+					<p:selectBooleanCheckbox label="Public:" id="isPublic"
+						value="#{projectBean.isPublic}" />
+					<h:inputHidden />
+					</p:column>
+				</p:row>
+				</p:panelGrid>
+			</div>
+		</div>
+		<p:remoteCommand name="updateLogoNew"
+			actionListener="#{projectBean.newProjectLogo}"
+			update="project-logo-sub-new" process="@this" />
+		<script type="text/javascript">	
+		//<![CDATA[			
+			initUploaderProject();
+			navigate(0);
+		//]]>
+		</script>
+	</p:fieldset>
+	
+</ui:composition>

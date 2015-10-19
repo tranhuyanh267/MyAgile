@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:custom="http://myagile.com/custom">
+<ui:composition template="/WEB-INF/layouts/template.xhtml">
+	<ui:define name="layoutTitle">
+		About us
+	</ui:define>
+	<ui:define name="layoutHead">
+		<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/assets/css/about.css" />
+	</ui:define>
+	<ui:define name="layoutBody">	
+	<h:panelGroup layout="block" styleClass="row">
+		<p:fieldset styleClass="span12 wrapp-content">
+			<h:panelGroup layout="block" styleClass="introduct-image-company">
+				<h:panelGroup layout="block" styleClass="wrap-slide-image">
+					<h4 class="title-lastest-news">OUR SOCIAL NEWS</h4>
+					<h:panelGroup styleClass="flexslider" layout="block">
+						<h:panelGroup id="myCarousel" styleClass="carousel slide" layout="block">
+							<ol class="carousel-indicators top-230">
+							  	<ui:repeat var="fbNews" value="#{aboutBean.fbNews}" varStatus="count">
+							  		<li class="#{count.index==0?'active':''}" data-target="#myCarousel" data-slide-to="#{count.index}"></li>
+							  	</ui:repeat>
+							</ol>
+						  <h:panelGroup styleClass="carousel-inner cantainer-slide-show" layout="block">
+						  	<ui:repeat var="fbNews" value="#{aboutBean.fbNews}" varStatus="count">
+						  		<h:panelGroup styleClass="#{count.index==0?'item active':'item'}" layout="block">
+								      <a href="#{fbNews.link}" target="_blank" title="#{fbNews.title}">
+								      	<h:graphicImage value="/file?type=facebook-news&amp;filename=#{fbNews.imageName}" alt="#{fbNews.title}" style="width:100%;height:100%;" styleClass="img-polaroid"/>
+								      </a>
+								</h:panelGroup>
+						  	</ui:repeat>
+						  </h:panelGroup>
+						</h:panelGroup>
+					</h:panelGroup>
+				</h:panelGroup>
+				<h:panelGroup style="clear:left;"></h:panelGroup>
+			</h:panelGroup>
+			<h:panelGroup layout="block" styleClass="content-about">
+				<h:panelGroup styleClass="content-box" layout="block">
+					Axon Active Vietnam is specialized in providing professional Offshore Software Development and Testing services based on the Offshore Development Center (ODC) and Offshore Testing Center (OTC) approaches.
+				</h:panelGroup>
+				<h:panelGroup styleClass="content-box" layout="block">
+					We offer exclusive Offshore Teams starting from 5 team members, which is composed specifically for customers' individual requirements.<br/>
+				</h:panelGroup>
+				<h:panelGroup styleClass="content-box" layout="block">
+					We work with Agile methodology such as Scrum projects, but we also fully adapt to the processes which are applied in our customers' company.<br/>
+				</h:panelGroup>
+				<h:panelGroup styleClass="content-box" layout="block">
+				We advise and assist customers comprehensively in choosing the right tools, infrastructure and methodologies for their specific needs.<br/>
+				</h:panelGroup>
+				<h:panelGroup styleClass="content-box" layout="block">
+				We have 300 software and testing specialists and have delivered over 100 successful projects to our customers.<br/>
+				</h:panelGroup>
+				<h:panelGroup styleClass="content-box" layout="block">
+				---------------------------------
+				</h:panelGroup>
+				<h:panelGroup styleClass="content-box" layout="block">
+					At Axon Active Vietnam, we believe that people are our most important assets. We recognize and reward their contributions and commitment. We encourage leveraging their strengths. Working with us means that you have an excellent opportunity to maximize your ability and get more successes.
+				</h:panelGroup>
+				<h:panelGroup styleClass="content-box" layout="block">
+					If you have the drive to succeed and the urge to learn, this is the place for you. More than just a new career, a job at Axon Active Vietnam is the start of your new life!
+				</h:panelGroup>
+				<h:panelGroup styleClass="content-box" layout="block">
+					Follow us on other social networks:
+				</h:panelGroup>
+				
+				<ul class="reference-link">
+					<li>
+						<a href="https://www.facebook.com/AxonActiveVietnam" target="_blank" title="Facebook">
+							<h:graphicImage library="" name="img/icon-social/facebook.png" alt="Facebook"/>
+						</a>
+					</li>
+					<li>
+						<a href="https://plus.google.com/113862750603505476555/posts" target="_blank" title="Google Plus">
+							<h:graphicImage library="" name="img/icon-social/googleplus.png" alt="Google Plus"/>
+						</a>
+					</li>
+					<li>
+						<a href="http://www.linkedin.com/company/axon-active-vietnam-ltd-/" target="_blank" title="Linkedin">
+							<h:graphicImage library="" name="img/icon-social/in.png" alt = "Linkedin"/>
+						</a>
+					</li>
+					
+					<li>
+						<a href="http://www.twitter.com/AxonActiveVN" target="_blank" title="Twitter">
+							<h:graphicImage library="" name="img/icon-social/tw.png" alt = "Twitter"/>
+						</a>
+					</li>
+					
+					<li>
+						<a href="http://www.xing.com/companies/axonactivevietnamco.ltd./" target="_blank" title="Xing">
+							<h:graphicImage library="" name="img/icon-social/xing.png" alt = "Xing"/>
+						</a>
+					</li>
+					
+					<li>
+						<a href="http://www.youtube.com/user/AxonActiveVietnam" target="_blank" title="Youtube">
+							<h:graphicImage library="" name="img/icon-social/youtube.png" alt = "Youtube"/>
+						</a>
+					</li>
+					
+					<li>
+						<a href=" http://www.slideshare.net/AxonActiveVietnam" target="_blank" title="Slide Share">
+							<h:graphicImage library="" name="img/icon-social/slide.png" alt = "Slide Share"/>
+						</a>
+					</li>
+					<li>
+						<a href="http://www.flickr.com/photos/63918795@N08/" target="_blank" title="Flickr">
+							<h:graphicImage library="" name="img/icon-social/flickr.png" alt = "Flickr"/>
+						</a>
+					</li>
+				</ul>
+			</h:panelGroup>
+		</p:fieldset>
+	 </h:panelGroup>
+	 <script>
+	 	$(document).ready(function() {
+	 		$('#myCarousel').carousel({
+	 			  interval: 5000
+	 		});
+	 		
+// 	 		$(window).resize(function() {
+// 	 			  console.log($(this).width());
+// 	 		});
+	 	});
+	 </script>
+	</ui:define>
+</ui:composition>
+</html>

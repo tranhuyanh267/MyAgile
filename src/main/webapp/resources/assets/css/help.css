@@ -1,0 +1,167 @@
+@CHARSET "UTF-8";
+
+.content-section {
+	margin: 0 auto;
+	width: 85%;
+	height: 90%;
+}
+
+.content-section .heading {
+	overflow: hidden;
+	padding: 5px 2px 13px 21px;
+}
+
+.content-section h4 {
+	color: #3C3C3C;
+	float: left;
+	font: 24px/28px "Trebuchet MS", "Times New Roman", Times, serif;
+	margin: 0;
+	text-shadow: 0 2px 1px #FFFFFF;
+}
+
+.content-section .heading button {
+	margin-right: 0px;
+	float: right;
+}
+
+.content-block {
+	background: url("/resources/img/bg-content-block.gif") repeat-x scroll 0 0 #FFFFFF;
+	padding: 18px 24px 0;
+	min-height: 545px;
+	width: 100%;
+	margin: 0;
+}
+
+#helpContentBlockLeft {
+	float: left;
+	width: 53%;
+}
+
+#helpContentBlockRight {
+	float: right;
+	width: 47%;
+}
+
+.content-block a {
+	color: #0076A3;
+	text-decoration: none;
+}
+
+.content-block a:HOVER {
+	font-weight: bold;
+}
+
+.content-block-nav {
+	display: inline;
+	font-size: 0.9em;
+	margin: 4px 0;
+}
+
+.content-block-nav-back {
+	margin-left: 0;
+	float: left;
+}
+
+.content-block-nav-forward {
+	float: right;
+	margin-right: 0;
+}
+
+.content-block-main {
+	clear: both;
+	color: #34302D;
+	font-family: "Varela Round", sans-serif;
+	font-weight: 400;
+}
+
+.content-block-main img {
+	margin-bottom: 10px;
+}
+
+.content-block-main .backToTop {
+	clear: both;
+	margin-right: 0px;
+	float: right;
+	margin-right: 0px;
+}
+
+.content-block-main .backToTop a:hover {
+	font-weight: normal;
+}
+
+#gettingStartedImg {
+	clear: both;
+	margin: 0 auto;
+	width: 50%;
+	overflow: hidden;
+	padding-top: 125px;
+}
+
+#gettingStartedImg img {
+	margin: 5px;
+}
+
+.content-block .content-block-main img {
+	display: block;
+	text-align: center;
+	margin: 0 auto;
+	margin-bottom: 10px;
+}
+
+.visited {
+	color: #0076A3;;
+	text-decoration: none;
+}
+
+.height-content-block {
+	height: 800px;
+}
+
+
+.video-wrapper {
+	max-width: 66%;
+	padding-left: 17%;
+	margin-bottom: 4%;
+}
+
+.video-list {
+	margin-left: 14%;
+}
+
+.separator-line {
+	border-width: 1px;
+	margin: 12px 150px 12px 10px;
+	border-color: #DCDCDC;
+}
+
+.video-name {
+	list-style: none;
+	margin-left: 30px;
+}
+
+.video-text-name {
+	font-family: "Open Sans", sans-serif;
+	font-size: 14px;
+	line-height: 20px;
+}
+
+.icon-facetime-video {
+	font-size: 20px;
+}
+
+.icon-facetime-video:before {
+	padding-right: 10px;
+	vertical-align: middle;
+}
+
+li{
+	margin-top:5px;
+}
+
+dt{
+	margin-top:	10px;
+}
+ol.index{
+	color:#0076A3;
+	font-weight:bold;
+}

@@ -1,0 +1,1345 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:custom="http://myagile.com/custom">
+
+	<p:outputPanel id="form-kanban" layout="block">
+		<ul class = "display-none" id = "liListProject">
+			<ui:repeat value="#{kanbanBean.listProject}" var="p">
+				<li>#{p.projectId}</li>
+			</ui:repeat>
+		</ul>
+		<!-- table for header -->
+		<table class="tb-header-kanban" id="kanban-table">
+			<tr>
+				<th rowspan="2" class="th-backlog">
+					<div class="th-fixed">
+					<h:panelGroup styleClass="ui-icon float-left icon-add-backlog">
+						<p:commandLink styleClass="icon-plus" update=":panel-add-backlog-form,:panel-edit-backlog-form" action="#{kanbanBean.initSaveInfoAlert}" oncomplete="resetFormAdd()">
+							<f:setPropertyActionListener  value="#{true}" target="#{kanbanBean.showFormAddUserStory}" />
+							<f:setPropertyActionListener  value="#{false}" target="#{kanbanBean.showFormEditUserStory}" />
+						</p:commandLink>
+					</h:panelGroup>
+					<!-- <span class="icon-arrow-up"></span>  -->
+					<span class="cursor-default">Product Backlog</span>
+					</div>
+				</th>
+				<!-- load column -->
+				<ui:repeat var="statuskanban" value="#{kanbanBean.kanbanStatusTempList}">
+					<ui:fragment rendered="#{statuskanban.type != 'DONE' and statuskanban.type != 'ACCEPTED_SHOW' and statuskanban.type != 'ACCEPTED_HIDE'}">
+						<th style="width: #{statuskanban.width * 16}px; background:##{statuskanban.color};">
+						#{statuskanban.name}
+						<ui:fragment rendered="#{statuskanban.columnDone}">
+							(#{statuskanban.weightPoint})
+						</ui:fragment>
+						</th>							
+					</ui:fragment>
+					<ui:fragment rendered="#{statuskanban.type == 'DONE' or statuskanban.type == 'ACCEPTED_SHOW'}">
+						<th rowspan = "2" style="width: #{statuskanban.width * 16}px; background:##{statuskanban.color};">#{statuskanban.name}</th>							
+					</ui:fragment>
+				</ui:repeat>
+			</tr>
+			
+			<tr>
+				<ui:repeat var="statuskanban" value="#{kanbanBean.kanbanStatusTempList}">
+					<ui:fragment rendered="#{statuskanban.type != 'DONE' and statuskanban.type != 'ACCEPTED_SHOW' and statuskanban.type != 'ACCEPTED_HIDE'}">
+						<th style="width: #{statuskanban.width * 16}px;" class = "border-top">
+							<ui:fragment rendered="#{!statuskanban.columnDone}">
+								(#{statuskanban.weightPoint})
+							</ui:fragment>
+							<ui:fragment rendered="#{statuskanban.columnDone}">
+								<i class = "float-left margin-left-60 no-italic">Progress</i>
+								<i class = "float-right margin-right-80 no-italic">Done</i>
+							</ui:fragment>
+						</th>
+					</ui:fragment>
+				</ui:repeat>
+			</tr>
+		</table>
+		<table class="tb-header-kanban-content">
+			<!-- load first row -->
+				<tr style="background:##{kanbanBean.firstSwimlineObject.color}">
+					<td rowspan="20" class="td-content-backlog background-white">
+					<!-- add product backlog --> 
+						<div class="td-scrollable">
+						<h:panelGroup id="panel-add-backlog-form">
+							<h:form styleClass="margin-left-12 margin-top-5 initial-height">
+								<label>Select Project</label>
+								<p:selectOneMenu id="projectSelect"
+									value="#{kanbanBean.currentProjectId}" styleClass="width-269 text-left">
+									<f:selectItems value="#{kanbanBean.listProject}" var="p"
+										itemValue="#{p.projectId}" itemLabel="#{p.projectName}" />
+									<p:ajax listener="#{kanbanBean.handleChangeProject}" update=":render-userstory-of-project,:script"/>	
+								</p:selectOneMenu>
+							</h:form>
+							<h:form id="add-backlog-form" styleClass="initial-height" rendered="#{kanbanBean.showFormAddUserStory}">
+								<p:outputPanel layout="block" rendered="#{kanbanBean.saveSuccess}" styleClass="info-msg">
+									<p:outputLabel value="Save successfully."></p:outputLabel>
+								</p:outputPanel>
+								<!-- project -->
+							<!-- name -->
+								<p:outputPanel layout="block">
+									<p:outputLabel value="Name(*):"></p:outputLabel>
+								</p:outputPanel>
+								
+	
+								<p:outputPanel layout="block">
+									<p:inputText value="#{kanbanBean.addUserStory.name}"
+										id="usNameTxt" validator="#{kanbanBean.validateUserStory}" 
+										required="true">
+										<p:ajax event="keyup" update="@(.up)" global="false" />
+										<f:validateLength maximum="255" />
+									</p:inputText>
+								</p:outputPanel>
+								
+								<p:outputPanel layout="block" styleClass="msg">
+									<p:message for="usNameTxt" id="usNameMsgs" styleClass="up" />
+								</p:outputPanel>							
+								<!-- description -->
+								<p:outputPanel layout="block">
+									<p:outputLabel value="Description:" for="usDescriptionTxt"></p:outputLabel>
+								</p:outputPanel>
+	
+								<p:outputPanel layout="block">
+									<p:editor id="usDescriptionTxt"
+										value="#{kanbanBean.addUserStory.description}"
+										widgetVar="editorDescription"
+										controls="bold italic underline strikethrough font size color highlight | bullets numbering "
+										height="150" maxlength="2000">
+									</p:editor>
+								</p:outputPanel>
+								
+								<!-- value -->
+								<p:outputPanel layout="block">
+									<p:outputLabel value="Value:" for="usValueSpner"></p:outputLabel>
+								</p:outputPanel>
+	
+								<p:outputPanel layout="block">
+									<p:spinner id="usValueSpner" value="#{kanbanBean.addUserStory.value}"
+										widgetVar="spinValue" validator="#{kanbanBean.validateValue}"
+										min="0" max="1000">
+										<p:ajax event="change" update="msgValue" global="false"/>
+										<p:ajax event="keyup" update="msgValue" global="false"/>
+									</p:spinner>
+								</p:outputPanel>
+								
+								<p:outputPanel layout="block" styleClass="msg">
+									<p:message for="usValueSpner" id="msgValue" display="default" />
+								</p:outputPanel>
+								
+								<p:outputPanel layout="block">
+									<p:commandButton value="Save" action="#{kanbanBean.saveUserstory}" update=":form-kanban"></p:commandButton>
+									<h:outputText value="&#160;" />
+									<p:commandButton value="Cancel" styleClass="secondary" immediate="true" update=":panel-add-backlog-form" action="#{kanbanBean.resetFormUserStory}">
+										<f:setPropertyActionListener  value="#{false}" target="#{kanbanBean.showFormAddUserStory}" />
+									</p:commandButton>
+								</p:outputPanel>
+								<script>
+									$(document).ready(function(){
+										removeHtmlTagWhenPasteInEditorByIdParentAndWidget("#add-backlog-form\\:usDescriptionTxt",editorDescription);
+									});
+								</script>
+							</h:form>
+						</h:panelGroup>
+						<!-- add task -->
+						
+						<!-- edit product backlog --> 
+						<h:panelGroup id = "panel-edit-backlog-form">
+							<h:form  styleClass="initial-height" id="edit-backlog-form" rendered="#{kanbanBean.showFormEditUserStory}">
+								<!-- msg success -->
+								<p:outputPanel layout="block" rendered="#{kanbanBean.updateSuccess}" styleClass="info-msg">
+									<p:outputLabel value="Update successful"></p:outputLabel>
+								</p:outputPanel>
+								<!-- name -->
+								<p:outputPanel layout="block">
+									<p:outputLabel value="Name(*):"></p:outputLabel>
+								</p:outputPanel>
+	
+								<p:outputPanel layout="block">
+									<p:inputText value="#{kanbanBean.editUserStory.name}"
+										id="usEditNameTxt" required="true" validator="#{kanbanBean.validateUserStoryForEdit}" immediate="true">
+										<p:ajax event="keyup" update="usEditNameMsgs" global="false" />
+										<f:validateLength maximum="255" />
+									</p:inputText>
+								</p:outputPanel>
+								
+								<p:outputPanel layout="block" styleClass="msg">
+									<p:message for="usEditNameTxt" id="usEditNameMsgs" />
+								</p:outputPanel>
+								
+								<!-- description -->
+								<p:outputPanel layout="block">
+									<p:outputLabel value="Description:" for="usEditDescriptionTxt"></p:outputLabel>
+								</p:outputPanel>
+	
+								<p:outputPanel layout="block">
+									<p:editor id="usEditDescriptionTxt"
+										value="#{kanbanBean.editUserStory.description}"
+										widgetVar="editorDescription"
+										controls="bold italic underline strikethrough font size color highlight | bullets numbering "
+										height="150" maxlength="2000">
+									</p:editor>
+								</p:outputPanel>
+								
+								<!-- value -->
+								<p:outputPanel layout="block">
+									<p:outputLabel value="Value:" for="usEditValueSpner"></p:outputLabel>
+								</p:outputPanel>
+	
+								<p:outputPanel layout="block">
+									<p:spinner id="usEditValueSpner" value="#{kanbanBean.editUserStory.value}"
+										widgetVar="spinValue" validator="#{kanbanBean.validateValue}"
+										min="0" max="1000" immediate="true">
+										<p:ajax event="change" update="msgEditValue" global="false"/>
+										<p:ajax event="keyup" update="msgEditValue" global="false"/>
+									</p:spinner>
+								</p:outputPanel>
+								
+								<p:outputPanel layout="block" styleClass="msg">
+									<p:message for="usEditValueSpner" id="msgEditValue" display="default" />
+								</p:outputPanel>
+								
+								<p:outputPanel layout="block">
+									<p:commandButton value="Save" action="#{kanbanBean.updateUserstory}" update=":panel-edit-backlog-form, :render-userstory-of-project"></p:commandButton>
+									<h:outputText value="&#160;" />
+									<p:button value="Cancel" styleClass="secondary" onclick="cancelEdit();return false;"/>
+									
+									
+								</p:outputPanel>
+								<script>
+									$(document).ready(function(){
+										removeHtmlTagWhenPasteInEditorByIdParentAndWidget("#edit-backlog-form\\:usEditDescriptionTxt",editorDescription);
+									});
+								</script>
+							</h:form>
+							<h:form>
+								<p:remoteCommand name="cancelEdit" update=":panel-edit-backlog-form" actionListener="#{kanbanBean.resetProductBacklogForm}">
+									<f:setPropertyActionListener  value="#{false}" target="#{kanbanBean.showFormEditUserStory}" />
+								</p:remoteCommand>
+							</h:form>
+						</h:panelGroup>
+						
+						<!-- load product backlog -->
+						
+						<p:outputPanel id="render-userstory-of-project">
+							<p:outputPanel styleClass="kanban-column kanban-column-backlog" layout="block">
+							<ui:repeat var="userstory" value="#{kanbanBean.userStoriesOfProject}">
+								<h:panelGroup layout="block" styleClass="box-product-backlog">
+									<input type="hidden" class="hidden-backlog-id"
+										value="#{userstory.userStoryId}" />
+									<div class="process_bar_us" style="width:#{kanbanBean.calculateUSProgress(userstory)}%"></div>
+									<div class = "angle-color-project kanban-tooltip" data-id-project = "#{userstory.project.projectId}" data-toggle="tooltip" title="#{userstory.project.projectName}"></div>
+									<h:panelGroup styleClass="title-product-backlog" layout = "block">
+										
+										<h:panelGroup styleClass="ui-icon float-right relative-top-15">
+											<p:commandLink styleClass="icon-plus  icon-add-task" action="#{kanbanBean.loadAddTask}">
+												<f:setPropertyActionListener  value="#{userstory.userStoryId}" target="#{kanbanBean.idEditUserStory}" />
+											</p:commandLink>
+										</h:panelGroup>
+										
+										<h:panelGroup styleClass="ui-icon  float-right relative-top-15">
+											<p:commandLink styleClass="ui-icon-trash icon-delete-backlog" oncomplete="confirmDeleteBacklog.show()" update=":idConfirmDeleteBacklog">
+												<f:setPropertyActionListener  value="#{userstory.userStoryId}" target="#{kanbanBean.idDeleteUserStory}" />
+												<f:setPropertyActionListener  value="#{userstory.name}" target="#{kanbanBean.nameDeleteUserStory}" />
+												<f:setPropertyActionListener  value="#{userstory.sortId}" target="#{kanbanBean.idSortUserStory}" />
+											</p:commandLink>
+										</h:panelGroup>
+										
+										<h:panelGroup styleClass="ui-icon float-right relative-top-15">
+											<p:commandLink styleClass="ui-icon-pencil  icon-edit-backlog" action="#{kanbanBean.loadEditUserStory}" update=":panel-edit-backlog-form,:panel-add-backlog-form" oncomplete="scrollTopZero()">
+												<f:setPropertyActionListener  value="#{userstory.userStoryId}" target="#{kanbanBean.idEditUserStory}" />
+												<f:setPropertyActionListener  value="#{true}" target="#{kanbanBean.showFormEditUserStory}" />
+												<f:setPropertyActionListener  value="#{false}" target="#{kanbanBean.showFormAddUserStory}" />
+											</p:commandLink>
+										</h:panelGroup>
+										
+										
+										
+										<h:panelGroup styleClass="title-content-product-backlog">
+											<h:form styleClass="middle-vertical">
+												<h:commandLink value="##{userstory.userStoryId}" action="#{productBacklogBean.goToViewUserStoryPage}" target="_blank">
+													<f:setPropertyActionListener value="#{userstory}" target="#{productBacklogBean.userStory}" />
+													<f:setPropertyActionListener target="#{productBacklogBean.edit}" value="#{false}" />
+												</h:commandLink>
+												<h:outputText value = " #{userstory.name}"></h:outputText>
+											</h:form>
+										</h:panelGroup>
+										<h:panelGroup layout = "block" styleClass="clear-both">
+										</h:panelGroup>
+									</h:panelGroup>
+									<h:panelGroup styleClass="content-product-backlog display-none" layout = "block">
+										<h:panelGroup layout = "block" styleClass="padding-5">
+											<h:outputText value = "#{userstory.description}" escape="false" class="word-break-break-word"></h:outputText>
+										</h:panelGroup>
+										<h:panelGroup styleClass="footer-product-backlog padding-5" layout = "block">
+											V:<h:outputText value = "#{userstory.value}"></h:outputText>
+										</h:panelGroup>
+									</h:panelGroup>
+									<!-- add form task here -->
+									<h:panelGroup styleClass="frm-add-task visibility-hidden height-0-overflow-hidden" layout="block">
+										<h:form styleClass="add-task-form">
+											<!-- msg success -->
+											<!-- name -->
+											<p:outputPanel layout="block">
+												<p:outputLabel value="Subject(*):"></p:outputLabel>
+											</p:outputPanel>
+				
+											<p:outputPanel layout="block">
+												<p:inputText value="#{kanbanBean.addTask.subject}"
+													id="taskAddNameTxt" required="true" validator="#{kanbanBean.validateAddTask}" styleClass="add-task">
+													<p:ajax event="keyup" update="@(.msg)" global="false" />
+													<f:validateLength maximum="255" />
+												</p:inputText>
+											</p:outputPanel>
+											
+											<p:outputPanel layout="block" styleClass="msg">
+												<p:message for="taskAddNameTxt"/>
+											</p:outputPanel>
+											
+											<!-- description -->
+											<p:outputPanel layout="block">
+												<p:outputLabel value="Description:" for="taskAddDescriptionTxt"></p:outputLabel>
+											</p:outputPanel>
+				
+											<p:outputPanel layout="block">
+												<p:editor id="taskAddDescriptionTxt" styleClass="class-frm-add-task-editor"
+													value="#{kanbanBean.addTask.description}"
+													controls="bold italic underline strikethrough font size color highlight | bullets numbering "
+													height="150" maxlength="2000" >
+												</p:editor>
+											</p:outputPanel>
+											<!-- note -->
+											<p:outputPanel layout="block">
+												<p:outputLabel value="Note:" for="taskAddNoteTxt"></p:outputLabel>
+											</p:outputPanel>
+				
+											<p:outputPanel layout="block">
+												<p:editor id="taskAddNoteTxt" styleClass="class-frm-add-task-editor"
+													value="#{kanbanBean.addTask.note}"
+													controls="bold italic underline strikethrough font size color highlight | bullets numbering "
+													height="150" maxlength="2000" >
+												</p:editor>
+											</p:outputPanel>
+											<!--  -->
+											<p:outputPanel layout="block" styleClass="margin-bottom-10">
+												<p:commandButton value="Save"  action="#{kanbanBean.addNewTaskInUserStory()}" update=":form-kanban"></p:commandButton>
+												<h:outputText value="&#160;" />
+												<p:commandButton value="Cancel" styleClass="secondary task-cancel" >
+												
+												</p:commandButton>
+											</p:outputPanel>
+										</h:form>
+								</h:panelGroup>
+								</h:panelGroup>
+								<!-- load form task -->
+								<ui:repeat var="issue" value="#{kanbanBean.getTaskInUserStory(userstory.userStoryId)}">
+										<h:panelGroup layout="block" styleClass="box-product-backlog background-yellow sub-task">
+											<input type="hidden" class="hidden-issue-id"
+										value="#{issue.issueId}" />
+											<div class = "angle-color-project kanban-tooltip" data-id-project = "#{userstory.project.projectId}" data-toggle="tooltip" title="#{userstory.project.projectName}"></div>
+											<h:panelGroup styleClass="title-product-backlog" layout = "block">
+												<h:panelGroup styleClass="ui-icon  float-right relative-top-15">
+													<p:commandLink styleClass="ui-icon-trash icon-delete-backlog" oncomplete="confirmDeleteTask.show()">
+														<f:setPropertyActionListener  value="#{issue.issueId}" target="#{kanbanBean.idDeleteTask}" />
+													</p:commandLink>
+												</h:panelGroup>
+												
+												<h:panelGroup styleClass="ui-icon float-right relative-top-15">
+													<p:commandLink styleClass="ui-icon-pencil  icon-edit-task" action="#{kanbanBean.loadTaskNeedEdit}" update="@(.edit-task-form)" oncomplete="loadDataIntoEditFormTask(#{issue.issueId})">
+														<f:setPropertyActionListener  value="#{issue.issueId}" target="#{kanbanBean.idEditTask}" />
+													</p:commandLink>
+												</h:panelGroup>
+												
+												<h:panelGroup styleClass="title-content-product-backlog">
+													##{issue.displayIssueId}
+													#{issue.subject}
+												</h:panelGroup>
+												
+												<h:panelGroup layout = "block" styleClass="clear-both">
+												</h:panelGroup>
+											</h:panelGroup>
+											<h:panelGroup styleClass="content-product-backlog display-none" layout = "block">
+												<h:panelGroup layout = "block" styleClass="padding-5">
+													<h:outputText value = "#{issue.description}" escape="false"></h:outputText>
+												</h:panelGroup>
+											</h:panelGroup>
+											
+											<!-- EDIT TASK -->
+												<h:panelGroup styleClass="frm-edit-task visibility-hidden height-0-overflow-hidden parent-form-edit-task-#{issue.issueId}" layout="block">
+													<h:form class="edit-task-form">
+														<p:outputPanel layout="block">
+															<p:outputLabel value="Subject(*):"></p:outputLabel>
+														</p:outputPanel>
+							
+														<p:outputPanel layout="block">
+															<p:inputText value="#{kanbanBean.editTask.subject}"
+																 id="taskEditNameTxt" required="true" styleClass="edit-task"  validator="#{kanbanBean.validateEditTask}">
+																 <p:ajax event="keyup" update="@(.msg)" global="false" />
+													<f:validateLength maximum="255" />
+															</p:inputText>
+														</p:outputPanel>
+														
+														<p:outputPanel layout="block" styleClass="msg">
+															<p:message for="taskEditNameTxt"/>
+														</p:outputPanel>
+														
+														<!-- description -->
+														<p:outputPanel layout="block">
+															<p:outputLabel value="Description:"></p:outputLabel>
+														</p:outputPanel>
+							
+														<p:outputPanel layout="block">
+															<p:editor id="taskEditTaskDescriptionTxt#{issue.issueId}" styleClass="class-frm-edit-task-editor"
+																value="#{kanbanBean.editTask.description}"
+																controls="bold italic underline strikethrough font size color highlight | bullets numbering "
+																height="150" maxlength="2000" >
+															</p:editor>
+														</p:outputPanel>
+														<!-- note -->
+														<p:outputPanel layout="block">
+															<p:outputLabel value="Note:"></p:outputLabel>
+														</p:outputPanel>
+							
+														<p:outputPanel layout="block">
+															<p:editor id="taskEditTaskNoteTxt#{issue.issueId}" styleClass="class-frm-edit-task-editor"
+																value="#{kanbanBean.editTask.note}"
+																controls="bold italic underline strikethrough font size color highlight | bullets numbering "
+																height="150" maxlength="2000" >
+															</p:editor>
+														</p:outputPanel>
+														
+														<!--  -->
+														<p:outputPanel layout="block" styleClass="margin-bottom-10">
+															<p:commandButton value="Update" action="#{kanbanBean.editTaskInUserStory}" update=":form-kanban"></p:commandButton>
+															<h:outputText value="&#160;" />
+															<p:commandButton value="Cancel" styleClass="secondary task-edit-cancel" >
+															</p:commandButton>
+														</p:outputPanel>
+														<script>
+																$(document).ready(function(){
+																	removeHtmlTagWhenPasteInEditorByClassParent(".class-frm-edit-task-editor");
+																});
+														</script>
+													</h:form>
+												</h:panelGroup>
+											<!-- end edit task form -->
+										</h:panelGroup>
+								</ui:repeat>
+								<!--end load form task -->
+							</ui:repeat>
+						
+							<h:panelGroup layout="block" styleClass="no-userstory visibility-hidden" rendered="#{empty kanbanBean.userStoriesOfProject}">
+									<h:panelGroup styleClass="title-content-product-backlog">
+											<h:outputText value = "No userstory"></h:outputText>
+									</h:panelGroup>
+							</h:panelGroup>
+							</p:outputPanel>
+							<script>
+									$(document).ready(function(){
+										removeHtmlTagWhenPasteInEditorByClassParent(".class-frm-add-task-editor");
+										removeHtmlTagWhenPasteInEditorByClassParent(".class-frm-edit-task-editor");
+									});
+							</script>
+						</p:outputPanel>
+						</div>
+					</td>
+					<!-- load issue into column -->
+					<ui:repeat var="statuskanban" value="#{kanbanBean.kanbanStatusTempList}">
+						<ui:fragment rendered="#{statuskanban.type != 'ACCEPTED_HIDE'}">
+							<!-- load all issue in kanbanstatus -->
+							<td style="width: #{statuskanban.width * 16}px;" data-id-status = "#{statuskanban.statusId}" data-id-swimline = "#{kanbanBean.firstSwimline}" class="kanban-child-column"  kanban-weightpoint="#{statuskanban.weightPoint}">
+								<h:form styleClass="form-td-kanban-column">
+								
+								<!-- child column progress in column -->
+								<ui:fragment rendered="#{!statuskanban.columnDone}">
+									<p:outputPanel layout="block" styleClass="column-progress-done kanban-column">
+										<ui:repeat var="issue" value="#{kanbanBean.getIssueFromKanbanStatusAndSwimline(kanbanBean.currentTeam.teamId,statuskanban.statusId,kanbanBean.firstSwimline)}">
+											<h:panelGroup layout="block" styleClass="box-issue"  id="issue_sticker">
+												<div class="process_bar" style="width: #{kanbanBean.calculateProgressInit(issue)}%"></div>
+												<div class = "angle-color-project kanban-tooltip" data-id-project = "#{issue.userStory.project.projectId}" data-toggle="tooltip" title="#{issue.userStory.project.projectName}"></div>
+												<input type="hidden" class="hidden-issue-id"
+										value="#{issue.issueId}" />
+												<h:panelGroup layout = "block" styleClass="box-issue-title">
+													<h:panelGroup layout="block" styleClass="box-issue-title-content">
+														##{issue.displayIssueId}
+														#{issue.subject}
+													</h:panelGroup>
+													
+													<!-- Avatar -->
+													<h:panelGroup
+														rendered="#{memberIssueBean.checkExistIssue(issue.issueId) and not memberIssueBean.issueHasTwoMembers(issue.issueId)}">
+														<h:graphicImage alt="avatar-sticker" id="ava_img"
+															value="#{memberIssueBean.getDefaultAvatar(issue.issueId)}"
+															styleClass="img-circle avatar title-avatar"
+															onclick="$(this).next().css('display','block')" />
+														<p:overlayPanel for="ava_img" styleClass="members-selector"
+															style="display: none;" showEffect="fade"
+															widgetVar="iss_member_wg_#{issue.issueId}"
+															onShow="setScrollableForAssignMenu(this)">
+															<ul class="member-list">
+																<ui:repeat var="member"
+																	value="#{memberIssueBean.getMembersByIssue(issue.issueId)}">
+																			<li><h:graphicImage
+																			alt="ava-img" id="ava_img"
+																			value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+																			styleClass="img-circle avatar" />
+																			<h:outputText value="&#160;#{dashboardBean.showUserName(member)}" />
+																			<i onclick="unassignMemberIssue(#{member.memberId},#{issue.issueId});" class="icon-remove-member icon icon-remove" title="Remove"></i></li>
+																</ui:repeat>
+															</ul>
+														</p:overlayPanel>
+													</h:panelGroup>
+													<h:panelGroup
+														rendered="#{memberIssueBean.issueHasTwoMembers(issue.issueId)}">
+														<h:panelGroup layout="block" id="avatarGroup" styleClass="avatar-group">
+															<ui:repeat var="member"
+																value="#{memberIssueBean.getMembersByIssue(issue.issueId)}">
+																<div class="title-avatar">
+																	<h:graphicImage alt="avatar-sticker"
+																		value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+																		styleClass="img-circle avatar" />
+																</div>
+															</ui:repeat>
+														</h:panelGroup>
+														<p:overlayPanel for="avatarGroup" styleClass="members-selector"
+															showEffect="fade"
+															widgetVar="iss_member_wg_#{issue.issueId}"
+															onShow="setScrollableForAssignMenu(this)">
+															<ul class="member-list">
+																<ui:repeat var="member"
+																	value="#{memberIssueBean.getMembersByIssue(issue.issueId)}">
+																			<li><h:graphicImage
+																			alt="ava-img" id="ava_img"
+																			value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+																			styleClass="img-circle avatar" />
+																			<h:outputText styleClass="" value=" #{dashboardBean.showUserName(member)}" />
+																			<i onclick="unassignMemberIssue(#{member.memberId},#{issue.issueId});" class="icon-remove-member icon icon-remove" title="Remove"></i></li>
+																</ui:repeat>
+															</ul>
+														</p:overlayPanel>
+													</h:panelGroup>
+													<h:panelGroup
+														rendered="#{not memberIssueBean.checkExistIssue(issue.issueId) and not memberIssueBean.issueHasTwoMembers(issue.issueId)}">
+														<h:graphicImage alt="avatar-sticker" id="ava_img_none"
+															value="/resources/img/user.png"
+															styleClass="img-circle avatar title-avatar" />
+													</h:panelGroup>
+												</h:panelGroup>
+												<h:panelGroup layout="block"
+													styleClass="box-issue-content display-none">
+													<h:panelGroup layout="block"
+														styleClass="box-issue-content-desciption margin-10">
+														<h:outputText escape="false" value="#{issue.description}" class="word-break-break-word"/>
+													</h:panelGroup>
+													<h:panelGroup styleClass="border-dashed" layout="block"></h:panelGroup>
+
+													<h:panelGroup layout="block"
+														styleClass="box-issue-content-point-and-estimate margin-top-3-left-10 margin-right-10">
+														
+														<h:panelGroup layout="block"
+															styleClass="box-issue-content-point" style="width: auto;display: inline-block;">
+															R: <p:inplace effect="none" widgetVar="p_inplace_#{issue.issueId}" disabled="#{issue.kanbanStatus.type=='START' or dashboardBean.sprint.status == 'closed' or !custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', dashboardBean.sprint.team.teamId)}">
+																	<p:ajax event="save" listener="#{kanbanBean.updatePointRemain(issue.issueId)}" global="false" oncomplete="updateFormKanbanWithOutError('.point-remain-#{issue.issueId}')"/>
+																	<p:ajax event="cancel" global="false" update="reorder"/>
+																	<p:inputText style="width: 60px;"  id="pointRemain" onkeyup="if(event.keyCode == 27){p_inplace_#{issue.issueId}.cancel()}" 
+															onkeypress="if(event.keyCode == 13){$(this).next().val($(this).val());p_inplace_#{issue.issueId}.save();return false;};"
+																	validator="#{kanbanBean.checkEstimatePoint}" required="true" value="#{issue.remain}" label="text" styleClass="point-remain-#{issue.issueId}">
+																	</p:inputText>
+																	<input type="hidden" name="hiddenPointRemain#{issue.issueId}"/>
+																</p:inplace>
+														</h:panelGroup>
+														<h:panelGroup  styleClass="reorder" id="reorder"  >
+														  	<i class="icon-reorder" id="pointremain" style="cursor: pointer"/>
+														</h:panelGroup>
+														<p:overlayPanel id="chartPanel" for="reorder" hideEffect="fade" styleClass="pointremain-selector" widgetVar="iss_history_rep_#{issue.issueId}" 
+														  		onShow="setScrollablePointRemainHistory(this)">
+															<ul class="pointremain-list">
+																<ui:repeat var="pointRemain" value="#{issue.pointRemains}">
+																	<li style="cursor: pointer;text-decoration:line-through;"><h:outputText value="#{pointRemain.pointRemain}" escape="false" /></li>
+																</ui:repeat>
+															</ul>
+				  										</p:overlayPanel>	
+			   											
+														<p:message for="pointRemain" id="pointRemainMsg" display="default" />	   												
+														<div >
+															<input type="hidden" class="existHistoryOfPointRemain" value=""/>
+															<input type="hidden" class="oldEstimate" value="#{issue.estimate}"/>
+															E: <p:inplace  effect="none" widgetVar="p_inplace_e#{issue.issueId}" disabled="#{issue.kanbanStatus.type!='START' or dashboardBean.sprint.status == 'closed' or !custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', dashboardBean.sprint.team.teamId)}">	
+																	<p:ajax event="save" listener="#{kanbanBean.updateEstimatePoint(issue.issueId)}" global="false" oncomplete="updateFormKanbanWithOutError('.point-remain-#{issue.issueId}')"/>											
+																	<p:ajax event="cancel" global="false" />
+																	<p:inputText onclick="this.selectionStart = 0; this.selectionEnd = $(this).val().length;" style="width: 60px" onkeyup="if(event.keyCode == 27){p_inplace_e#{issue.issueId}.cancel()}" 
+																	onkeypress="if(event.keyCode == 13){$(this).next().val($(this).val());p_inplace_e#{issue.issueId}.save();return false;};" 
+																	id="estimatePoint" validator="#{kanbanBean.checkEstimatePoint}" required="true" value="#{issue.estimate}" label="text" styleClass="point-remain-#{issue.issueId}"/>
+																	<input type="hidden" name="hiddenPointEstimate#{issue.issueId}" />
+																	<p:message for="estimatePoint" id="estimatePointMsg" display="default"/>
+																</p:inplace>											
+														</div>	
+													</h:panelGroup>
+												</h:panelGroup>
+											</h:panelGroup>
+										</ui:repeat>
+									</p:outputPanel>
+
+								</ui:fragment>
+								<!-- end column progress -->
+
+								<!-- child column done in column -->
+								<ui:fragment rendered="#{statuskanban.columnDone}">
+									<!-- progress column -->
+									<p:outputPanel layout="block"
+										styleClass="column-progress kanban-column">
+										<ui:repeat var="issue"
+											value="#{kanbanBean.getIssueChildProgressFromKanbanStatusAndSwimline(kanbanBean.currentTeam.teamId,statuskanban.statusId,kanbanBean.firstSwimline)}" varStatus="loop">
+											<h:panelGroup layout="block" styleClass="box-issue"  id="issue_sticker">
+											<div class="process_bar" style="width: #{kanbanBean.calculateProgressInit(issue)}%"></div>
+											<div class = "angle-color-project kanban-tooltip" data-id-project = "#{issue.userStory.project.projectId}" data-toggle="tooltip" title="#{issue.userStory.project.projectName}"></div>	
+												<input type="hidden" class="hidden-issue-id"
+													value="#{issue.issueId}" />
+												<h:panelGroup layout="block" styleClass="box-issue-title">
+													<h:panelGroup layout="block"
+														styleClass="box-issue-title-content">
+														##{issue.displayIssueId}
+														#{issue.subject}
+													</h:panelGroup>
+
+													<!-- Avatar -->
+													<h:panelGroup
+														rendered="#{memberIssueBean.checkExistIssue(issue.issueId) and not memberIssueBean.issueHasTwoMembers(issue.issueId)}">
+														<h:graphicImage alt="avatar-sticker" id="ava_img"
+															value="#{memberIssueBean.getDefaultAvatar(issue.issueId)}"
+															styleClass="img-circle avatar title-avatar"
+															onclick="$(this).next().css('display','block')" />
+														<p:overlayPanel for="ava_img"
+															styleClass="members-selector" style="display: none;"
+															showEffect="fade"
+															widgetVar="iss_member_wg_#{issue.issueId}"
+															onShow="setScrollableForAssignMenu(this)">
+															<ul class="member-list">
+																<ui:repeat var="member"
+																	value="#{memberIssueBean.getMembersByIssue(issue.issueId)}">
+																	<li><h:graphicImage alt="ava-img" id="ava_img"
+																			value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+																			styleClass="img-circle avatar" /> <h:outputText
+																			value="&#160;#{dashboardBean.showUserName(member)}" /> <i
+																		onclick="unassignMemberIssue(#{member.memberId},#{issue.issueId});"
+																		class="icon-remove-member icon icon-remove"
+																		title="Remove"></i></li>
+																</ui:repeat>
+															</ul>
+														</p:overlayPanel>
+													</h:panelGroup>
+													<h:panelGroup
+														rendered="#{memberIssueBean.issueHasTwoMembers(issue.issueId)}">
+														<h:panelGroup layout="block" id="avatarGroup" styleClass="avatar-group">
+															<ui:repeat var="member"
+																value="#{memberIssueBean.getMembersByIssue(issue.issueId)}">
+																<div class="title-avatar">
+																	<h:graphicImage alt="avatar-sticker"
+																		value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+																		styleClass="img-circle avatar" />
+																		
+																</div>
+															</ui:repeat>
+														</h:panelGroup>
+														<p:overlayPanel for="avatarGroup" styleClass="members-selector"
+															showEffect="fade"
+															widgetVar="iss_member_wg_#{issue.issueId}"
+															onShow="setScrollableForAssignMenu(this)">
+															<ul class="member-list">
+																<ui:repeat var="member"
+																	value="#{memberIssueBean.getMembersByIssue(issue.issueId)}">
+																			<li><h:graphicImage
+																			alt="ava-img" id="ava_img"
+																			value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+																			styleClass="img-circle avatar" />
+																			<span class="user-name"><h:outputText value="#{dashboardBean.showUserName(member)}" /></span> 
+																			<i onclick="unassignMemberIssue(#{member.memberId},#{issue.issueId});" class="icon-remove-member icon icon-remove" title="Remove"></i></li>
+																</ui:repeat>
+															</ul>
+														</p:overlayPanel>
+													</h:panelGroup>
+													<h:panelGroup
+														rendered="#{not memberIssueBean.checkExistIssue(issue.issueId) and not memberIssueBean.issueHasTwoMembers(issue.issueId)}">
+														<h:graphicImage alt="avatar-sticker" id="ava_img_none"
+															value="/resources/img/user.png"
+															styleClass="img-circle avatar title-avatar" />
+													</h:panelGroup>
+												</h:panelGroup>
+												<h:panelGroup layout="block"
+													styleClass="box-issue-content display-none">
+													<h:panelGroup layout="block"
+														styleClass="box-issue-content-desciption padding-10">
+														<h:outputText escape="false" value="#{issue.description}"/>
+													</h:panelGroup>
+													<h:panelGroup styleClass="border-dashed" layout="block"></h:panelGroup>
+
+													<h:panelGroup layout="block"
+														styleClass="box-issue-content-point-and-estimate margin-top-3-left-10 margin-right-10">
+														<h:panelGroup layout="block"
+															styleClass="box-issue-content-point" style="width: auto;display: inline-block;">
+															R: <p:inplace effect="none" widgetVar="p_inplace_#{issue.issueId}" disabled="#{issue.kanbanStatus.type=='START' or dashboardBean.sprint.status == 'closed' or !custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', dashboardBean.sprint.team.teamId)}">
+																	<p:ajax event="save" listener="#{kanbanBean.updatePointRemain(issue.issueId)}" global="false" oncomplete="updateFormKanbanWithOutError('.point-remain-#{issue.issueId}')"/>
+																	<p:ajax event="cancel" global="false" update="reorder"/>
+																	<p:inputText onclick="this.selectionStart = 0; this.selectionEnd = $(this).val().length;" style="width: 60px;"  id="pointRemain" onkeyup="if(event.keyCode == 27){p_inplace_#{issue.issueId}.cancel()}" 
+															onkeypress="if(event.keyCode == 13){$(this).next().val($(this).val());p_inplace_#{issue.issueId}.save();return false;};"
+																	validator="#{kanbanBean.checkEstimatePoint}" required="true" value="#{issue.remain}" label="text" styleClass="point-remain-#{issue.issueId}">
+																	</p:inputText>
+																	<input type="hidden" name="hiddenPointRemain#{issue.issueId}"/>
+																</p:inplace>
+														</h:panelGroup>
+														<h:panelGroup  styleClass="reorder" id="reorder"  >
+														  	<i class="icon-reorder" id="pointremain" style="cursor: pointer"/>
+														</h:panelGroup>
+														<p:overlayPanel id="chartPanel" for="reorder" hideEffect="fade" styleClass="pointremain-selector" widgetVar="iss_history_rep_#{issue.issueId}" 
+														  		onShow="setScrollablePointRemainHistory(this)">
+															<ul class="pointremain-list">
+																<ui:repeat var="pointRemain" value="#{issue.pointRemains}">
+																	<li style="cursor: pointer;text-decoration:line-through;"><h:outputText value="#{pointRemain.pointRemain}" escape="false" /></li>
+																</ui:repeat>
+															</ul>
+				  										</p:overlayPanel>	
+			   											
+														<p:message for="pointRemain" id="pointRemainMsg" display="default"/>	   												
+														<div >
+															<input type="hidden" class="existHistoryOfPointRemain" value=""/>
+															<input type="hidden" class="oldEstimate" value="#{issue.estimate}"/>
+															E: <p:inplace  effect="none" widgetVar="p_inplace_e#{issue.issueId}" disabled="#{issue.kanbanStatus.type!='START' or dashboardBean.sprint.status == 'closed' or !custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', dashboardBean.sprint.team.teamId)}">	
+																	<p:ajax event="save" listener="#{kanbanBean.updateEstimatePoint(issue.issueId)}" global="false" oncomplete="updateFormKanbanWithOutError('.point-remain-#{issue.issueId}')"/>											
+																	<p:ajax event="cancel" global="false" />
+																	<p:inputText onclick="this.selectionStart = 0; this.selectionEnd = $(this).val().length;" style="width: 60px" onkeyup="if(event.keyCode == 27){p_inplace_e#{issue.issueId}.cancel()}" 
+																	onkeypress="if(event.keyCode == 13){$(this).next().val($(this).val());p_inplace_e#{issue.issueId}.save();return false;};" 
+																	id="estimatePoint" validator="#{kanbanBean.checkEstimatePoint}" required="true" value="#{issue.estimate}" label="text" styleClass="point-remain-#{issue.issueId}"/>
+																	<input type="hidden" name="hiddenPointEstimate#{issue.issueId}" />
+																	<p:message for="estimatePoint" id="estimatePointMsg" display="default"/>
+																</p:inplace>											
+														</div>
+													</h:panelGroup>
+												</h:panelGroup>
+											</h:panelGroup>
+										</ui:repeat>
+									</p:outputPanel>
+									<!-- done column -->
+									<p:outputPanel layout="block"
+										styleClass="column-done kanban-column">
+										<ui:repeat var="issue"
+											value="#{kanbanBean.getIssueChildDoneFromKanbanStatusAndSwimline(kanbanBean.currentTeam.teamId,statuskanban.statusId,kanbanBean.firstSwimline)}">
+											<h:panelGroup layout="block" styleClass="box-issue"  id="issue_sticker">
+											<div class="process_bar" style="width: #{kanbanBean.calculateProgressInit(issue)}%"></div>
+											<div class = "angle-color-project kanban-tooltip" data-id-project = "#{issue.userStory.project.projectId}" data-toggle="tooltip" title="#{issue.userStory.project.projectName}"></div>	
+												<input type="hidden" class="hidden-issue-id"
+													value="#{issue.issueId}" />
+												<h:panelGroup layout="block" styleClass="box-issue-title">
+													<h:panelGroup layout="block"
+														styleClass="box-issue-title-content">
+														##{issue.displayIssueId}
+														#{issue.subject}
+													</h:panelGroup>
+
+													<!-- Avatar -->
+													<h:panelGroup
+														rendered="#{memberIssueBean.checkExistIssue(issue.issueId) and not memberIssueBean.issueHasTwoMembers(issue.issueId)}">
+														<h:graphicImage alt="avatar-sticker" id="ava_img"
+															value="#{memberIssueBean.getDefaultAvatar(issue.issueId)}"
+															styleClass="img-circle avatar title-avatar"
+															onclick="$(this).next().css('display','block')" />
+														<p:overlayPanel for="ava_img"
+															styleClass="members-selector" style="display: none;"
+															showEffect="fade"
+															widgetVar="iss_member_wg_#{issue.issueId}"
+															onShow="setScrollableForAssignMenu(this)">
+															<ul class="member-list">
+																<ui:repeat var="member"
+																	value="#{memberIssueBean.getMembersByIssue(issue.issueId)}">
+																	<li><h:graphicImage alt="ava-img" id="ava_img"
+																			value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+																			styleClass="img-circle avatar" /> <h:outputText
+																			value="&#160;#{dashboardBean.showUserName(member)}" /> <i
+																		onclick="unassignMemberIssue(#{member.memberId},#{issue.issueId});"
+																		class="icon-remove-member icon icon-remove"
+																		title="Remove"></i></li>
+																</ui:repeat>
+															</ul>
+														</p:overlayPanel>
+													</h:panelGroup>
+													<h:panelGroup
+														rendered="#{memberIssueBean.issueHasTwoMembers(issue.issueId)}">
+														<h:panelGroup layout="block" id="avatarGroup" styleClass="avatar-group">
+															<ui:repeat var="member"
+																value="#{memberIssueBean.getMembersByIssue(issue.issueId)}">
+																<div class="title-avatar">
+																	<h:graphicImage alt="avatar-sticker"
+																		value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+																		styleClass="img-circle avatar" />
+																</div>
+															</ui:repeat>
+														</h:panelGroup>
+														<p:overlayPanel for="avatarGroup" styleClass="members-selector"
+															showEffect="fade"
+															widgetVar="iss_member_wg_#{issue.issueId}"
+															onShow="setScrollableForAssignMenu(this)">
+															<ul class="member-list">
+																<ui:repeat var="member"
+																	value="#{memberIssueBean.getMembersByIssue(issue.issueId)}">
+																			<li><h:graphicImage
+																			alt="ava-img" id="ava_img"
+																			value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+																			styleClass="img-circle avatar" />
+																			<span class="user-name"><h:outputText value="#{dashboardBean.showUserName(member)}" /></span> 
+																			<i onclick="unassignMemberIssue(#{member.memberId},#{issue.issueId});" class="icon-remove-member icon icon-remove" title="Remove"></i></li>
+																</ui:repeat>
+															</ul>
+														</p:overlayPanel>
+													</h:panelGroup>
+													<h:panelGroup
+														rendered="#{not memberIssueBean.checkExistIssue(issue.issueId) and not memberIssueBean.issueHasTwoMembers(issue.issueId)}">
+														<h:graphicImage alt="avatar-sticker" id="ava_img_none"
+															value="/resources/img/user.png"
+															styleClass="img-circle avatar title-avatar" />
+													</h:panelGroup>
+
+												</h:panelGroup>
+												<h:panelGroup layout="block"
+													styleClass="box-issue-content display-none">
+													<h:panelGroup layout="block"
+														styleClass="box-issue-content-desciption padding-10">
+														<h:outputText escape="false" value="#{issue.description}"/>
+													</h:panelGroup>
+													<h:panelGroup styleClass="border-dashed" layout="block"></h:panelGroup>
+
+													<h:panelGroup layout="block"
+														styleClass="box-issue-content-point-and-estimate margin-top-3-left-10 margin-right-10">
+														<h:panelGroup layout="block"
+															styleClass="box-issue-content-point" style="width: auto;display: inline-block;">
+															R: <p:inplace effect="none" widgetVar="p_inplace_#{issue.issueId}" disabled="#{issue.kanbanStatus.type=='START' or dashboardBean.sprint.status == 'closed' or !custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', dashboardBean.sprint.team.teamId)}">
+																	<p:ajax event="save" listener="#{kanbanBean.updatePointRemain(issue.issueId)}" global="false" oncomplete="updateFormKanbanWithOutError('.point-remain-#{issue.issueId}')"/>
+																	<p:ajax event="cancel" global="false" update="reorder"/>
+																	<p:inputText onclick="this.selectionStart = 0; this.selectionEnd = $(this).val().length;" style="width: 60px;"  id="pointRemain" onkeyup="if(event.keyCode == 27){p_inplace_#{issue.issueId}.cancel()}" 
+															onkeypress="if(event.keyCode == 13){$(this).next().val($(this).val());p_inplace_#{issue.issueId}.save();return false;};"
+																	validator="#{kanbanBean.checkEstimatePoint}" required="true" value="#{issue.remain}" label="text" styleClass="point-remain-#{issue.issueId}">
+																	</p:inputText>
+																	<input type="hidden" name="hiddenPointRemain#{issue.issueId}"/>
+																</p:inplace>
+														</h:panelGroup>
+														<h:panelGroup  styleClass="reorder" id="reorder"  >
+														  	<i class="icon-reorder" id="pointremain" style="cursor: pointer"/>
+														</h:panelGroup>
+														<p:overlayPanel id="chartPanel" for="reorder" hideEffect="fade" styleClass="pointremain-selector" widgetVar="iss_history_rep_#{issue.issueId}" 
+														  		onShow="setScrollablePointRemainHistory(this)">
+															<ul class="pointremain-list">
+																<ui:repeat var="pointRemain" value="#{issue.pointRemains}">
+																	<li style="cursor: pointer;text-decoration:line-through;"><h:outputText value="#{pointRemain.pointRemain}" escape="false" /></li>
+																</ui:repeat>
+															</ul>
+				  										</p:overlayPanel>	
+			   											
+														<p:message for="pointRemain" id="pointRemainMsg" display="default"/>	   												
+														<div >
+															<input type="hidden" class="existHistoryOfPointRemain" value=""/>
+															<input type="hidden" class="oldEstimate" value="#{issue.estimate}"/>
+															E: <p:inplace  effect="none" widgetVar="p_inplace_e#{issue.issueId}" disabled="#{issue.kanbanStatus.type!='START' or dashboardBean.sprint.status == 'closed' or !custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', dashboardBean.sprint.team.teamId)}">	
+																	<p:ajax event="save" listener="#{kanbanBean.updateEstimatePoint(issue.issueId)}" global="false" oncomplete="updateFormKanbanWithOutError('.point-remain-#{issue.issueId}')"/>											
+																	<p:ajax event="cancel" global="false" />
+																	<p:inputText onclick="this.selectionStart = 0; this.selectionEnd = $(this).val().length;" style="width: 60px" onkeyup="if(event.keyCode == 27){p_inplace_e#{issue.issueId}.cancel()}" 
+																	onkeypress="if(event.keyCode == 13){$(this).next().val($(this).val());p_inplace_e#{issue.issueId}.save();return false;};" 
+																	id="estimatePoint" validator="#{kanbanBean.checkEstimatePoint}" required="true" value="#{issue.estimate}" label="text" styleClass="point-remain-#{issue.issueId}"/>
+																	<input type="hidden" name="hiddenPointEstimate#{issue.issueId}" />
+																	<p:message for="estimatePoint" id="estimatePointMsg" display="default"/>
+																</p:inplace>											
+														</div>
+													</h:panelGroup>
+												</h:panelGroup>
+											</h:panelGroup>
+										</ui:repeat>
+									</p:outputPanel>
+									<!-- done column in main column -->
+								</ui:fragment>
+								<!-- end column done -->
+								
+							</h:form></td>
+					</ui:fragment>
+				</ui:repeat>
+			</tr>
+			<!-- load other row  -->
+			<ui:repeat var="swimline" value="#{kanbanBean.kanbanSwimlinesTemp}"
+				varStatus="count">
+				<ui:fragment rendered="#{count.index != 0}">
+					<tr style="background: ##{swimline.color}">
+						<!-- load issue into column -->
+						<ui:repeat var="statuskanban"
+							value="#{kanbanBean.kanbanStatusTempList}">
+							<ui:fragment rendered="#{statuskanban.type != 'ACCEPTED_HIDE'}">
+								<!-- load all issue in kanbanstatus -->
+								<td data-id-status="#{statuskanban.statusId}"
+									data-id-swimline="#{swimline.swimlineId}"
+									class="kanban-child-column"
+									kanban-weightpoint="#{statuskanban.weightPoint}">
+									<!-- child column progress in column --> 
+									<h:form styleClass="form-td-kanban-column">
+										<ui:fragment rendered="#{!statuskanban.columnDone}">
+											<p:outputPanel layout="block"
+												styleClass="column-progress-done kanban-column">
+												<ui:repeat var="issue"
+													value="#{kanbanBean.getIssueFromKanbanStatusAndSwimline(kanbanBean.currentTeam.teamId,statuskanban.statusId,swimline.swimlineId)}">
+
+
+													<h:panelGroup layout="block" styleClass="box-issue"  id="issue_sticker">
+													<div class="process_bar" style="width: #{kanbanBean.calculateProgressInit(issue)}%"></div>
+													<div class = "angle-color-project kanban-tooltip" data-id-project = "#{issue.userStory.project.projectId}" data-toggle="tooltip" title="#{issue.userStory.project.projectName}"></div>	
+														<input type="hidden" class="hidden-issue-id"
+															value="#{issue.issueId}" />
+														<h:panelGroup layout="block" styleClass="box-issue-title">
+
+															<h:panelGroup layout="block"
+																styleClass="box-issue-title-content">
+																##{issue.displayIssueId}
+														#{issue.subject}
+													</h:panelGroup>
+
+															<!-- Avatar -->
+															<h:panelGroup
+																rendered="#{memberIssueBean.checkExistIssue(issue.issueId) and not memberIssueBean.issueHasTwoMembers(issue.issueId)}">
+																<h:graphicImage alt="avatar-sticker" id="ava_img"
+																	value="#{memberIssueBean.getDefaultAvatar(issue.issueId)}"
+																	styleClass="img-circle avatar title-avatar"
+																	onclick="$(this).next().css('display','block')" />
+																<p:overlayPanel for="ava_img"
+																	styleClass="members-selector" style="display: none;"
+																	showEffect="fade"
+																	widgetVar="iss_member_wg_#{issue.issueId}"
+																	onShow="setScrollableForAssignMenu(this)">
+																	<ul class="member-list">
+																		<ui:repeat var="member"
+																			value="#{memberIssueBean.getMembersByIssue(issue.issueId)}">
+																			<li><h:graphicImage alt="ava-img" id="ava_img"
+																					value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+																					styleClass="img-circle avatar" /> <h:outputText
+																					value="&#160;#{dashboardBean.showUserName(member)}" /> <i
+																				onclick="unassignMemberIssue(#{member.memberId},#{issue.issueId});"
+																				class="icon-remove-member icon icon-remove"
+																				title="Remove"></i></li>
+																		</ui:repeat>
+																	</ul>
+																</p:overlayPanel>
+															</h:panelGroup>
+															<h:panelGroup
+														rendered="#{memberIssueBean.issueHasTwoMembers(issue.issueId)}">
+														<h:panelGroup layout="block" id="avatarGroup" styleClass="avatar-group">
+															<ui:repeat var="member"
+																value="#{memberIssueBean.getMembersByIssue(issue.issueId)}">
+																<div class="title-avatar">
+																	<h:graphicImage alt="avatar-sticker"
+																		value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+																		styleClass="img-circle avatar" />
+																</div>
+															</ui:repeat>
+														</h:panelGroup>
+														<p:overlayPanel for="avatarGroup" styleClass="members-selector"
+															showEffect="fade"
+															widgetVar="iss_member_wg_#{issue.issueId}"
+															onShow="setScrollableForAssignMenu(this)">
+															<ul class="member-list">
+																<ui:repeat var="member"
+																	value="#{memberIssueBean.getMembersByIssue(issue.issueId)}">
+																			<li><h:graphicImage
+																			alt="ava-img" id="ava_img"
+																			value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+																			styleClass="img-circle avatar" />
+																			<span class="user-name"><h:outputText value="#{dashboardBean.showUserName(member)}" /></span> 
+																			<i onclick="unassignMemberIssue(#{member.memberId},#{issue.issueId});" class="icon-remove-member icon icon-remove" title="Remove"></i></li>
+																</ui:repeat>
+															</ul>
+														</p:overlayPanel>
+													</h:panelGroup>
+															<h:panelGroup
+																rendered="#{not memberIssueBean.checkExistIssue(issue.issueId) and not memberIssueBean.issueHasTwoMembers(issue.issueId)}">
+																<h:graphicImage alt="avatar-sticker" id="ava_img_none"
+																	value="/resources/img/user.png"
+																	styleClass="img-circle avatar title-avatar" />
+															</h:panelGroup>
+
+														</h:panelGroup>
+														<h:panelGroup layout="block"
+															styleClass="box-issue-content display-none">
+															<h:panelGroup layout="block"
+																styleClass="box-issue-content-desciption margin-10">
+														<h:outputText escape="false" value="#{issue.description}" class="word-break-break-word"/>
+													</h:panelGroup>
+															<h:panelGroup styleClass="border-dashed" layout="block"></h:panelGroup>
+
+															<h:panelGroup layout="block"
+																styleClass="box-issue-content-point-and-estimate margin-top-3-left-10 margin-right-10">
+															<h:panelGroup layout="block"
+																styleClass="box-issue-content-point" style="width: auto;display: inline-block;">
+																R: <p:inplace effect="none" widgetVar="p_inplace_#{issue.issueId}" disabled="#{issue.kanbanStatus.type=='START' or dashboardBean.sprint.status == 'closed' or !custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', dashboardBean.sprint.team.teamId)}">
+																		<p:ajax event="save" listener="#{kanbanBean.updatePointRemain(issue.issueId)}" global="false" oncomplete="updateFormKanbanWithOutError('.point-remain-#{issue.issueId}')"/>
+																		<p:ajax event="cancel" global="false" update="reorder"/>
+																		<p:inputText onclick="this.selectionStart = 0; this.selectionEnd = $(this).val().length;" style="width: 60px;"  id="pointRemain" onkeyup="if(event.keyCode == 27){p_inplace_#{issue.issueId}.cancel()}" 
+																onkeypress="if(event.keyCode == 13){$(this).next().val($(this).val());p_inplace_#{issue.issueId}.save();return false;};"
+																		validator="#{kanbanBean.checkEstimatePoint}" required="true" value="#{issue.remain}" label="text" styleClass="point-remain-#{issue.issueId}">
+																		</p:inputText>
+																		<input type="hidden" name="hiddenPointRemain#{issue.issueId}"/>
+																	</p:inplace>
+															</h:panelGroup>
+															<h:panelGroup  styleClass="reorder" id="reorder"  >
+															  	<i class="icon-reorder" id="pointremain" style="cursor: pointer"/>
+															</h:panelGroup>
+															<p:overlayPanel id="chartPanel" for="reorder" hideEffect="fade" styleClass="pointremain-selector" widgetVar="iss_history_rep_#{issue.issueId}" 
+															  		onShow="setScrollablePointRemainHistory(this)">
+																<ul class="pointremain-list">
+																	<ui:repeat var="pointRemain" value="#{issue.pointRemains}">
+																		<li style="cursor: pointer;text-decoration:line-through;"><h:outputText value="#{pointRemain.pointRemain}" escape="false" /></li>
+																	</ui:repeat>
+																</ul>
+					  										</p:overlayPanel>	
+				   											
+															<p:message for="pointRemain" id="pointRemainMsg" display="default"/>	   												
+															<div >
+																<input type="hidden" class="existHistoryOfPointRemain" value=""/>
+																<input type="hidden" class="oldEstimate" value="#{issue.estimate}"/>
+																E: <p:inplace  effect="none" widgetVar="p_inplace_e#{issue.issueId}" disabled="#{issue.kanbanStatus.type!='START' or dashboardBean.sprint.status == 'closed' or !custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', dashboardBean.sprint.team.teamId)}">	
+																		<p:ajax event="save" listener="#{kanbanBean.updateEstimatePoint(issue.issueId)}" global="false" oncomplete="updateFormKanbanWithOutError('.point-remain-#{issue.issueId}')"/>											
+																		<p:ajax event="cancel" global="false" />
+																		<p:inputText onclick="this.selectionStart = 0; this.selectionEnd = $(this).val().length;" style="width: 60px" onkeyup="if(event.keyCode == 27){p_inplace_e#{issue.issueId}.cancel()}" 
+																		onkeypress="if(event.keyCode == 13){$(this).next().val($(this).val());p_inplace_e#{issue.issueId}.save();return false;};" 
+																		id="estimatePoint" validator="#{kanbanBean.checkEstimatePoint}" required="true" value="#{issue.estimate}" label="text" styleClass="point-remain-#{issue.issueId}"/>
+																		<input type="hidden" name="hiddenPointEstimate#{issue.issueId}" />
+																		<p:message for="estimatePoint" id="estimatePointMsg" display="default"/>
+																	</p:inplace>											
+															</div>
+															</h:panelGroup>
+														</h:panelGroup>
+													</h:panelGroup>
+												</ui:repeat>
+											</p:outputPanel>
+
+										</ui:fragment>
+										<!-- end column progress -->
+
+										<!-- child column done in column -->
+										<ui:fragment rendered="#{statuskanban.columnDone}">
+											<!-- progress column -->
+											<p:outputPanel layout="block"
+												styleClass="column-progress kanban-column">
+												<ui:repeat var="issue"
+													value="#{kanbanBean.getIssueChildProgressFromKanbanStatusAndSwimline(kanbanBean.currentTeam.teamId,statuskanban.statusId,swimline.swimlineId)}">
+													<h:panelGroup layout="block" styleClass="box-issue"  id="issue_sticker">
+													<div class="process_bar" style="width: #{kanbanBean.calculateProgressInit(issue)}%"></div>
+													<div class = "angle-color-project kanban-tooltip" data-id-project = "#{issue.userStory.project.projectId}" data-toggle="tooltip" title="#{issue.userStory.project.projectName}"></div>	
+														<input type="hidden" class="hidden-issue-id"
+															value="#{issue.issueId}" />
+														<h:panelGroup layout="block" styleClass="box-issue-title">
+															<h:panelGroup layout="block"
+																styleClass="box-issue-title-content">
+																##{issue.displayIssueId}
+														#{issue.subject}
+													</h:panelGroup>
+
+															<!-- Avatar -->
+															<h:panelGroup
+																rendered="#{memberIssueBean.checkExistIssue(issue.issueId) and not memberIssueBean.issueHasTwoMembers(issue.issueId)}">
+																<h:graphicImage alt="avatar-sticker" id="ava_img"
+																	value="#{memberIssueBean.getDefaultAvatar(issue.issueId)}"
+																	styleClass="img-circle avatar title-avatar"
+																	onclick="$(this).next().css('display','block')" />
+																<p:overlayPanel for="ava_img"
+																	styleClass="members-selector" style="display: none;"
+																	showEffect="fade"
+																	widgetVar="iss_member_wg_#{issue.issueId}"
+																	onShow="setScrollableForAssignMenu(this)">
+																	<ul class="member-list">
+																		<ui:repeat var="member"
+																			value="#{memberIssueBean.getMembersByIssue(issue.issueId)}">
+																			<li><h:graphicImage alt="ava-img" id="ava_img"
+																					value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+																					styleClass="img-circle avatar" /> <h:outputText
+																					value="&#160;#{dashboardBean.showUserName(member)}" /> <i
+																				onclick="unassignMemberIssue(#{member.memberId},#{issue.issueId});"
+																				class="icon-remove-member icon icon-remove"
+																				title="Remove"></i></li>
+																		</ui:repeat>
+																	</ul>
+																</p:overlayPanel>
+															</h:panelGroup>
+															<h:panelGroup
+														rendered="#{memberIssueBean.issueHasTwoMembers(issue.issueId)}">
+														<h:panelGroup layout="block" id="avatarGroup" styleClass="avatar-group">
+															<ui:repeat var="member"
+																value="#{memberIssueBean.getMembersByIssue(issue.issueId)}">
+																<div class="title-avatar">
+																	<h:graphicImage alt="avatar-sticker"
+																		value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+																		styleClass="img-circle avatar" />
+																</div>
+															</ui:repeat>
+														</h:panelGroup>
+														<p:overlayPanel for="avatarGroup" styleClass="members-selector"
+															showEffect="fade"
+															widgetVar="iss_member_wg_#{issue.issueId}"
+															onShow="setScrollableForAssignMenu(this)">
+															<ul class="member-list">
+																<ui:repeat var="member"
+																	value="#{memberIssueBean.getMembersByIssue(issue.issueId)}">
+																			<li><h:graphicImage
+																			alt="ava-img" id="ava_img"
+																			value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+																			styleClass="img-circle avatar" />
+																			<span class="user-name"><h:outputText value="#{dashboardBean.showUserName(member)}" /></span> 
+																			<i onclick="unassignMemberIssue(#{member.memberId},#{issue.issueId});" class="icon-remove-member icon icon-remove" title="Remove"></i></li>
+																</ui:repeat>
+															</ul>
+														</p:overlayPanel>
+													</h:panelGroup>
+															<h:panelGroup
+																rendered="#{not memberIssueBean.checkExistIssue(issue.issueId) and not memberIssueBean.issueHasTwoMembers(issue.issueId)}">
+																<h:graphicImage alt="avatar-sticker" id="ava_img_none"
+																	value="/resources/img/user.png"
+																	styleClass="img-circle avatar title-avatar" />
+															</h:panelGroup>
+														</h:panelGroup>
+														<h:panelGroup layout="block"
+															styleClass="box-issue-content display-none">
+															<h:panelGroup layout="block"
+																styleClass="box-issue-content-desciption padding-10">
+														<h:outputText escape="false" value="#{issue.description}"/>
+													</h:panelGroup>
+															<h:panelGroup styleClass="border-dashed" layout="block"></h:panelGroup>
+
+															<h:panelGroup layout="block"
+																styleClass="box-issue-content-point-and-estimate margin-top-3-left-10 margin-right-10">
+															<h:panelGroup layout="block"
+																styleClass="box-issue-content-point" style="width: auto;display: inline-block;">
+																R: <p:inplace effect="none" widgetVar="p_inplace_#{issue.issueId}" disabled="#{issue.kanbanStatus.type=='START' or dashboardBean.sprint.status == 'closed' or !custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', dashboardBean.sprint.team.teamId)}">
+																		<p:ajax event="save" listener="#{kanbanBean.updatePointRemain(issue.issueId)}" global="false" oncomplete="updateFormKanbanWithOutError('.point-remain-#{issue.issueId}')"/>
+																		<p:ajax event="cancel" global="false" update="reorder"/>
+																		<p:inputText onclick="this.selectionStart = 0; this.selectionEnd = $(this).val().length;" style="width: 60px;"  id="pointRemain" onkeyup="if(event.keyCode == 27){p_inplace_#{issue.issueId}.cancel()}" 
+																onkeypress="if(event.keyCode == 13){$(this).next().val($(this).val());p_inplace_#{issue.issueId}.save();return false;};"
+																		validator="#{kanbanBean.checkEstimatePoint}" required="true" value="#{issue.remain}" label="text" styleClass="point-remain-#{issue.issueId}">
+																		</p:inputText>
+																		<input type="hidden" name="hiddenPointRemain#{issue.issueId}"/>
+																	</p:inplace>
+															</h:panelGroup>
+															<h:panelGroup  styleClass="reorder" id="reorder"  >
+															  	<i class="icon-reorder" id="pointremain" style="cursor: pointer"/>
+															</h:panelGroup>
+															<p:overlayPanel id="chartPanel" for="reorder" hideEffect="fade" styleClass="pointremain-selector" widgetVar="iss_history_rep_#{issue.issueId}" 
+															  		onShow="setScrollablePointRemainHistory(this)">
+																<ul class="pointremain-list">
+																	<ui:repeat var="pointRemain" value="#{issue.pointRemains}">
+																		<li style="cursor: pointer;text-decoration:line-through;"><h:outputText value="#{pointRemain.pointRemain}" escape="false" /></li>
+																	</ui:repeat>
+																</ul>
+					  										</p:overlayPanel>	
+				   											
+															<p:message for="pointRemain" id="pointRemainMsg" display="default"/>	   												
+															<div >
+																<input type="hidden" class="existHistoryOfPointRemain" value=""/>
+																<input type="hidden" class="oldEstimate" value="#{issue.estimate}"/>
+																E: <p:inplace  effect="none" widgetVar="p_inplace_e#{issue.issueId}" disabled="#{issue.kanbanStatus.type!='START' or dashboardBean.sprint.status == 'closed' or !custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', dashboardBean.sprint.team.teamId)}">	
+																		<p:ajax event="save" listener="#{kanbanBean.updateEstimatePoint(issue.issueId)}" global="false" oncomplete="updateFormKanbanWithOutError('.point-remain-#{issue.issueId}')"/>											
+																		<p:ajax event="cancel" global="false" />
+																		<p:inputText onclick="this.selectionStart = 0; this.selectionEnd = $(this).val().length;" style="width: 60px" onkeyup="if(event.keyCode == 27){p_inplace_e#{issue.issueId}.cancel()}" 
+																		onkeypress="if(event.keyCode == 13){$(this).next().val($(this).val());p_inplace_e#{issue.issueId}.save();return false;};" 
+																		id="estimatePoint" validator="#{kanbanBean.checkEstimatePoint}" required="true" value="#{issue.estimate}" label="text" styleClass="point-remain-#{issue.issueId}"/>
+																		<input type="hidden" name="hiddenPointEstimate#{issue.issueId}" />
+																		<p:message for="estimatePoint" id="estimatePointMsg" display="default"/>
+																	</p:inplace>											
+															</div>
+															</h:panelGroup>
+														</h:panelGroup>
+													</h:panelGroup>
+												</ui:repeat>
+											</p:outputPanel>
+											<!-- done column -->
+											<p:outputPanel layout="block"
+												styleClass="column-done kanban-column">
+												<ui:repeat var="issue"
+													value="#{kanbanBean.getIssueChildDoneFromKanbanStatusAndSwimline(kanbanBean.currentTeam.teamId,statuskanban.statusId,swimline.swimlineId)}">
+													<h:panelGroup layout="block" styleClass="box-issue"  id="issue_sticker">
+													<div class="process_bar" style="width: #{kanbanBean.calculateProgressInit(issue)}%"></div>
+													<div class = "angle-color-project kanban-tooltip" data-id-project = "#{issue.userStory.project.projectId}" data-toggle="tooltip" title="#{issue.userStory.project.projectName}"></div>	
+														<input type="hidden" class="hidden-issue-id"
+															value="#{issue.issueId}" />
+														<h:panelGroup layout="block" styleClass="box-issue-title">
+															<h:panelGroup layout="block"
+																styleClass="box-issue-title-content">
+																##{issue.displayIssueId}
+														#{issue.subject}
+													</h:panelGroup>
+
+															<!-- Avatar -->
+															<h:panelGroup
+																rendered="#{memberIssueBean.checkExistIssue(issue.issueId) and not memberIssueBean.issueHasTwoMembers(issue.issueId)}">
+																<h:graphicImage alt="avatar-sticker" id="ava_img"
+																	value="#{memberIssueBean.getDefaultAvatar(issue.issueId)}"
+																	styleClass="img-circle avatar title-avatar"
+																	onclick="$(this).next().css('display','block')" />
+																<p:overlayPanel for="ava_img"
+																	styleClass="members-selector" style="display: none;"
+																	showEffect="fade"
+																	widgetVar="iss_member_wg_#{issue.issueId}"
+																	onShow="setScrollableForAssignMenu(this)">
+																	<ul class="member-list">
+																		<ui:repeat var="member"
+																			value="#{memberIssueBean.getMembersByIssue(issue.issueId)}">
+																			<li><h:graphicImage alt="ava-img" id="ava_img"
+																					value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+																					styleClass="img-circle avatar" /> <h:outputText
+																					value="&#160;#{dashboardBean.showUserName(member)}" /> <i
+																				onclick="unassignMemberIssue(#{member.memberId},#{issue.issueId});"
+																				class="icon-remove-member icon icon-remove"
+																				title="Remove"></i></li>
+																		</ui:repeat>
+																	</ul>
+																</p:overlayPanel>
+															</h:panelGroup>
+															<h:panelGroup
+														rendered="#{memberIssueBean.issueHasTwoMembers(issue.issueId)}">
+														<h:panelGroup layout="block" id="avatarGroup" styleClass="avatar-group">
+															<ui:repeat var="member"
+																value="#{memberIssueBean.getMembersByIssue(issue.issueId)}">
+																<div class="title-avatar">
+																	<h:graphicImage alt="avatar-sticker"
+																		value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+																		styleClass="img-circle avatar" />
+																</div>
+															</ui:repeat>
+														</h:panelGroup>
+														<p:overlayPanel for="avatarGroup" styleClass="members-selector"
+															showEffect="fade"
+															widgetVar="iss_member_wg_#{issue.issueId}"
+															onShow="setScrollableForAssignMenu(this)">
+															<ul class="member-list">
+																<ui:repeat var="member"
+																	value="#{memberIssueBean.getMembersByIssue(issue.issueId)}">
+																			<li><h:graphicImage
+																			alt="ava-img" id="ava_img"
+																			value="/file/?type=small-member-logo&amp;filename=#{member.avatar}"
+																			styleClass="img-circle avatar" />
+																			<span class="user-name"><h:outputText value="#{dashboardBean.showUserName(member)}" /></span> 
+																			<i onclick="unassignMemberIssue(#{member.memberId},#{issue.issueId});" class="icon-remove-member icon icon-remove" title="Remove"></i></li>
+																</ui:repeat>
+															</ul>
+														</p:overlayPanel>
+													</h:panelGroup>
+															<h:panelGroup
+																rendered="#{not memberIssueBean.checkExistIssue(issue.issueId) and not memberIssueBean.issueHasTwoMembers(issue.issueId)}">
+																<h:graphicImage alt="avatar-sticker" id="ava_img_none"
+																	value="/resources/img/user.png"
+																	styleClass="img-circle avatar title-avatar" />
+															</h:panelGroup>
+														</h:panelGroup>
+														<h:panelGroup layout="block"
+															styleClass="box-issue-content display-none">
+															<h:panelGroup layout="block"
+																styleClass="box-issue-content-desciption padding-10">
+														<h:outputText escape="false" value="#{issue.description}"/>
+															</h:panelGroup>
+															<h:panelGroup styleClass="border-dashed" layout="block"></h:panelGroup>
+
+															<h:panelGroup layout="block"
+																styleClass="box-issue-content-point-and-estimate margin-top-3-left-10 margin-right-10">
+														<h:panelGroup layout="block"
+															styleClass="box-issue-content-point" style="width: auto;display: inline-block;">
+															R: <p:inplace effect="none" widgetVar="p_inplace_#{issue.issueId}" disabled="#{issue.kanbanStatus.type=='START' or dashboardBean.sprint.status == 'closed' or !custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', dashboardBean.sprint.team.teamId)}">
+																	<p:ajax event="save" listener="#{kanbanBean.updatePointRemain(issue.issueId)}" global="false" oncomplete="updateFormKanbanWithOutError('.point-remain-#{issue.issueId}')"/>
+																	<p:ajax event="cancel" global="false" update="reorder"/>
+																	<p:inputText onclick="this.selectionStart = 0; this.selectionEnd = $(this).val().length;" style="width: 60px;"  id="pointRemain" onkeyup="if(event.keyCode == 27){p_inplace_#{issue.issueId}.cancel()}" 
+															onkeypress="if(event.keyCode == 13){$(this).next().val($(this).val());p_inplace_#{issue.issueId}.save();return false;};"
+																	validator="#{kanbanBean.checkEstimatePoint}" required="true" value="#{issue.remain}" label="text" styleClass="point-remain-#{issue.issueId}">
+																	</p:inputText>
+																	<input type="hidden" name="hiddenPointRemain#{issue.issueId}"/>
+																</p:inplace>
+														</h:panelGroup>
+														<h:panelGroup  styleClass="reorder" id="reorder"  >
+														  	<i class="icon-reorder" id="pointremain" style="cursor: pointer"/>
+														</h:panelGroup>
+														<p:overlayPanel id="chartPanel" for="reorder" hideEffect="fade" styleClass="pointremain-selector" widgetVar="iss_history_rep_#{issue.issueId}" 
+														  		onShow="setScrollablePointRemainHistory(this)">
+															<ul class="pointremain-list">
+																<ui:repeat var="pointRemain" value="#{issue.pointRemains}">
+																	<li style="cursor: pointer;text-decoration:line-through;"><h:outputText value="#{pointRemain.pointRemain}" escape="false" /></li>
+																</ui:repeat>
+															</ul>
+				  										</p:overlayPanel>	
+			   											
+														<p:message for="pointRemain" id="pointRemainMsg" display="default"/>	   												
+														<div >
+															<input type="hidden" class="existHistoryOfPointRemain" value=""/>
+															<input type="hidden" class="oldEstimate" value="#{issue.estimate}"/>
+															E: <p:inplace  effect="none" widgetVar="p_inplace_e#{issue.issueId}" disabled="#{issue.kanbanStatus.type!='START' or dashboardBean.sprint.status == 'closed' or !custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', dashboardBean.sprint.team.teamId)}">	
+																	<p:ajax event="save" listener="#{kanbanBean.updateEstimatePoint(issue.issueId)}" global="false" oncomplete="updateFormKanbanWithOutError('.point-remain-#{issue.issueId}')"/>											
+																	<p:ajax event="cancel" global="false" />
+																	<p:inputText onclick="this.selectionStart = 0; this.selectionEnd = $(this).val().length;" style="width: 60px" onkeyup="if(event.keyCode == 27){p_inplace_e#{issue.issueId}.cancel()}" 
+																	onkeypress="if(event.keyCode == 13){$(this).next().val($(this).val());p_inplace_e#{issue.issueId}.save();return false;};" 
+																	id="estimatePoint" validator="#{kanbanBean.checkEstimatePoint}" required="true" value="#{issue.estimate}" label="text" styleClass="point-remain-#{issue.issueId}"/>
+																	<input type="hidden" name="hiddenPointEstimate#{issue.issueId}" />
+																	<p:message for="estimatePoint" id="estimatePointMsg" display="default"/>
+																</p:inplace>											
+														</div>
+															</h:panelGroup>
+														</h:panelGroup>
+													</h:panelGroup>
+												</ui:repeat>
+											</p:outputPanel>
+											<!-- done column in main column -->
+										</ui:fragment>
+										<!-- end column done -->
+										
+									</h:form>
+								</td>
+							</ui:fragment>
+						</ui:repeat>
+						<!-- end column form second row -->
+					</tr>
+				</ui:fragment>
+			</ui:repeat>
+		</table>
+		<h:panelGroup id = "script">
+			<script>
+				dragDropTeamMember();
+				dragDropTask();
+				setWidthTable();
+				changeBackground();
+				fixRowInFirefox();
+				showToolTip();
+				setColorProject();
+			</script>
+		</h:panelGroup>
+	</p:outputPanel>
+	<p:confirmDialog widgetVar="confirmDeleteBacklog"
+		id="idConfirmDeleteBacklog" width="400" modal="true" closable="true"
+		severity="alert" type="hidden">
+			<f:facet name="header">
+				<h:outputText value="Confirm"></h:outputText>
+			</f:facet>
+			<f:facet name="message">
+						Do you want to delete the user story ##{kanbanBean.idSortUserStory}?
+			</f:facet>
+			<h:panelGroup layout="block" style="text-align: right">
+				<p:commandButton value="Yes" action="#{kanbanBean.deleteUserstory}"
+					oncomplete="confirmDeleteBacklog.hide()"
+					update=":form-kanban"/>
+				<p:commandButton value="No" oncomplete="confirmDeleteBacklog.hide()" />
+			</h:panelGroup>
+	</p:confirmDialog>
+	
+	<p:confirmDialog widgetVar="confirmDeleteTask"
+		id="idConfirmDeleteTask" width="400" modal="true" closable="true"
+		severity="alert" type="hidden">
+			<f:facet name="header">
+				<h:outputText value="Confirm"></h:outputText>
+			</f:facet>
+			<f:facet name="message">
+						Do you want to delete this task ?
+			</f:facet>
+			<h:panelGroup layout="block" style="text-align: right">
+				<p:commandButton value="Yes" action="#{kanbanBean.deleteTask}"
+					oncomplete="confirmDeleteTask.hide()"
+					update=":form-kanban"/>
+				<p:commandButton value="No" oncomplete="confirmDeleteTask.hide()" />
+			</h:panelGroup>
+	</p:confirmDialog>
+</ui:composition>

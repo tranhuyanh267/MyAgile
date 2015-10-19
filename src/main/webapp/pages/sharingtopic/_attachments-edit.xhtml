@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:custom="http://myagile.com/custom">
+<script type="text/javascript" src="#{request.contextPath}/bundles/plupload.js" />
+<script type="text/javascript" src="#{request.contextPath}/resources/assets/libs/ZeroClipboard/ZeroClipboard.js" />
+<style>
+.ui-blockui-content {
+	padding: 4px;
+}
+</style>
+<div style="border-top: 1px solid #000; margin-bottom: 10px" />
+<div id="dialog-copylink" class="hidden alert alert-info">
+		The link is copied into clipboard.
+</div>
+<h:form id="topic-attachments">
+	<h:panelGroup layout="block" id="team-logo">
+		<button type="button" id="btnAddFile" style="margin-bottom: 10px;"
+			class="btn btn-small btn-info">
+			<i class="icon-picture" /> Add file</button>
+		<p:blockUI block="team-logo" widgetVar="teamLogoBlock"
+			style="padding: 8px;">Uploading... (<span class="upload-progress">0%</span>)</p:blockUI>
+	</h:panelGroup>
+	<p:remoteCommand name="updateLogo"
+		actionListener="#{sharingTopicBean.uploadFile}" update="@form"
+		process="@this" />
+	<td colspan="3">
+		<ui:repeat value="#{sharingTopicBean.listAttachments}" var="attachment">
+			<p:commandLink
+				onclick="changeIdPlaceholder(&quot;#{attachment.filename}&quot;);deleteFileDlg.show();"
+				process="@this">
+				<span class="ui-icon ui-icon-trash"
+					style="float: left; margin-top: 1px !important; margin-right: 10px;"></span>
+				<span style="float: left;">#{attachment.filename}</span>
+				<f:setPropertyActionListener value="#{attachment}"
+					target="#{sharingTopicBean.selectedAttachment}" />
+			</p:commandLink>
+			<label id="#{attachment.attachmentId}" class="hidden copy-link"><i class="icon-link"/></label>
+			<label id="link-#{attachment.attachmentId}"
+				data-wiki-id="#{sharingTopicBean.currentWiki.wikiId}"
+				data-topic-id="#{sharingTopicBean.currentTopic.topicId}"
+				data-attachment="#{attachment.diskFilename}"
+				data-context-path="#{request.contextPath}" class="hidden"></label>
+			<br/>
+			<script type="text/javascript">
+				if((/\.(gif|jpg|jpeg|tiff|png)$/i).test("#{attachment.filename}")){
+					$("##{attachment.attachmentId}").removeClass("hidden");
+				}
+			</script>
+		</ui:repeat>
+	</td>
+	
+	<script type="text/javascript">
+		initUploadAttachment('#{request.contextPath}/upload');
+		function initUploadAttachment(url) {
+			if (uploader) {
+				uploader.destroy();
+			}
+			var uploader = new plupload.Uploader({
+				runtimes : 'html5, flash',
+				browse_button : 'btnAddFile',
+				max_file_size : '10mb',
+				url : url,
+				multi_selection : false,
+				multiple_queues : false
+			});
+
+			uploader.bind("Error", function(up, err) {
+				$("#upload-error").show();
+				$("#upload-error").html(err.message);
+			});
+
+			uploader.bind("Init", function(up) {
+				$("#upload-error").hide();
+			});
+
+			uploader.init();
+
+			uploader.bind("BeforeUpload", function(up, file) {
+				up.settings.multipart_params = {
+					upload_type : 'attachment-file'
+				};
+			});
+
+			uploader.bind("FilesAdded", function() {
+				teamLogoBlock.show();
+				uploader.start();
+			});
+
+			uploader.bind("FileUploaded", function(up, file, res) {
+				updateLogo([ {
+					name : 'filename',
+					value : file.name
+				} ]);
+				teamLogoBlock.hide();
+				$("#upload-error").hide();
+			});
+
+			uploader.bind("UploadProgress", function(up, file) {
+				$(".upload-progress").html(file.percent + "%");
+			});
+		}
+// 		$(".copy-link").bind('click', function() {
+// 			var id = $(this).attr("id");
+// 			var labelLink = $("#link-" + id);
+// 			var link = location.origin + labelLink.attr('data-context-path') + 
+// 			'/file/?type=topic-attachment&amp;wikiId='+ labelLink.attr('data-wiki-id') + 
+// 			'&amp;topicId=' + labelLink.attr('data-topic-id') +'&amp;filename=' + 
+// 			labelLink.attr('data-attachment');
+// 			labelLink.text(link);
+// 			labelLink.removeClass("hidden");
+// 		});
+
+		function isFlashEnabled()
+		{
+		    var hasFlash = false;
+		    try
+		    {
+		        var fo = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
+		        if(fo) hasFlash = true;
+		    }
+		    catch(e)
+		    {
+		        if(navigator.mimeTypes ["application/x-shockwave-flash"] != undefined) hasFlash = true;
+		    }
+		    return hasFlash;
+		}
+		
+		var client = new ZeroClipboard( $('.copy-link') );
+		
+		client.on( 'ready', function(event) {
+		  if(isFlashEnabled()){
+			  client.on( 'copy', function(event) {
+				  var labelLink = $("#link-" + event.target.id);
+				  var attachmentLink = location.origin + labelLink.attr('data-context-path') + 
+					'/file/?type=topic-attachment&amp;wikiId='+ labelLink.attr('data-wiki-id') + 
+					'&amp;topicId=' + labelLink.attr('data-topic-id') +'&amp;filename=' + 
+					labelLink.attr('data-attachment');
+					event.clipboardData.setData('text/plain', attachmentLink);
+			  } );
+			  client.on( 'aftercopy', function(event) {
+				  showNofification("dialog-copylink");
+				  
+			  } );
+		  } else {
+			  alert("khong copy duoc");
+		  }
+		} );
+		client.on( 'error', function(event) {
+		  console.log( 'ZeroClipboard error of type "' + event.name + '": ' + event.message );
+		  ZeroClipboard.destroy();
+		} );
+		function showNofification(id) {
+			var $notify = $("#" + id);
+			$notify.removeClass("hidden");
+			if ($notify){
+				$notify.slideDown(200, "linear", function() { });
+				setTimeout(function() {
+					$notify.slideUp(300, "linear", function() { });
+				},3000);
+			}
+		};	
+		
+	</script>
+</h:form>
+</html>

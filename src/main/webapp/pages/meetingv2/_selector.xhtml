@@ -1,0 +1,54 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<p:fieldset styleClass="span12 text-center" style="margin-bottom: 10px">
+	<h:form styleClass="form-inline text-center" id="selector">
+		<p:remoteCommand name="onPageLoad"
+			actionListener="#{meetingBeanV2.syncBeanData}" update=":selector, :list-form:issue-list" />
+		<h:panelGroup style="display: block;">
+			<h:panelGroup id="project-selector" styleClass="selector-wrapper text-right">
+				<h:outputText value="Select Project:" style="margin-right: 5px;" />
+				<p:selectOneMenu value="#{meetingBeanV2.projectId}" required="true"
+					rendered="#{not empty meetingBeanV2.projects}" styleClass="text-left">
+					<f:selectItems value="#{meetingBeanV2.projects}" var="p"
+						itemValue="#{p.projectId}" itemLabel="#{p.projectName}" />
+					<p:ajax update="team-selector, sprint-selector, :list-form"
+						event="change" onstart="window.issueParentId=null"
+						listener="#{meetingBeanV2.selectProject(meetingBeanV2.projectId)}" />
+				</p:selectOneMenu>
+				<p:selectOneMenu rendered="#{empty meetingBeanV2.projects}" styleClass="text-left">
+					<f:selectItem itemValue="" itemLabel="No project" />
+				</p:selectOneMenu>
+			</h:panelGroup>
+			<h:panelGroup id="team-selector" styleClass="selector-wrapper text-right">
+				<h:outputText value="Select Team:" style="margin-right: 5px;" />
+				<p:selectOneMenu value="#{meetingBeanV2.teamId}" required="true"
+					rendered="#{not empty meetingBeanV2.teams}" styleClass="text-left">
+					<f:selectItems value="#{meetingBeanV2.teams}" var="t"
+						itemValue="#{t.teamId}" itemLabel="#{t.teamName}" />
+					<p:ajax update="sprint-selector, :list-form" event="change"
+						listener="#{meetingBeanV2.selectTeam(meetingBeanV2.teamId)}" />
+				</p:selectOneMenu>
+				<p:selectOneMenu rendered="#{empty meetingBeanV2.teams}">
+					<f:selectItem itemValue="" itemLabel="No team" />
+				</p:selectOneMenu>
+			</h:panelGroup><br/>
+            <h:panelGroup id="sprint-selector" styleClass="selector-wrapper text-right">
+                <h:outputText value="Select Sprint:" style="margin-right: 5px;" />
+                <p:selectOneMenu value="#{meetingBeanV2.sprintId}" required="true"
+                                 rendered="#{not empty meetingBeanV2.sprints}" styleClass="text-left">
+                    <f:selectItems value="#{meetingBeanV2.sprints}" var="sp"
+                                   itemValue="#{sp.sprintId}" itemLabel="#{sp.status == 'open' ? sp.sprintName : ''.concat(sp.sprintName).concat(' (Closed)')}" />
+                    <p:ajax event="change" update=":list-form"
+                            listener="#{meetingBeanV2.selectSprint(meetingBeanV2.sprintId)}" />
+                </p:selectOneMenu>
+                <p:selectOneMenu rendered="#{empty meetingBeanV2.sprints}" styleClass="text-left">
+                    <f:selectItem itemValue="" itemLabel="No sprint" />
+                </p:selectOneMenu>
+            </h:panelGroup>
+		</h:panelGroup>
+	</h:form>
+	</p:fieldset>
+</ui:composition>

@@ -1,0 +1,56 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+		xmlns:ui="http://java.sun.com/jsf/facelets" 
+		xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui" template="/WEB-INF/layouts/template.xhtml"
+		xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="layoutTitle">
+        Myagile User Guide
+    </ui:define>
+	<ui:define name="layoutHead">
+	</ui:define>
+	<ui:define name="layoutBody">
+		<c:set value="#{request.contextPath}/resources/img/help/sprint" var="sprintSourcePath"></c:set>
+		<div class="content-section">
+			<div class="heading">
+				<h4>Manage Sprint Overview</h4>
+				<a id="manageSprintOverview"></a>
+			</div>
+			<div class="content-block">
+				<div class="content-block-nav">
+					<p class="content-block-nav-back">
+						<a href="#{request.contextPath}/help"><i class="icon-double-angle-left"></i> Guide</a>
+						<a href="#{request.contextPath}/help/kanban"><i class="icon-double-angle-left"></i> Previous</a>
+					</p>
+					<p class="content-block-nav-forward">
+						<a href="#{request.contextPath}/help/issue">Next <i class="icon-double-angle-right"></i></a>
+					</p>
+				</div>
+				<div class="content-block-main">
+					<p>Choose “Manage Sprint” in menu to go Manage Sprint page </p>
+				
+					<img alt="sprint_guide.picture" src="#{sprintSourcePath}/menu.png" />
+					<dl>
+						<dt><a id="create">1. Create sprint</a></dt>
+						<dd>
+							<p>After click “New Sprint button”, you have a form below</p>
+							<p>The system will suggest the start date and the end date of this sprint 
+							( In default,  the sprint length is two weeks but you can change this value)</p>
+							<p>And you can check “Reuse setting from previous sprint” to get information of previous sprint (all fields in dashboard) and use it for the new sprint.</p>
+							<img alt="sprint_guide.picture" src="#{sprintSourcePath}/reUseSetting.png" />
+							<div class="backToTop"><a href="#teamOverview">BACK TO TOP <i class="icon-hand-up"></i></a></div>
+						</dd>
+						<dt><a id="update">2. Update sprint</a></dt>
+						<dd>
+							<p>Click the pencil icon, the update form appear and you can update sprint information</p>
+							<img alt="sprint_guide.picture" src="#{sprintSourcePath}/edit.png" />
+							<div class="backToTop"><a href="#teamOverview">BACK TO TOP <i class="icon-hand-up"></i></a></div>
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+	<ui:define name="layoutFooter">
+	</ui:define>
+</ui:composition>

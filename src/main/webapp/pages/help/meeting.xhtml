@@ -1,0 +1,65 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+		xmlns:ui="http://java.sun.com/jsf/facelets" 
+		xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui" template="/WEB-INF/layouts/template.xhtml"
+		xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="layoutTitle">
+        Myagile User Guide
+    </ui:define>
+	<ui:define name="layoutHead">
+	</ui:define>
+	<ui:define name="layoutBody">
+		<c:set value="#{request.contextPath}/resources/img/help/meeting" var="meetingSourcePath"></c:set>
+		<div class="content-section">
+			<div class="heading">
+				<h4>Meeting Overview</h4>
+				<a id="meetingOverview"></a>
+			</div>
+			<div class="content-block">
+				<div class="content-block-nav">
+					<p class="content-block-nav-back">
+						<a href="#{request.contextPath}/help"><i class="icon-double-angle-left"></i> Guide</a>
+						<a href="#{request.contextPath}/help/statistics"><i class="icon-double-angle-left"></i> Previous</a>
+					</p>
+					<p class="content-block-nav-forward">
+						<a href="#{request.contextPath}/help/chat">Next <i class="icon-double-angle-right"></i></a>
+					</p>
+				</div>
+				<div class="content-block-main">
+					<p>If you use “Sprint Backlog” page as Planning Meeting 1 (What to do), the “Meeting” page 
+						will be used as Planning Meeting 2 (How to do). The main purpose of this page is used to
+						 support the team to divide an issue into some tasks and estimate the point for these tasks</p>
+					<img alt="meeting_guide.picture" src="#{meetingSourcePath}/meeting_sprint_backlog.png" />
+					<dl>
+						<dt><a id="divide">1. Divide issue into tasks</a></dt>
+						<dd>
+							<p>You can divide an issue into some tasks by clicking the “Add” button (cross symbol).</p>
+							<img alt="meeting_guide.picture" src="#{meetingSourcePath}/meeting_break_task.png" />
+						</dd>
+						<dt><a id="estimate">2. Estimate point</a></dt>
+						<dd>
+							<p>You can estimate point for these issues from this page.</p>
+							<img alt="meeting_guide.picture" src="#{meetingSourcePath}/meeting_estimate.png" />
+							<div class="backToTop"><a href="#meetingOverview">BACK TO TOP <i class="icon-hand-up"></i></a></div>
+						</dd>
+						<dt><a id="conflict">3. Resolve point conflict</a></dt>
+						<dd>
+							<p>When you divide an issue to some tasks and estimate point for them will cause point conflict. 
+							]The warning icon is shown next to the point of parent issues..</p>
+							<img alt="meeting_guide.picture" src="#{meetingSourcePath}/meeting_conflict.png" />
+							<p>Two solution to solve this problem by system; they are updating point for parent or children issues.
+								<br/>
+								Update the point for parent issue</p>
+							<img alt="meeting_guide.picture" src="#{meetingSourcePath}/meeting_resolve_conflict_by_parent.png" />
+							<p>Update the point for parent issue</p>
+							<img alt="meeting_guide.picture" src="#{meetingSourcePath}/meeting_resolve_conflict_by_children.png" />
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+	<ui:define name="layoutFooter">
+	</ui:define>
+</ui:composition>

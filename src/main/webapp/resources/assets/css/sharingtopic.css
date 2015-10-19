@@ -1,0 +1,70 @@
+
+.group-btn-command{
+	padding: 10px 0px;
+}
+#topic-title label{
+	width: 50px;
+	float: left;
+	vertical-align: middle;
+	display: inline-block;
+	margin-top: 7px;
+}
+
+#topic-title #title-content{
+	font-size: 0.8em;
+	font-weight: bold;
+	float: left;
+	margin-bottom: 5px;
+}
+
+#topic-title #form-command{
+	margin: 0px !important;
+	float: right;
+}
+
+.group-btn-command button{
+	margin-left: 5px;
+}
+div[id*='message_container']{
+	background-color: #297db6;
+	opacity: 0.85;
+	color: #fff;
+	bottom: 60px;
+}
+#topic-edit-content{
+	width:100%; 
+}
+#topic-detail-content{
+	clear: both;
+	padding: 20px 10px;
+	border: 1px solid #d9d9d9;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	background: #fff;
+}
+
+.ui-editor, .ui-editor iframe {
+	width:100% !important;
+}
+.copy-link{
+	display: inline;
+}
+.copy-link i{
+	padding-left: 5px;
+}
+#dialog-copylink{
+	padding: 5px 10px;
+	margin-bottom: 10px;
+	border-radius: 6px;
+}
+
+input[type=button] {
+	padding-top: 2px !important;
+}
+	
+.alert-info {
+	background-color: #d9edf7;
+	border-color: #bce8f1;
+	color: #3a87ad;
+}

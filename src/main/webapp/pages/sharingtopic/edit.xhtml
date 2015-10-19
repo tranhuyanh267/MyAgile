@@ -1,0 +1,54 @@
+<ui:composition template="/WEB-INF/layouts/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="layoutTitle">
+		Edit Sharing Topic
+	</ui:define>
+	<ui:define name="layoutHead">
+		<link rel="stylesheet" type="text/css"
+			href="#{request.contextPath}/resources/assets/css/sharingtopic.css" />
+	</ui:define>
+	<ui:define name="layoutBody">
+		<div class="row">
+			<h:form id="topic-edit-content">
+				<div id="topic-title">
+					<h:outputLabel for="title-content" value="Title:" />
+					<p:inputText id="title-content" value="#{sharingTopicBean.title}"
+						required="true" label="TopicTitle" />
+				</div>
+
+				<p:editor value="#{sharingTopicBean.content}" height="500" widgetVar="editorContentWiki" id="idEditorContentWiki"></p:editor>
+				<div class="group-btn-command pull-right">
+					<p:commandButton value="Save" action="#{sharingTopicBean.save}"
+						icon="icon-save"  />
+					<p:commandButton value="Cancel" styleClass="secondary"  action="#{sharingTopicBean.cancel}"/>
+				</div>
+				<p:dialog id="previewTopic"
+					header="Preview topic content: #{sharingTopicBean.titlePreview}"
+					widgetVar="topicPreview" resizable="false"
+					style="min-width: 800px; text-align: left important!;" height="600"
+					maximizable="true" showEffect="drop" hideEffect="blind">
+					<p:outputPanel style="text-align:left;" layout="block">
+						<h:outputText escape="false"
+							value="#{sharingTopicBean.contentPreview}" />
+					</p:outputPanel>
+				</p:dialog>
+				<script>
+				$(document).ready(function(){
+					removeHtmlTagWhenPasteInEditorByIdParentAndWidget("#topic-edit-content\\:idEditorContentWiki",editorContentWiki);
+					setHeightIframeBody();
+				});
+				</script>
+			</h:form>
+		</div>
+		<div class="row">
+			<ui:include src="_attachments-edit.xhtml" />
+			<ui:include src="_confirmDialog.xhtml" />
+		</div>
+	</ui:define>
+	
+</ui:composition>

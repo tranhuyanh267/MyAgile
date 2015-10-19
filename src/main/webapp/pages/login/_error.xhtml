@@ -1,0 +1,64 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	<h:panelGroup rendered="#{param.error == 'incorrect'}">
+		<div class="ui-message-error ui-widget ui-corner-all" id="incorrectError" style="margin:-22px 10px 7px 9px !important;">
+			<span class="ui-message-error-icon"></span> <span class="ui-message-error-detail">#{msg['myagile.IncorrectLogin']}</span>
+		</div>
+	</h:panelGroup>
+	<h:panelGroup rendered="#{param.error == 'notsuccess'}">
+		<div class="ui-message-error ui-widget ui-corner-all" id="unSuccessError" style="margin:-22px 10px 7px 9px !important;">
+			<span class="ui-message-error-icon"></span> <span class="ui-message-error-detail">#{msg['myagile.Sigupfail']}</span>
+		</div>
+	</h:panelGroup>
+	<h:panelGroup rendered="#{param.error == 'sendMailFail'}">
+		<div class="ui-message-error ui-widget ui-corner-all" id="senMailError" style="margin:-22px 10px 7px 9px !important;">
+			<span class="ui-message-error-icon"></span> <span class="ui-message-error-detail">#{msg['myagile.SigupfailSendMail']}</span>
+		</div>
+	</h:panelGroup>
+	<h:panelGroup rendered="#{param.error == 'invalid'}">
+		<div class="ui-message-error ui-widget ui-corner-all" id="sessionError" style="margin:-22px 10px 7px 9px !important;">
+			<span class="ui-message-error-icon"></span> <span class="ui-message-error-detail">#{msg['myagile.SessionExpired']}</span>
+		</div>
+	</h:panelGroup>
+	<h:panelGroup rendered="#{param.error == 'locked'}">
+		<div class="ui-message-error ui-widget ui-corner-all" id="sessionError" style="margin:-22px 10px 7px 9px !important;">
+			<span class="ui-message-error-icon"></span> <span class="ui-message-error-detail">#{msg['myagile.MemberIsLocked']}</span>
+		</div>
+	</h:panelGroup>
+	<h:panelGroup rendered="#{param.error == 'other'}">
+		<div class="ui-message-error ui-widget ui-corner-all" id="alreadyError" style="margin:-22px 10px 7px 9px !important;">
+			<span class="ui-message-error-icon"></span> <span class="ui-message-error-detail">#{msg['myagile.LoggedAlready']}</span>
+		</div>
+	</h:panelGroup>
+	<div class="ui-message-error ui-widget ui-corner-all" id="invalidEmail" style="margin:-22px 10px 7px 9px !important;">
+			<span class="ui-message-error-icon"></span> <span class="ui-message-error-detail">#{msg['myagile.InvalidEmailFormat']}</span>
+	</div>
+	<div class="ui-message-error ui-widget ui-corner-all" id="errorNotExists" style="margin:-22px 10px 7px 9px !important;">
+			<span class="ui-message-error-icon"></span> <span class="ui-message-error-detail">#{msg['myagile.MemberNotExists']}</span>
+	</div>
+	<div class="ui-message-error ui-widget ui-corner-all" id="lockedUser" style="margin:-22px 10px 7px 9px !important;">
+			<span class="ui-message-error-icon"></span> <span class="ui-message-error-detail">#{msg['myagile.MemberIsLocked']}</span>
+	</div>
+	<div class="ui-message-error ui-widget ui-corner-all hide" id="errorPasswordIsNotStrong">
+        <span class="ui-message-error-icon"></span> <span class="ui-message-error-detail">#{msg['myagile.PassNotStrong']}</span>
+    </div>
+    <div class="ui-message-error ui-widget ui-corner-all hide" id="errorPasswordDoesNotMatch">
+        <span class="ui-message-error-icon"></span> <span class="ui-message-error-detail">#{msg['myagile.PassNotMatch']}</span>
+    </div>
+    <div class="ui-message-error ui-widget ui-corner-all hide" id="errorEmptyPassword">
+        <span class="ui-message-error-icon"></span> <span class="ui-message-error-detail">#{msg['myagile.EmptyPass']}</span>
+    </div>
+    <div class="ui-message-error ui-widget ui-corner-all hide" id="errorEmptyFirstName" style="display:none;">
+        <span class="ui-message-error-icon"></span> <span class="ui-message-error-detail">#{msg['myagile.EmptyFirstName']}</span>
+    </div>
+    <div class="ui-message-error ui-widget ui-corner-all hide" id="errorEmptyLastName" style="display:none;">
+        <span class="ui-message-error-icon"></span> <span class="ui-message-error-detail">#{msg['myagile.EmptyLastName']}</span>
+    </div>
+    <div class="ui-message-error ui-widget ui-corner-all hide" id="errorLengthLastName" style="display:none;">
+        <span class="ui-message-error-icon"></span> <span class="ui-message-error-detail">#{msg['myagile.LengthErrorLastName']}</span>
+    </div>
+    <div class="ui-message-error ui-widget ui-corner-all hide" id="errorLengthFirstName" style="display:none;">
+        <span class="ui-message-error-icon"></span> <span class="ui-message-error-detail">#{msg['myagile.LengthErrorFirstName']}</span>
+    </div>
+</ui:composition>

@@ -1,0 +1,13 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" xmlns:sec="http://www.springframework.org/security/tags"
+                template="/WEB-INF/layouts/template.xhtml">
+    <ui:define name="layoutTitle">
+        View Expired
+    </ui:define>
+    <ui:define name="layoutBody">
+        <div>The session of this page is expired. Please go to <a href="#{request.contextPath}/">Homepage</a> to continue.</div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,72 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+		xmlns:ui="http://java.sun.com/jsf/facelets" 
+		xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui" template="/WEB-INF/layouts/template.xhtml"
+		xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="layoutTitle">
+        Myagile User Guide
+    </ui:define>
+	<ui:define name="layoutHead">
+	</ui:define>
+	<ui:define name="layoutBody">
+		<c:set value="#{request.contextPath}/resources/img/help/project" var="projectSourcePath"></c:set>
+		<div class="content-section">
+			<div class="heading">
+				<h4>Project Overview</h4>
+				<a id="projectOverview"></a>
+			</div>
+			<div class="content-block">
+				<div class="content-block-nav">
+					<p class="content-block-nav-back">
+						<a href="#{request.contextPath}/help"><i class="icon-double-angle-left"></i> Guide</a>
+						<a href="#{request.contextPath}/help/team"><i class="icon-double-angle-left"></i> Previous</a>
+					</p>
+					<p class="content-block-nav-forward">
+						<a href="#{request.contextPath}/help/wizard">Next <i class="icon-double-angle-right"></i></a>
+					</p>
+				</div>
+				<div class="content-block-main">
+					<dl>
+						<dt><a id="create">1. Create project</a></dt>
+						<dd>
+							<p>In “My Project” tab, click the “New Project” button</p>
+							<img alt="project_guide.picture" src="#{projectSourcePath}/project_click_new.png" />
+							<p>Fill in the form information and upload your project logo by clicking on “Choose Logo” button</p>
+							<img alt="project_guide.picture" src="#{projectSourcePath}/project_fill_in_info.png" />
+							<p>
+								Project Name (*): name of your project.<br/>
+								Description: write something about your project.<br/>
+								Public: a project is public means everyone can see it.<br/>
+								Team: choose the team(s) that will be perform work of the project.<br/>
+
+								<br/>	
+								Note: <i>(*) means required field.</i>
+							</p>
+							<p>Click on “Save” button. The created project will be added to table of your projects</p>
+							<img alt="project_guide.picture" src="#{projectSourcePath}/project_done_create.png" />
+							<div class="backToTop"><a href="#projectOverview">BACK TO TOP <i class="icon-hand-up"></i></a></div>
+						</dd>
+						<dt><a id="view">2. View project</a></dt>
+						<dd>
+							<p>Click to project name to go to product backlog page</p>
+							<img alt="project_guide.picture" src="#{projectSourcePath}/project_product_backlog.png" />
+							<p>Select a project from table, click the view detail button</p>
+							<img alt="project_guide.picture" src="#{projectSourcePath}/project_view.png" />
+							<div class="backToTop"><a href="#projectOverview">BACK TO TOP <i class="icon-hand-up"></i></a></div>
+						</dd>
+						<dt><a id="update">3. Update Project</a></dt>
+						<dd>
+							<p>From the form of project view, click the “Edit Project” button and fill in the information likely to create a project.</p>
+							<img alt="project_guide.picture" src="#{projectSourcePath}/project_edit.png" />
+							<p>Click the “Save” button to finish.<br/>
+								Note: <i>you can not delete any projects instead of updating them.</i></p>
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+	<ui:define name="layoutFooter">
+	</ui:define>
+</ui:composition>

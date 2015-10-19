@@ -1,0 +1,27 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	template="/WEB-INF/layouts/template.xhtml">
+	
+<ui:define name="layoutTitle">Active</ui:define>
+<ui:define name="layoutHead">
+
+</ui:define>
+<ui:define name="layoutBody">
+	<h:form id="fActive">
+		<h:panelGrid columns="1" cellpadding="5">  
+			<p:messages for="msgs" id="msgs" showDetail="true" closable="true" showSummary="false" />
+		</h:panelGrid>
+		<p:remoteCommand name="updateNotice" actionListener="#{memberBean.activeAccount}" update="msgs"/>
+	</h:form>
+	<script type="text/javascript">
+updateNotice();
+$('#notice').remove();
+</script>
+<div>Welcome to MyAgile!, Go to <a href="#{request.contextPath}/profile">Your profile</a> to continue.</div>
+</ui:define>
+</ui:composition>

@@ -1,0 +1,524 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	template="/WEB-INF/layouts/template.xhtml"
+	xmlns:custom="http://myagile.com/custom">
+	<ui:define name="layoutTitle">
+		Edit Profile
+</ui:define>
+	<ui:define name="layoutHead">
+		<ui:define name="metadata">
+			<f:metadata>
+				<f:event listener="#{profileMB.initPreview}" type="preRenderView" />
+			</f:metadata>
+		</ui:define>
+		<script type="text/javascript"
+			src="#{request.contextPath}/resources/assets/js/updateProfile.js" />
+		<link rel="stylesheet" type="text/css"
+			href="#{request.contextPath}/resources/assets/css/profile.css" />
+		<script type="text/javascript"
+			src="#{request.contextPath}/resources/assets/libs/jcrop/js/jquery.Jcrop.js"></script>
+		<link rel="stylesheet"
+			href="#{request.contextPath}/resources/assets/libs/jcrop/css/jquery.Jcrop.css"
+			type="text/css" />
+		<script type="text/javascript"
+			src="#{request.contextPath}/resources/assets/js/jcropUtils.js" />
+	</ui:define>
+	<ui:define name="layoutBody">
+		<div class="row">
+
+			<p:fieldset legend="Edit Profile" styleClass="span12">
+				<center>
+					<h:form styleClass="editProfileForm" id="editProfile"
+						style="margin-bottom: 2px;" autocomplete="off">
+						<p:panelGrid style="width: 800px;">
+							<p:row>
+								<p:column colspan="3"
+									style="width: 800px; text-align: center;padding-top: 10px;">
+									<p:messages id="profileMessage" showDetail="true"
+										closable="true" showSummary="false" />
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column rowspan="5" style="vertical-align: top;">
+									<h:panelGroup layout="block" id="team-logo"
+										style="padding:10px; margin:0 auto; width:200px ;">
+										<h:panelGroup layout="block" id="team-logo-img"
+											style="text-align: center; overflow: hidden; width: 200px; height:200px;">
+											<h:graphicImage alt="member avatar"
+												rendered="#{not empty profileMB.member.avatar}"
+												value="/file/?type=member-logo&amp;filename=#{profileMB.member.avatar}"
+												styleClass="img-rounded img-polaroid input-block-level" />
+											<h:graphicImage alt="member avatar default"
+												rendered="#{empty profileMB.member.avatar}"
+												value="resources/img/user.png"
+												styleClass="img-rounded img-polaroid input-block-level" />
+										</h:panelGroup>
+
+										<button type="button" id="btnChangeLogo"
+											style="margin-top: 5px; width: 200px !important;"
+											class="btn btn-small btn-info input-block-level">
+											<i class="icon-picture"></i> Change Logo
+										</button>
+										<div class="upload-progress-wrapper">
+											<div id="upload-alert-add-file"
+												style="display: none; text-align: left !important;">
+												<span id="upload-alert-add-file-icon"></span> 
+												<span id="upload-alert-add-file-message" class="upload-message"></span>
+											</div>
+										</div>
+										<div id="team-logo-uploader" style="display: none;"></div>
+
+										<p:blockUI block="team-logo" widgetVar="teamLogoBlock">
+				                            UPLOADING (<span class="upload-progress">0%</span>)
+				                        </p:blockUI>
+									</h:panelGroup>
+									<p:remoteCommand name="updateLogo"
+										actionListener="#{profileMB.updateAvatar}"
+										update="team-logo-img" process="@this"
+										oncomplete="PrimeFaces.ab({source:'',updateSelector:'@(#avatar-logo-img)'});updateFullPathLogo();" />
+									<p:remoteCommand name="updateFullPathLogo"
+										actionListener="#{profileMB.updateFullPathLogo}"
+										oncomplete="UploadedProgress();" update="cropt"
+										process="@this" />
+									<p:outputLabel styleClass="label"
+										rendered="#{(profileMB.member.accountExpired) and (profileMB.checkEmail())}"
+										value=" Did not received confirmation email ?">
+										<p:commandLink action="#{memberBean.resendActiveMail}"
+											style="color:red;" value="&#160;&#160;&#160;Resend">
+											<f:setPropertyActionListener target="#{memberBean.username}"
+												value="#{profileMB.member.username}" />
+										</p:commandLink>
+									</p:outputLabel>
+									<p:outputLabel styleClass="label"
+										rendered="#{(profileMB.member.accountExpired) and (not profileMB.checkEmail())}"
+										value="Available action to activate your account" />
+								</p:column>
+
+								<p:column>First Name: </p:column>
+								<p:column>
+									<p:inputText value="#{profileMB.member.firstName}"
+										id="firstName" style="width: 300px;" required="true"
+										requiredMessage="#{msg['myagile.EmptyFirstName']}"
+										validatorMessage="#{msg['myagile.LengthErrorFirstName']}">
+										<f:validateLength maximum="255" />
+									</p:inputText>
+								</p:column>
+							</p:row>
+
+							<p:row>
+								<p:column>Last Name: </p:column>
+								<p:column>
+									<p:inputText value="#{profileMB.member.lastName}" id="lastName"
+										style="width: 300px;" required="true"
+										requiredMessage="#{msg['myagile.EmptyLastName']}"
+										validatorMessage="#{msg['myagile.LengthErrorLastName']}">
+										<f:validateLength maximum="255" />
+									</p:inputText>
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column>Email: </p:column>
+								<p:column>
+									<!-- primary email -->
+									<h:panelGroup layout="block" id="primaryEmailPane">
+										<h:outputText rendered="#{profileMB.emailList.size() gt 0}"
+											value="Primary Email&lt;br/&gt;" escape="false" />
+										<p:inputText value="#{profileMB.member.username}"
+											id="username" style="width: 300px;" readonly="true"
+											title="This email will be used to receive information from Myagile" />
+										<span class="email-icon"> <p:commandLink
+												rendered="#{profileMB.emailList.size() gt 0}"
+												styleClass="icon-fixed-width list"
+												title="Show/Hide all alternate email"
+												onclick="toggleListEmail()" global="false">
+												<i class="icon-list-ul"></i>
+											</p:commandLink> <p:commandLink
+												rendered="#{profileMB.member.isActive() == 'TRUE'}"
+												styleClass="icon-fixed-width add"
+												title="Add another email address you own"
+												onstart="handleAddEmail()" oncomplete="removeValidate()"
+												action="#{profileMB.handleBeforeAddEmail}" global="false"
+												update="addEmailInput,emaiListPane">
+												<i class="icon-plus"></i>
+											</p:commandLink>
+										</span>
+									</h:panelGroup>
+									<!-- list of email -->
+									<h:panelGroup layout="block" id="emaiListPane">
+										<h:outputText rendered="#{profileMB.emailList.size() gt 0}"
+											value="Alternate Email" />
+										<p:dataList value="#{profileMB.emailList}" var="memberEmail"
+											type="none">
+											<h:panelGroup>
+												<p:inputText value="#{memberEmail.email}"
+													style="width:300px;" readonly="true" />
+												<span class="email-icon"> <p:commandLink
+														styleClass="icon-fixed-width exchange"
+														title="Set primary email address"
+														rendered="#{memberEmail.isActive() == 'TRUE'}"
+														process="@this" update=":switchDialogEmail"
+														oncomplete="switchDlgEmail.show();">
+														<f:setPropertyActionListener value="#{memberEmail}"
+															target="#{profileMB.switchedEmail}" />
+														<i class="icon-exchange"></i>
+													</p:commandLink> <p:commandLink styleClass="icon-fixed-width not-active"
+														title="The email has not confirm yet. Please check your email!"
+														rendered="#{memberEmail.isActive() == 'FALSE'}"
+														global="false" process="@none">
+														<i class="icon-warning-sign"></i>
+													</p:commandLink> <p:commandLink styleClass="icon-fixed-width trash"
+														title="Remove email address" process="@this"
+														update=":deleteDialogEmail"
+														oncomplete="deleteDlgEmail.show();" global="false">
+														<f:setPropertyActionListener value="#{memberEmail}"
+															target="#{profileMB.deletedEmail}" />
+														<i class="icon-trash"></i>
+													</p:commandLink>
+												</span>
+												<br />
+											</h:panelGroup>
+										</p:dataList>
+									</h:panelGroup>
+									<!-- add email -->
+									<h:panelGroup layout="block" id="addEmailPane"
+										style="display: none;">
+										<h:outputText value="Add Alternate Email&lt;br/&gt;"
+											escape="false" />
+										<p:inputText value="#{profileMB.emailAddress}"
+											id="addEmailInput" style="width: 300px;"
+											validator="#{profileMB.validateEmail}"
+											onblur="removeValidateMessage()" styleClass="noprocess">
+											<p:ajax update="addNewEmailMsg" event="keyup" global="false" />
+										</p:inputText>
+										<span class="email-icon"> <p:commandLink id="saveEmail"
+												styleClass="icon-fixed-width save" title="Save new email"
+												action="#{profileMB.addEmailToEmailList}"
+												update="addEmailPane,emaiListPane,primaryEmailPane,profileMessage"
+												oncomplete="handleAddMailComplete(xhr, status, args)">
+												<i class="icon-save"></i>
+											</p:commandLink>
+										</span>
+										<p:message id="addNewEmailMsg" for="addEmailInput" />
+									</h:panelGroup>
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column>Company: </p:column>
+								<p:column>
+									<p:inputText value="#{profileMB.member.company}" id="company"
+										style="width: 300px;" />
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column>Skype ID: </p:column>
+								<p:column>
+									<p:inputText value="#{profileMB.member.skype}" id="skype"
+										style="width: 300px;" />
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column id="actionColumm" rowspan="0"
+									style="padding: 0 0 0 50px;">
+									<h:panelGroup
+										rendered="#{(profileMB.member.passwordExpired) or (profileMB.member.accountExpired)}"
+										id="actionPanel">
+										<h:graphicImage alt="check icon"
+											rendered="#{(not profileMB.member.accountExpired)}"
+											value="/resources/img/check.png"
+											style="width:30px; height:30px;position:absolute;" />
+										<h:graphicImage alt="error icon"
+											rendered="#{(profileMB.member.accountExpired)}"
+											value="/resources/img/error.png"
+											style="width:16px; height:18px;position:absolute;margin:5px 0 0 5px" />
+										<p:outputLabel rendered="#{profileMB.checkEmail()}"
+											styleClass="tagAction"
+											value="&#160;&#160;&#160;&#160;&#160;&#160;Confirm your email address" />
+										<p:outputLabel rendered="#{(not profileMB.checkEmail())}"
+											styleClass="tagAction"
+											value="&#160;&#160;&#160;&#160;&#160;&#160;Update email address" />
+										<h:graphicImage alt="check icon"
+											rendered="#{not profileMB.member.passwordExpired}"
+											value="/resources/img/check.png"
+											style="width:30px; height:30px;position:absolute;" />
+										<h:graphicImage alt="error icon"
+											rendered="#{profileMB.member.passwordExpired}"
+											value="/resources/img/error.png"
+											style="width:16px;height:18px;position:absolute;margin:5px 0 0 5px" />
+										<p:outputLabel styleClass="tagAction"
+											value="&#160;&#160;&#160;&#160;&#160;&#160;Set a password" />
+									</h:panelGroup>
+								</p:column>
+								<p:column>Mobile: </p:column>
+								<p:column>
+									<p:inputText value="#{profileMB.member.mobile}" id="mobile"
+										style="width: 300px;" />
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column></p:column>
+								<p:column>Password: </p:column>
+								<p:column>
+									<p:commandButton id="changebtn" name="bbb" global="false"
+										value="Change your password"
+										style="background-color: #6EB243; width:311px;" type="button"/>
+									<div class="editPassword" style="display: none;">
+										<h:panelGroup id="oldPassLabel">
+											<h:outputLabel
+												rendered="#{not profileMB.member.passwordExpired}"
+												for="pass1" value="Current Password"
+												style="margin-top: 12px;" />
+											<p:password value="#{profileMB.pass1}"
+												rendered="#{not profileMB.member.passwordExpired}"
+												id="pass1" style="width:300px;">
+												<p:watermark value="Old your password" for="pass1" />
+											</p:password>
+										</h:panelGroup>
+										<h:outputLabel for="pass2" value="New Password" />
+										<p:password value="#{profileMB.pass2}" id="pass2"
+											style="width:300px;" styleClass="clPassword2">
+											<p:watermark value="New password" for="pass2" />
+										</p:password>
+										<h:outputLabel for="pass3" value="Confirm Password" />
+										<p:password value="#{profileMB.pass3}" id="pass3"
+											style="width:300px;">
+											<p:watermark value="Confirm password" for="pass3" />
+										</p:password>
+									</div>
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column colspan="3"
+									style="text-align:center;padding-top: 10px;">
+									<span class="btnContainer"> <p:commandButton
+											value="Update" action="#{profileMB.updateMember}"
+											update="team-logo-img,oldPassLabel,editProfile,actionColumm,profileMessage"
+											oncomplete="PrimeFaces.ab({source:'',updateSelector:'@(#fullName)'});"
+											process="@(.editProfileForm :not(.noprocess))" tabindex="1" />
+										<p:commandButton value="Cancel"
+											action="#{profileMB.resetValueCancel}" styleClass="secondary"
+											style="margin-right: 70px;" immediate="true" />
+									</span>
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+						<p:remoteCommand name="checkMember"
+							action="#{profileMB.checkExistEmail}"
+							oncomplete="handleEmail(xhr, status, args)" />
+						<p:confirmDialog widgetVar="confirmDialog" id="dialog"
+							global="false" header="Email existed on system."
+							showEffect="Explode" closable="false" severity="none">
+							<h:panelGrid columns="1" cellpadding="0">
+								<p:row>
+									<h:outputLabel for="password"
+										value="Would you like to merge this account?"
+										style="text-align:left;" />
+								</p:row>
+								<p:row>
+									<h:outputLabel for="password" id="labelCon"
+										value="Please confirm password:"
+										style="text-align:left;display:none;" />
+									<h:inputSecret value="#{profileMB.confirmPass}" id="password"
+										style="text-align:left;display:none;width:95%;" />
+								</p:row>
+								<p:row>
+									<div class="ui-message-error ui-widget ui-corner-all"
+										style="margin: 0px 0px !important;" id="incorrectError">
+										<span class="ui-message-error-icon"></span> <span
+											class="ui-message-error-detail">Password you entered
+											is incorrect.</span>
+									</div>
+								</p:row>
+								<p:row>
+									<p:panel style="text-align:right;color:red;">
+										<p:commandButton id="YesBtn" value="Yes"
+											onclick="handleOpenDialog()" global="false" />
+										<p:commandButton id="confirmBtn"
+											oncomplete="handleConfirm(xhr, status, args)"
+											actionListener="#{profileMB.mergeAccount}" value="Confirm"
+											style="display:none;"
+											onclick="$('#editProfile\\:password').show();$('#editProfile\\:labelCon').show();"
+											global="false" />
+										<p:commandButton id="NoBtn" value="No" styleClass="secondary"
+											onclick="handleCloseDialog();location.reload();"
+											global="false" />
+									</p:panel>
+
+								</p:row>
+							</h:panelGrid>
+						</p:confirmDialog>
+						<p:dialog position="top" style="margin-top: 20px;"
+							widgetVar="cropImage" modal="true" width="600" resizable="false"
+							closable="false" id="cropImageDialog">
+							<h:graphicImage style="margin: 10px;" id="cropt"
+								alt="member avatar"
+								rendered="#{not empty profileMB.fullPathLogo}"
+								value="/file/?type=member-logo&amp;filename=#{profileMB.fullPathLogo}" />
+							<h:panelGroup layout="block"
+								style="margin: 10px; text-align: right">
+								<p:commandButton global="false" id="crop"
+									onclick="passParam();cancelDrop();" value="Crop" />
+								<p:commandButton global="false" id="undo" value="Cancel"
+									oncomplete="cancelDrop();cropImage.hide();" process="@none" />
+							</h:panelGroup>
+						</p:dialog>
+						<p:remoteCommand name="cropImageParam"
+							actionListener="#{profileMB.cropImage}"
+							oncomplete="cropImage.hide();PrimeFaces.ab({source:'',updateSelector:'@(#avatar-logo-img)'});"
+							update="team-logo-img">
+						</p:remoteCommand>
+						<script>
+							$(document).ready(function(){
+								addTooltipNewPass();
+							});
+						</script>
+					</h:form>
+				</center>
+			</p:fieldset>
+			<ui:include src="_confirmDialog.xhtml"></ui:include>
+			<div id="x1" style="display: none;">#{profileMB.x1}</div>
+			<div id="x2" style="display: none;">#{profileMB.x2}</div>
+			<div id="y1" style="display: none;">#{profileMB.y1}</div>
+			<div id="y2" style="display: none;">#{profileMB.y2}</div>
+			<div id="w" style="display: none;">#{profileMB.w}</div>
+			<div id="h" style="display: none;">#{profileMB.h}</div>
+		</div>
+		<script type="text/javascript"
+			src="#{request.contextPath}/bundles/plupload.js" />
+		<p:ajaxStatus id="blockUi">
+			<f:facet name="start">
+				<h:panelGroup styleClass="ajaxPopUp">
+					<p:graphicImage alt="ajax loader" styleClass="imgAjax"
+						value="resources/img/ajax_loader/ajax_loader.gif" />
+				</h:panelGroup>
+			</f:facet>
+			<f:facet name="complete">
+				<h:outputText value="" />
+			</f:facet>
+		</p:ajaxStatus>
+		<script type="text/javascript">
+			function isStrongPassword(pass){
+				var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;//at least uppercase, lowercase and digit
+				return regex.test(pass);
+			}
+			function addTooltipNewPass(){
+				$(".clPassword2").attr("data-toggle","tooltip");
+				$(".clPassword2").attr("data-placement","left");
+				$(".clPassword2").attr("data-original-title","#{msg['myagile.PassAllow']}");
+				$(".clPassword2").tooltip({trigger:'hover'});
+			}
+			checkNullEmail();
+			
+			$(document).ready(
+					function() {
+						$(document).on("mouseover mouseout",".clPassword2",function(event){
+							if(event.type == "mouseover"){
+								if(!isStrongPassword($.trim($('.clPassword2').val()))){
+									$(".clPassword2").tooltip("show");
+								}else{
+									$(".clPassword2").tooltip("hide");
+								}
+							}
+							else{
+								$(".clPassword2").tooltip("hide");
+							}
+						});
+						
+						checkNullEmail();
+						$('#incorrectError').hide();
+						$('#editProfile\\:username').on(
+								"keyup paste",
+								function(evt) {
+									if ($('#editProfile\\:username').attr(
+											"readonly") != 'readonly') {
+										handleChanged(evt);
+									}
+								})
+					});
+			$('#editProfile').attr('autocomplete', 'off');
+			$(document).on("click","#editProfile\\:changebtn",function() {
+				var editPass = $('.editPassword');
+				if (!editPass.attr("data-toggle")
+						|| editPass.attr("data-toggle") == "false") {
+					editPass.slideDown('slow');
+					editPass.attr("data-toggle", true);
+				} else if (editPass.attr("data-toggle") == "true") {
+					editPass.slideUp('slow', function() {
+						$('#editProfile\\:pass1').val("");
+						$('#editProfile\\:pass2').val("");
+						$('#editProfile\\:pass3').val("");
+					});
+					editPass.attr("data-toggle", false);
+				}			
+			});
+
+			$("#notice").remove();
+			$(function() {
+				if (uploader) {
+					uploader.destroy();
+				}
+				var uploader = new plupload.Uploader({
+					runtimes : 'html5, flash',
+					browse_button : 'btnChangeLogo',
+					max_file_size : '10mb',
+					url : '#{request.contextPath}/upload',
+					filters : [ {
+						title : "Image files",
+						extensions : "jpg,png"
+					} ],
+					multi_selection : false,
+					multiple_queues : false
+				});
+				handleCloseDialog
+
+				uploader.bind("Error", function(up, err) {
+					$("#upload-error").show();
+					$("#upload-error").html(err.message);
+				});
+
+				uploader.bind("Init", function(up) {
+					$("#upload-error").hide();
+					$("#upload-alert-add-file").hide();
+				});
+
+				uploader.init();
+
+				uploader.bind("BeforeUpload", function(up, file) {
+					up.settings.multipart_params = {
+						upload_type : 'member-logo'
+					}
+				});
+
+				uploader.bind("FilesAdded", function() {
+					teamLogoBlock.show();
+					uploader.start();
+				});
+
+				uploader.bind("FileUploaded", function(up, file, res) {
+					updateLogo([ {
+						name : 'filename',
+						value : file.name
+					} ]);
+				});
+
+				uploader.bind("UploadProgress", function(up, file) {
+					$(".upload-progress").html(file.percent + "%");
+					$("#upload-alert-add-file").hide();
+				});
+
+				uploader.bind("Error", function(up, err) {
+					$("#upload-alert-add-file-icon").addClass("ui-message-error-icon").show();
+					$("#upload-alert-add-file-message").addClass("ui-message-error-detail").text("File extension error.");
+					$("#upload-alert-add-file").addClass("ui-message-error").show();
+					uploader.refresh();	
+				});
+
+			})
+		</script>
+	</ui:define>
+</ui:composition>

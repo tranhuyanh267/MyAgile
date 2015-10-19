@@ -1,0 +1,139 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+		xmlns:ui="http://java.sun.com/jsf/facelets" 
+		xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui" template="/WEB-INF/layouts/template.xhtml"
+		xmlns:c="http://java.sun.com/jsp/jstl/core">
+<style>
+	li{
+		margin-top:5px;
+	}
+</style>
+	<ui:define name="layoutTitle">
+        Myagile User Guide
+    </ui:define>
+	<ui:define name="layoutHead">
+	</ui:define>
+	<ui:define name="layoutBody">
+		<c:set value="#{request.contextPath}/resources/img/help/account" var="accountSourcePath"></c:set>
+		<div class="content-section">
+			<div class="heading">
+				<h4>Account Overview</h4>
+				<a id="accountOverview"></a>
+			</div>
+			<div class="content-block">
+				<div class="content-block-nav">
+					<p class="content-block-nav-back">
+						<a href="#{request.contextPath}/help"><i class="icon-double-angle-left"></i> Guide</a>
+						<a href="#{request.contextPath}/help/getting-started"><i class="icon-double-angle-left"></i> Previous</a>
+					</p>
+					<p class="content-block-nav-forward">
+						<a href="#{request.contextPath}/help/three-backlogs">Next <i class="icon-double-angle-right"></i></a>
+					</p>
+				</div>
+				<div class="content-block-main">
+					<dl>
+						<dt><a id="sign-up">1.Login / Sign up</a></dt>
+						<dd>
+							<ul>
+								<li>Sign up </li>
+								<li style="list-style-type:none">
+									<ul style="list-style-type:none">
+										<li>Create a registration by your email and fill in the rest information.</li>
+										<li><img alt="account_guide.picture" src="#{accountSourcePath}/account_sign_up_fill_in.png" /></li>
+										<li>Click the “Sign up” button. If account have been created successfully, the page will redirect to profile page</li>
+										<li><img alt="account_guide.picture" src="#{accountSourcePath}/confirming_email_warning.png" /></li>
+									</ul>
+								</li>
+							</ul>
+							<ul>
+								<li>Profile</li>
+								<li style="list-style-type:none">
+									<ul style="list-style-type:none">
+										<li>You have to check your email to confirm before using the system.</li>
+										<li><img alt="account_guide.picture" src="#{accountSourcePath}/account_sign_up_confirm_email.png" /></li>
+										<li>In the confirm email, click the “Click here” link. It will redirect to your profile page</li>
+										<li>Fill in your information then click update to update your profile.</li>
+										<li><img alt="account_guide.picture" src="#{accountSourcePath}/account_update_profile.png" /></li>
+									</ul>
+								</li>
+							</ul>
+							<ul>
+								<li>Login</li>
+								<li style="list-style-type:none">
+									<ul style="list-style-type:none">
+										<li>Input your email and password which you registered to start myagile</li>
+										<li><img  src="#{accountSourcePath}/login.png" /></li>
+										<li>Click the "Login" button to login</li>
+										<li><strong>Note: </strong> in Login form, if you input an email that is not registered yet, Sign Up form will be displayed to let you register.</li>
+									</ul>
+								</li>
+							</ul>
+						</dd>
+						<dt><a id="forget-pass">2. Forget password</a></dt>
+						<dd>
+							<p>After entering your user name, you can click the “Forget Password” link..</p>
+							<img alt="account_guide.picture" src="#{accountSourcePath}/account_forget_pass.png" />
+							<p>Fill in the user name again and click the “Send mail” button.</p>
+							<img alt="account_guide.picture" src="#{accountSourcePath}/account_forget_pass_send_mail.png" />
+							<p>You need to check your email to receive your new password. Don't forget click the active link.</p>
+							<img alt="account_guide.picture" src="#{accountSourcePath}/account_forget_pass_check_mail.png" />
+						</dd>
+						<dt><a id="switch-account">3. Switch UserName (Email account)</a></dt>
+							<dd>
+							<ul>
+								<li>Edit profile</li>
+								<li style="list-style-type:none">
+									<ul style="list-style-type:none">
+										<li>Click on Edit profile and then you will see this page: </li>
+										<li><img alt="account_guide.picture" src="#{accountSourcePath}/account-add-email.png" /></li>
+										<li> Click on the “Plus” icon and then you can fill your new email. Click on “Save” icon to save.</li>
+										<li><img alt="account_guide.picture" src="#{accountSourcePath}/account-write-new-email-and-click-save.png" /></li>
+										<li>Message: add new email successfully. Then you have to check the email and activate.</li>
+										<li><img alt="account_guide.picture" src="#{accountSourcePath}/account-successfully-message.png" /></li>
+									</ul>
+								</li>
+							</ul>
+							<ul>
+								<li>Activate alternate email</li>
+								<li style="list-style-type:none">
+									<ul style="list-style-type:none">
+										<li>In the confirm email, click the “Click here” link. It will redirect to successful page.</li>
+										<li><img alt="account_guide.picture" src="#{accountSourcePath}/account-notify-email.png" /></li>
+										<li>Active Successful Message: </li>
+										<li><img alt="account_guide.picture" src="#{accountSourcePath}/account-alternate-email-active.png" /></li>
+									</ul>
+								</li>
+							</ul>
+							<ul>
+								<li>Switch Primary Account</li>
+								<li style="list-style-type:none">
+									<ul style="list-style-type:none">
+										<li> After active successful, you will see the alternate email and the switch icon.</li>
+										<li>Click on the “Switch” icon to set primary email for it</li>
+										<li><img  src="#{accountSourcePath}/account-alternate-email-and-switch-button.png" /><br/></li>
+										<li>See the confirm dialog, click “Yes” to set your alternate email is the primary email. </li>
+										<li><img alt="account_guide.picture" src="#{accountSourcePath}/account-inform-change-primary-email.png" /><br/></li>
+										<li>It will redirect to login page and now you can login by your new email. </li>
+										<li><img alt="account_guide.picture" src="#{accountSourcePath}/account-login-again-with-new-email.png" /> </li>
+									</ul>
+								</li>
+							</ul>
+							<ul>
+								<li>Successful</li>
+								<li style="list-style-type:none">
+									<ul style="list-style-type:none">
+										<li>Successful! The new email is the primary email. Team can see your new email. This email will receive the emails from system.</li>
+										<li><img  src="#{accountSourcePath}/account-new-primary-email.png" /></li>
+									</ul>
+								</li>
+							</ul>
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+	<ui:define name="layoutFooter">
+	</ui:define>
+</ui:composition>

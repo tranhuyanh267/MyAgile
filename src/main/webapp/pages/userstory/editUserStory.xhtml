@@ -1,0 +1,342 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:custom="http://myagile.com/custom">
+<style>
+	.issue-desc-input {
+	margin-bottom: 10px;
+	}
+
+.issue-desc-input .ui-editor {
+	width: 650px !important;
+	}
+
+.issue-desc-input iframe {
+	width: 650px !important;
+	}
+</style>
+	<c:set var="userStory" value="#{userStoryBean.editedUserStory}"></c:set>
+	<h:form id="editUSForm">
+		<p:fieldset legend="Update User Story">
+			<p:messages for="msgs" id="msgs" showDetail="true" closable="true" autoUpdate="true" showSummary="false"/>	
+			<table width="100%">
+					<tbody>
+						<tr>
+							<td width="10%">Name:</td>
+							<td width="40%">
+								<p:inputText id="nameUs" maxlength="255" required="true" value="#{userStoryBean.editedUserStory.name}" style="width: 225px;" validator="#{userStoryBean.validateUserStoryForEdit}">
+									<f:param name="editedUserStoryId" value="#{userStoryBean.editedUserStory.userStoryId}"></f:param>
+									<p:ajax event="keyup" update="nameMsg" global="false" />
+									<f:validateLength maximum="255" />
+								</p:inputText>
+							</td>
+							<td width="10%">ID:</td>
+							<td>
+								<h:outputText value="##{userStoryBean.editedUserStory.userStoryId}" />
+							</td>
+						</tr>
+						<tr>
+							<td  width="10%"></td>
+							<td width="30%">
+								<p:message for="nameUs" id="nameMsg" display="default"/>
+							</td>
+							<td colspan="2" width="60%"></td>
+						</tr>
+						<tr>
+							<td width="10%">Priority:</td>
+							<td width="40%">
+								<p:selectOneMenu value="#{userStoryBean.editedUserStory.priority}" style="width: 235px;">
+									<f:selectItem itemLabel="--Select a priority--" itemValue="NONE" />
+									<f:selectItem itemLabel="Must" itemValue="MUST" />
+									<f:selectItem itemLabel="Could" itemValue="COULD" />
+									<f:selectItem itemLabel="Should" itemValue="SHOULD" />
+									<f:selectItem itemLabel="Wont" itemValue="WONT" />
+								</p:selectOneMenu>
+							</td>
+							<td width="10%">Project:</td>
+							<td>
+								<h:outputText value="#{userStoryBean.editedUserStory.project}" />
+							</td>
+						</tr>
+						<tr>
+							<td width="10%">Value:</td>	
+							<td width="40%">
+								<p:spinner id="usValueSpner" value="#{userStoryBean.editedUserStory.value}" widgetVar="spinValue"
+									style="margin-bottom: 0px !important;" validator="#{userStoryBean.validateValue}">
+									<p:ajax event="keyup" update="valueMsg" global="false"/>
+									<f:param name="editedUserStoryId" value="#{userStoryBean.editedUserStory.userStoryId}"></f:param>
+								</p:spinner>
+							</td>
+							<td width="10%">Status:</td>
+							<td>
+								<h:outputText value="##{userStoryBean.editedUserStory.status}" />
+							</td>
+						</tr>
+						<tr>
+							<td  width="10%"></td>
+							<td width="20%">
+								<p:message for="usValueSpner" id="valueMsg" display="default"/>
+							</td>
+							<td colspan="2" width="80%"></td>
+						</tr>
+						<tr>
+							<td width="10%">Risk:</td>
+							<td width="40%">
+								<p:spinner id="risk" value="#{userStoryBean.editedUserStory.risk}" widgetVar="spinRisk"
+									style="margin-bottom: 0px !important;" validator="#{userStoryBean.validateValue}">
+									<p:ajax event="keyup" update="riskMsg" global="false"/>
+									<f:param name="editedUserStoryId" value="#{userStoryBean.editedUserStory.userStoryId}"></f:param>
+								</p:spinner>
+							</td>
+							<td width="10%">Issues:</td>
+							<td>
+								<h:panelGroup rendered="#{userStoryBean.getRelatedIssuesOfUserStory(userStoryBean.editedUserStory.userStoryId).size() gt 0}">
+									<a onclick="relatedIssueDialog.show();return false;" style="color: grey;"><i class="icon-sitemap"></i></a>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{userStoryBean.getRelatedIssuesOfUserStory(userStoryBean.editedUserStory.userStoryId).size() eq 0}">
+									No subIssue
+								</h:panelGroup>
+							</td>
+						</tr>
+						<tr>
+							<td  width="10%"></td>
+							<td width="30%">
+								<p:message for="risk" id="riskMsg" display="default"/>
+							</td>
+							<td colspan="2" width="60%"></td>
+						</tr>
+						<tr>
+							<td width="10%">Description:</td>
+							<td colspan="3">
+								<p:editor controls="bold italic underline strikethrough font size color highlight | bullets numbering " id="description"  styleClass="issue-desc-input "
+									value="#{userStoryBean.editedUserStory.description}" height="150" style="margin-bottom: 0px; width:500px;" widgetVar="editorDescriptionUserStory" />
+							</td>
+						</tr>
+						<tr >
+							<td width="10%">Note:</td>
+							<td colspan="3" style="padding-top:10px;">
+								<p:editor controls="bold italic underline strikethrough font size color highlight | bullets numbering " id="not"
+									value="#{userStoryBean.editedUserStory.note}" height="150" style="margin-bottom: 0px;" styleClass="issue-desc-input" widgetVar="editorNoteUserStory" />
+							</td>
+						</tr>
+						<tr>
+							<td width="10%" style="padding-top:10px;">Upload file:</td>
+							<td colspan="3" style="padding-top:10px;">
+								<h:panelGroup layout="block" id="file-block" >
+									<p:messages for="downloadMsgs" id="downloadMsgs" showDetail="true"
+									closable="true" showSummary="false" />
+									<button type="button" id="addFile" style="margin-left: 0px; width: 150px;" class="btn btn-small btn-info input-block-level">
+										<i class="icon-picture icon-margin-right-5" /> Add file
+									</button>
+									<div id="team-logo-uploader" style="display: none;"></div>
+									<p:blockUI block="file-block" widgetVar="teamLogoBlock">Uploading... (<span class="upload-progress">0%</span>)</p:blockUI>
+									</h:panelGroup>
+									
+									<h:inputHidden id="userStoryId" value="#{userStoryBean.editedUserStory.userStoryId}"></h:inputHidden>
+									<h:inputHidden id="attId"></h:inputHidden>
+								<script type="text/javascript">	
+									$(document).ready(function(){
+										removeHtmlTagWhenPasteInEditorByIdParentAndWidget("#editUSForm\\:description",editorDescriptionUserStory);
+										removeHtmlTagWhenPasteInEditorByIdParentAndWidget("#editUSForm\\:note",editorNoteUserStory);
+									});
+									$(function () { 
+										initUploadAttachment('#{request.contextPath}/upload'); 
+									});
+									function fillZeroTextInProgressBar() {
+										jQuery(document).ready(function( $ ) {
+											$( ".ui-progressbar-label" ).each(function( index  ) {
+												if($(this).html().trim().length == 0 || $(this).html() == "0%") {
+													$(this).html("0%").show();
+												}
+											});
+										});
+									}
+									
+									
+								</script>
+							</td>
+						</tr>
+						<tr>
+							<td width="10%"></td>
+							<td>
+								<h:panelGroup layout="block" id="filelist" >
+									<h:panelGroup rendered="#{userStoryBean.getAttachmentsOfEditedUserStory().size() gt 0}" >
+											<ui:repeat value="#{userStoryBean.getAttachmentsOfEditedUserStory()}" var="attachment">
+													<h:panelGroup layout="block" rendered="#{attachment.diskFilename != null and attachment.filename != null and userStoryBean.isExistedFile(attachment.diskFilename,userStoryBean.editedUserStory.project.projectId)}">
+														<p:commandLink rendered="#{attachment.diskFilename != null and attachment.filename != null}" onclick="sendAttId(#{attachment.attachmentId}); changeIdPlaceholder(&quot;#{attachment.filename}&quot;);deleteFileDlg.show();" process="@this">
+															<span class="ui-icon ui-icon-trash" style="float: left; margin-top: 0px !important; padding-right: 7px;"></span>
+															<f:param name="attachmentId" value="#{attachment.attachmentId}"></f:param>
+														</p:commandLink>
+														<p:commandLink  styleClass="ui-panel-titlebar-icon ui-corner-all"
+															ajax="false" action="#{downloadBean.download()}">
+														<f:setPropertyActionListener value="#{attachment.diskFilename}"
+																target="#{downloadBean.fileName}" />
+														<f:setPropertyActionListener value="#{userStoryBean.editedUserStory.project.projectId}"
+																target="#{downloadBean.projectId}" />
+														<h:outputText value="#{attachment.filename}"/>
+														<f:param name="editedUserStoryId" value="#{userStoryBean.editedUserStory.userStoryId}"></f:param>
+													</p:commandLink>
+													<br />
+													</h:panelGroup>
+													
+											</ui:repeat>
+											<div class="upload-progress-wrapper">
+												<div id="upload-alert-add-file" style="display: none">
+													<span id="upload-alert-add-file-icon"></span> <span
+														id="upload-alert-add-file-message" class="upload-message"></span>
+												</div>
+											</div>
+								</h:panelGroup>
+								</h:panelGroup>
+							</td>
+						</tr>
+						<tr>
+							<td align="center" colspan="4">
+								<h:panelGroup layout="block" style="text-align: center;">
+										<p:commandButton id="saveBtn" value="Update" actionListener="#{userStoryBean.updateUserStory}"
+											style="margin-right:5px" icon="icon-save" update="msgs editUSForm"  oncomplete="backToViewDetail()">
+													<f:param name="editedUserStoryId" value="#{userStoryBean.editedUserStory.userStoryId}"></f:param>
+										</p:commandButton>
+										<p:commandButton id="cancelBtn" value="Cancel"  styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only secondary"
+											style="margin-right:5px" oncomplete="backToViewDetail()">
+										</p:commandButton>
+									</h:panelGroup>
+							</td>
+						</tr>
+
+					</tbody>
+				</table>
+			
+		</p:fieldset>
+	</h:form>
+	<h:form>
+		<p:remoteCommand name="uploadFile" actionListener="#{userStoryBean.uploadFile}" update=":editUSForm:filelist"></p:remoteCommand>
+		<p:remoteCommand name="deleteFile" actionListener="#{userStoryBean.deleteAttachment}" update=":editUSForm:filelist"></p:remoteCommand>
+		<p:remoteCommand name="viewDetail" actionListener="#{userStoryBean.goToViewDetail}"></p:remoteCommand>
+	</h:form>
+	
+	<p:confirmDialog widgetVar="deleteFileDlg" id="deleteFileDialog" width="400" modal="true" closable="false" severity="alert">
+		<f:facet name="header">
+					<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+						<f:param value="Attachment" />
+					</h:outputFormat>
+		</f:facet>
+		<f:facet name="message">
+			<h:outputFormat styleClass="msgWithIdPlaceHolder" value="#{msg['myagile.project.DeleteFile']}">
+				<f:param value="ID_PLACEHOLDER" />
+			</h:outputFormat>
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes" id="deleteBtn" update="" oncomplete="deleteFileDlg.hide();revertIdPlaceholder();" />
+			<p:commandButton value="No" oncomplete="deleteFileDlg.hide();revertIdPlaceholder();" />
+		</h:panelGroup>
+	</p:confirmDialog>
+	<p:confirmDialog widgetVar="filesizeerror"
+				width="400" modal="true" closable="false" severity="alert"
+				type="hidden">
+				<f:facet name="header">
+					<h:outputFormat value="Warning">
+
+					</h:outputFormat>
+				</f:facet>
+				<f:facet name="message">
+					<h:outputFormat 
+						value="You uploaded a big file size. System supports uploading file size &lt; 10 MB.">
+					</h:outputFormat>
+				</f:facet>
+				<h:panelGroup layout="block" style="text-align: right">
+					<p:commandButton value="Ok" oncomplete="filesizeerror.hide()" />
+				</h:panelGroup>
+	</p:confirmDialog>
+	<h:form>
+	<p:dialog id="issueDialog" widgetVar="relatedIssueDialog"
+			showHeader="FALSE" styleClass="relatedIssue" closeOnEscape="TRUE"
+			style="max-width: 95%; max-height: 95%; padding-bottom: 10px;"
+			position="center">
+			<h:panelGrid id="display" cellpadding="6" style="position: relative;">
+				
+				<p:commandLink style="position: absolute; top: 1px; right: 4px;"
+					onclick="relatedIssueDialog.hide()">
+					<i class="icon-remove"> </i>
+				</p:commandLink>
+				
+				<h5 class="text-center lead"
+					style="left: 40%; top: -10px; bottom: 10px; position: absolute; font-weight: bold;">
+					Issues of user story ##{userStory.userStoryId}</h5>
+				<p:dataTable id="issueTable" var="issue"
+					value="#{userStoryBean.getRelatedIssuesOfUserStory(userStoryBean.editedUserStory.userStoryId)}"
+					style="color:white; bottom: 10px; top: 20px;" scrollable="true"
+					scrollHeight="475">
+					<p:column style="text-align:center;width: 6%;"
+						sortBy="#{issue.issueId}">
+						<f:facet name="header">
+							#ID
+						</f:facet>
+
+						<h:commandLink styleClass="id_header" id="viewbtn"
+							style="color:#45A1DE;" action="#{issueBeanV2.toViewIssuePage}"
+							value="##{issue.issueId}" target="_blank">
+							<f:setPropertyActionListener value="#{issue}"
+								target="#{issueBeanV2.viewIssue}" />
+							<f:param name="userStory" value="#{userStoryBean.editedUserStory.userStoryId}" />
+							<f:param name="editedUserStoryId" value="#{userStoryBean.editedUserStory.userStoryId}"></f:param>
+						</h:commandLink>
+					</p:column>
+
+					<p:column headerText="Subject" style="width: 24%;"
+						sortBy="#{issue.subject}">
+						<h:outputText value="#{issue.subject}" />
+					</p:column>
+
+					<p:column headerText="Type" style="text-align:center; width: 8%;"
+						sortBy="#{issue.type}">
+						<h:outputText value="#{issue.type}" />
+					</p:column>
+
+					<p:column headerText="Sprint" style="text-align:center; width: 8%;"
+						sortBy="#{issue.sprint.sprintId}">
+						<h:outputText value="#{issue.sprint.sprintName}" />
+					</p:column>
+
+					<p:column headerText="Assigned"
+						style="text-align:center; width: 20%;"
+						sortBy="#{issue.assigned.firstName}">
+						<h:outputText
+							value="#{userStoryBean.getAssignedMember(issue.assigned)}" />
+					</p:column>
+
+					<p:column headerText="Status" style="text-align:center; width: 8%;">
+						<h:outputText value="#{issue.status.name}" />
+					</p:column>
+
+					<p:column headerText="Done (%)"
+						style="text-align:center; width: 10%;">
+						<script type="text/javascript">
+	            			fillZeroTextInProgressBar();
+	            		</script>
+						<p:progressBar
+							value="#{userStoryBean.findProgressOfIssue(issue.issueId)}"
+							labelTemplate="{value}%" displayOnly="true" rendered="true" />
+					</p:column>
+
+					<p:column headerText="Estimate"
+						style="text-align:center; width: 8%;" sortBy="#{issue.estimate}">
+						<h:outputText
+							value="#{userStoryBean.findPointOfIssue(issue, true)}" />
+					</p:column>
+
+					<p:column headerText="Remain" style="text-align:center; width: 8%;"
+						sortBy="#{issue.remain}">
+						<h:outputText
+							value="#{userStoryBean.findPointOfIssue(issue, false)}" />
+					</p:column>
+
+				</p:dataTable>
+			</h:panelGrid>
+		</p:dialog>
+	</h:form>
+</ui:composition>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:custom="http://myagile.com/custom">
+
+	<c:set var="uploadExelFile" value="excelFile"/>	
+	<p:fieldset id="fieldset-projectSelector" style="margin-bottom:10px" styleClass="span12">
+		<h:form styleClass="form-inline" id="form-projectSelector">
+			<h:outputLabel for="projectSelector" value="Select a Project:" style="margin-right:5px"/>
+			<p:selectOneMenu id="projectNullSelector" rendered="#{empty productBacklogBeanV2.projectList}" styleClass="text-left">
+				<f:selectItem itemLabel="No project" noSelectionOption="true"/>
+			</p:selectOneMenu>
+			<p:selectOneMenu id="projectSelector" value="#{productBacklogBeanV2.projectId}" onchange="hideUserStoryForm()" rendered="#{!empty productBacklogBeanV2.projectList}" styleClass="text-left">
+				<f:selectItems value="#{productBacklogBeanV2.projectList}" var="p" itemValue="#{p.projectId}" itemLabel="#{p.projectName}" />
+				<p:ajax event="change" listener="#{productBacklogBeanV2.handleChangeProject}" update=":userStoryForm,:form-userStoryTable"/>
+			</p:selectOneMenu>		
+			<h:panelGroup rendered="#{!empty productBacklogBeanV2.projectList and !custom:isStackHolder(productBacklogBeanV2.projectId)}">
+				<p:commandButton id="addUserStoryBtn" value="New" icon="icon-plus" style="#{productBacklogBeanV2.projectId eq 0 ?'display: none;' :''}; margin-left:5px;"
+					actionListener="#{productBacklogBeanV2.handleCreateNewUserStory}" global="false"
+					onclick="showUserStoryForm()" update=":userStoryForm" >
+					<f:setPropertyActionListener target="#{productBacklogBeanV2.edit}" value="#{true}"/>
+				</p:commandButton>
+				<button type="button" id="uploadExcel" title="Choose the excel file to upload"
+					class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left btn-upload">
+					<span class="icon-download-alt ui-button-icon-left ui-icon ui-c"></span>
+					<span class="ui-button-text ui-c">Import Excel File</span>
+				</button>
+				
+			</h:panelGroup>	
+			<div id="uploadExcelMessages"
+				style="display: none; top: 5px; position: relative; margin-top: 0px !important; padding-right: 0px !important; font-size: 12px !important;"
+				class="ui-message-info ui-widget ui-corner-all">
+				<a class="ui-messages-close" style="float: right"
+					onclick="$(this).parent().slideUp();return false;"> <span
+					class="ui-icon ui-icon-close"></span>
+				</a> <span class="ui-message-info-icon"></span> <span
+					class="ui-message-info-detail"></span>
+			</div>
+			<p:remoteCommand name="uploadExcelClient"
+				oncomplete="handleResultExcelUpload(xhr, status, args);handleCreateComplete(xhr, status, args);"
+				actionListener="#{productBacklogBeanV2.handleUploadExcelFile(uploadExelFile)}"
+				update=":userStoryForm, :form-userStoryTable">
+			</p:remoteCommand>	
+		</h:form>
+		<script type="text/javascript">	
+			$(document).ready(function () { 
+				initUploadExcelFile("uploadExcel", "#{request.contextPath}/upload","#{uploadExelFile}","#{productBacklogBeanV2.projectId}");
+			});
+		</script>  
+	</p:fieldset>
+</html>

@@ -1,0 +1,41 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/layouts/template.xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="layoutTitle">
+        Myagile User Guide
+    </ui:define>
+	<ui:define name="layoutHead">
+	</ui:define>
+	<ui:define name="layoutBody">
+		<c:set value="#{request.contextPath}/resources/img/help/getting_started" var="gettingStartedPath"></c:set>
+		<div class="content-section">
+			<div class="heading">
+				<h4>Getting Started</h4>
+			</div>
+			<div class="content-block">
+				<div class="content-block-nav">
+					<p class="content-block-nav-back">
+						<a href="#{request.contextPath}/help"> <i class="icon-double-angle-left"></i> Guide</a>
+					</p>
+					<p class="content-block-nav-forward">
+						<a href="#{request.contextPath}/help/account">Next <i class="icon-double-angle-right"></i></a>
+					</p>
+				</div>
+				<div class="content-block-main">
+				<p>Myagile is a complete agile project management system (Scrum software) that synchronizes your project's requirements, tasks, issues, etc in one place.</p>
+				<p>Before using the system, you need to perform these basic steps follow:</p>
+				<ol>
+					<li>Login or register (if your first time).</li>
+					<li>Create your project.</li>
+					<li>Create and invite your members into your team.</li>
+					<li>Create your product backlog which includes the user stories.</li>
+					<li>Your team need to create the sprint to track the task and issue.</li>
+				</ol>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+	<ui:define name="layoutFooter">
+	</ui:define>
+</ui:composition>

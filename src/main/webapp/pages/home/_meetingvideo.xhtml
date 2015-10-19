@@ -1,0 +1,92 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:custom="http://myagile.com/custom">
+
+	<h:form id="meeting-video">
+		<h:panelGroup rendered="#{homeBean.displayMeetingVideo}">
+			<div class="form-inline choose-date">
+				<label for="meeting-video:sprint-length_input" class="title-margin-right-combobox">Choose Date:</label>
+				<p:calendar id="sprint-length" 
+					widgetVar="meetingCalendar"
+					value="#{meetingVideoBean.meetingDate}"
+					readonlyInput="true"
+					mindate="#{homeBean.selectedSprint.dateStart}"
+					maxdate="#{homeBean.selectedSprint.dateEnd}" pattern="MM/dd/yyyy">
+					<f:param name="sprintId" value="#{homeBean.selectedSprint.sprintId}" />
+					<p:ajax global="false" event="dateSelect" update="video-player-container, :videoplayer-init" listener="#{meetingVideoBean.meetingDateChange}"/>
+				</p:calendar>
+			</div>
+			
+			<h:panelGroup id="video-player-container">
+				<h:panelGroup rendered="#{not empty meetingVideoBean.meetingVideo.videoFileName}">
+					<div class="meeting-video-player"> 
+						<video width="100%" height="350" controls="controls" preload="none">
+							<source type="video/mp4" src="#{request.contextPath}/file/?type=meeting-video&amp;t=#{homeBean.teamId}&amp;sp=#{homeBean.selectedSprint.sprintId}&amp;filename=#{meetingVideoBean.meetingVideo.videoFileName}" />
+						</video>
+					</div>
+				</h:panelGroup>
+				
+				<h:panelGroup rendered="#{empty meetingVideoBean.meetingVideo.videoFileName}">
+					<div id="no-meeting-video" class="ui-message-info ui-widget ui-corner-all no-margin">
+						<span class="ui-message-info-icon"></span>
+						<span class="ui-message-info-detail">#{msg['myagile.home.NoVideo']}</span>
+					</div>
+				</h:panelGroup>
+			</h:panelGroup>
+			
+			<h:panelGroup layout="block" styleClass="panel text-left">
+	             		<div class="upload-progress-wrapper">
+							<div id="upload-alert" class="ui-message-info ui-widget ui-corner-all no-margin">
+								<span id="upload-alert-icon" class="ui-message-info-icon"></span>
+								<span id="upload-alert-message" class="ui-message-info-detail upload-message">#{msg['myagile.home.ExtensionAllow']}</span>
+							</div>
+							<div id="upload-container"></div>
+	             		</div>
+	             		<hr class="upload-video-hr"/>
+	             				<h:panelGroup rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', homeBean.teamId)}">
+		             		   		<div class="text-right">
+			            				<button type="button" id="meeting-choosefile" class="btn btn-info btn-small">
+			            					<i class="icon-folder-close"></i> Choose File
+			            				</button> 
+			            				<button type="button" id="meeting-submitfile" class="btn btn-info btn-small" disabled="disabled">
+			            					<i class="icon-upload-alt"></i> Upload
+			            				</button>
+				            		</div>
+	            				</h:panelGroup>
+	            		<p:remoteCommand global="false" name="updateMeetingVideo" actionListener="#{meetingVideoBean.updateMeetingVideo}" update="video-player-container, :videoplayer-init" />
+	          </h:panelGroup>
+         </h:panelGroup>
+         
+         <h:panelGroup rendered="#{!homeBean.displayMeetingVideo}">
+         	<div class="ui-message-info ui-widget ui-corner-all no-margin">
+				<span class="ui-message-info-icon"></span>
+				<span class="ui-message-info-detail">#{msg['myagile.home.NoVideo']}</span>
+			</div>
+         </h:panelGroup>
+         <p:confirmDialog  widgetVar="cfmUpdateVideo" global="true" header="Are you sure?" message="#{msg['myagile.home.VideoReplace']}">
+	         <div class="text-right">
+         	  	<button type="button" id="btnYesUpload" class="btn btn-info">Yes</button>
+        		<button type="button" id="btnNoUpload" class="btn btn-info">No</button>
+	         </div>
+         </p:confirmDialog>
+         <p:confirmDialog widgetVar="videofilesizeerror"
+				width="400" modal="true" closable="false" severity="alert"
+				type="hidden">
+				<f:facet name="header">
+					<h:outputFormat value="Warning"/>
+				</f:facet>
+				<f:facet name="message">
+					<h:outputFormat 
+						value="You uploaded a big file size. System supports uploading file size &lt; 1 GB.">
+					</h:outputFormat>
+				</f:facet>
+				<h:panelGroup layout="block" style="text-align: right">
+					<p:commandButton value="Ok" oncomplete="videofilesizeerror.hide()" global="false"/>
+				</h:panelGroup>
+			</p:confirmDialog>
+	</h:form>
+</ui:composition>

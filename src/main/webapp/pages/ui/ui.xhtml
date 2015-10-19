@@ -1,0 +1,2662 @@
+<ui:composition template="/WEB-INF/layouts/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="layoutTitle">
+		Home
+	</ui:define>
+
+	<ui:define name="layoutBody">
+		<div class="container">
+			<!-- Masthead
+================================================== -->
+			<header class="jumbotron subhead" id="overview">
+				<div class="row">
+					<div class="span6">
+						<h1>My Agile UI</h1>
+						<p class="lead">Flat and clean.</p>
+						<p>
+							Based on Flatly By <a href="http://www.jgog.in">Jenil Gogari</a>
+						</p>
+						<p>Customized by Ant Team.</p>
+					</div>
+				</div>
+				<div class="subnav subnav-fixed">
+					<ul class="nav nav-pills">
+						<li class="active"><a href="#typography">Typography</a></li>
+						<li class=""><a href="#navbar">Navbar</a></li>
+						<li class=""><a href="#buttons">Buttons</a></li>
+						<li class=""><a href="#forms">Forms</a></li>
+						<li class=""><a href="#tables">Tables</a></li>
+						<li class=""><a href="#miscellaneous">Miscellaneous</a></li>
+					</ul>
+				</div>
+			</header>
+
+
+
+
+			<!-- Typography
+================================================== -->
+			<section id="typography">
+				<div class="page-header">
+					<h1>Typography</h1>
+				</div>
+
+				<!-- Headings & Paragraph Copy -->
+				<div class="row">
+
+					<div class="span4">
+						<div class="well">
+							<h1>h1. Heading 1</h1>
+							<h2>h2. Heading 2</h2>
+							<h3>h3. Heading 3</h3>
+							<h4>h4. Heading 4</h4>
+							<h5>h5. Heading 5</h5>
+							<h6>h6. Heading 6</h6>
+						</div>
+					</div>
+
+					<div class="span4">
+						<h3>Example body text</h3>
+						<p>Nullam quis risus eget urna mollis ornare vel eu leo. Cum
+							sociis natoque penatibus et magnis dis parturient montes,
+							nascetur ridiculus mus. Nullam id dolor id nibh ultricies
+							vehicula ut id elit.</p>
+						<p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus
+							dolor auctor. Duis mollis, est non commodo luctus, nisi erat
+							porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio
+							dui.</p>
+					</div>
+
+					<div class="span4">
+						<h3>Example addresses</h3>
+						<address>
+							<strong>Twitter, Inc.</strong><br /> 795 Folsom Ave, Suite 600<br />
+							San Francisco, CA 94107<br /> <abbr title="Phone">P:</abbr>
+							(123) 456-7890
+						</address>
+						<address>
+							<strong>Full Name</strong><br /> <a href="mailto:#">first.last@gmail.com</a>
+						</address>
+					</div>
+
+				</div>
+
+				<div class="row">
+					<div class="span6">
+						<blockquote>
+							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+								Integer posuere erat a ante.</p>
+							<small>Someone famous in <cite title="Source Title">Source
+									Title</cite></small>
+						</blockquote>
+					</div>
+					<div class="span6">
+						<blockquote class="pull-right">
+							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+								Integer posuere erat a ante.</p>
+							<small>Someone famous in <cite title="Source Title">Source
+									Title</cite></small>
+						</blockquote>
+					</div>
+				</div>
+
+			</section>
+
+
+			<!-- Navbar
+================================================== -->
+			<section id="navbar">
+				<div class="page-header">
+					<h1>Navbars</h1>
+				</div>
+				<div class="navbar">
+					<div class="navbar-inner">
+						<div class="container" style="width: auto;">
+							<a class="btn btn-navbar" data-toggle="collapse"
+								data-target=".nav-collapse"> <span class="icon-bar"></span>
+								<span class="icon-bar"></span> <span class="icon-bar"></span>
+							</a> <a class="brand" href="#">Project name</a>
+							<div class="nav-collapse">
+								<ul class="nav">
+									<li class="active"><a href="#">Home</a></li>
+									<li><a href="#">Link</a></li>
+									<li><a href="#">Link</a></li>
+									<li><a href="#">Link</a></li>
+									<li class="dropdown"><a href="#" class="dropdown-toggle"
+										data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+										<ul class="dropdown-menu">
+											<li><a href="#">Action</a></li>
+											<li><a href="#">Another action</a></li>
+											<li><a href="#">Something else here</a></li>
+											<li class="divider"></li>
+											<li><a href="#">Separated link</a></li>
+										</ul></li>
+								</ul>
+								<form class="navbar-search pull-left" action="">
+									<input type="text" class="search-query span2"
+										placeholder="Search" />
+								</form>
+								<ul class="nav pull-right">
+									<li><a href="#">Link</a></li>
+									<li class="divider-vertical"></li>
+									<li class="dropdown"><a href="#" class="dropdown-toggle"
+										data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+										<ul class="dropdown-menu">
+											<li><a href="#">Action</a></li>
+											<li><a href="#">Another action</a></li>
+											<li><a href="#">Something else here</a></li>
+											<li class="divider"></li>
+											<li><a href="#">Separated link</a></li>
+										</ul></li>
+								</ul>
+							</div>
+							<!-- /.nav-collapse -->
+						</div>
+					</div>
+					<!-- /navbar-inner -->
+				</div>
+				<!-- /navbar -->
+
+				<div class="navbar navbar-inverse">
+					<div class="navbar-inner">
+						<div class="container" style="width: auto;">
+							<a class="btn btn-navbar" data-toggle="collapse"
+								data-target=".nav-collapse"> <span class="icon-bar"></span>
+								<span class="icon-bar"></span> <span class="icon-bar"></span>
+							</a> <a class="brand" href="#">Project name</a>
+							<div class="nav-collapse">
+								<ul class="nav">
+									<li class="active"><a href="#">Home</a></li>
+									<li><a href="#">Link</a></li>
+									<li><a href="#">Link</a></li>
+									<li><a href="#">Link</a></li>
+									<li class="dropdown"><a href="#" class="dropdown-toggle"
+										data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+										<ul class="dropdown-menu">
+											<li><a href="#">Action</a></li>
+											<li><a href="#">Another action</a></li>
+											<li><a href="#">Something else here</a></li>
+											<li class="divider"></li>
+											<li><a href="#">Separated link</a></li>
+										</ul></li>
+								</ul>
+								<form class="navbar-search pull-left" action="">
+									<input type="text" class="search-query span2"
+										placeholder="Search" />
+								</form>
+								<ul class="nav pull-right">
+									<li><a href="#">Link</a></li>
+									<li class="divider-vertical"></li>
+									<li class="dropdown"><a href="#" class="dropdown-toggle"
+										data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+										<ul class="dropdown-menu">
+											<li><a href="#">Action</a></li>
+											<li><a href="#">Another action</a></li>
+											<li><a href="#">Something else here</a></li>
+											<li class="divider"></li>
+											<li><a href="#">Separated link</a></li>
+										</ul></li>
+								</ul>
+							</div>
+							<!-- /.nav-collapse -->
+						</div>
+					</div>
+					<!-- /navbar-inner -->
+				</div>
+				<!-- /navbar -->
+
+			</section>
+
+
+
+			<!-- Buttons
+================================================== -->
+			<section id="buttons">
+				<div class="page-header">
+					<h1>Buttons</h1>
+				</div>
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>Button</th>
+							<th>Large Button</th>
+							<th>Small Button</th>
+							<th>Disabled Button</th>
+							<th>Button with Icon</th>
+							<th>Split Button</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><a class="btn" href="#">Default</a></td>
+							<td><a class="btn btn-large" href="#">Default</a></td>
+							<td><a class="btn btn-small" href="#">Default</a></td>
+							<td><a class="btn disabled" href="#">Default</a></td>
+							<td><a class="btn" href="#"><i class="icon-cog"></i>
+									Default</a></td>
+							<td>
+								<div class="btn-group">
+									<a class="btn" href="#">Default</a> <a
+										class="btn dropdown-toggle" data-toggle="dropdown" href="#"><span
+										class="caret"></span></a>
+									<ul class="dropdown-menu">
+										<li><a href="#">Action</a></li>
+										<li><a href="#">Another action</a></li>
+										<li><a href="#">Something else here</a></li>
+										<li class="divider"></li>
+										<li><a href="#">Separated link</a></li>
+									</ul>
+								</div> <!-- /btn-group -->
+							</td>
+						</tr>
+						<tr>
+							<td><a class="btn btn-primary" href="#">Primary</a></td>
+							<td><a class="btn btn-primary btn-large" href="#">Primary</a></td>
+							<td><a class="btn btn-primary btn-small" href="#">Primary</a></td>
+							<td><a class="btn btn-primary disabled" href="#">Primary</a></td>
+							<td><a class="btn btn-primary" href="#"><i
+									class="icon-shopping-cart icon-white"></i> Primary</a></td>
+							<td>
+								<div class="btn-group">
+									<a class="btn btn-primary" href="#">Primary</a> <a
+										class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+										href="#"><span class="caret"></span></a>
+									<ul class="dropdown-menu">
+										<li><a href="#">Action</a></li>
+										<li><a href="#">Another action</a></li>
+										<li><a href="#">Something else here</a></li>
+										<li class="divider"></li>
+										<li><a href="#">Separated link</a></li>
+									</ul>
+								</div> <!-- /btn-group -->
+							</td>
+						</tr>
+						<tr>
+							<td><a class="btn btn-info" href="#">Info</a></td>
+							<td><a class="btn btn-info btn-large" href="#">Info</a></td>
+							<td><a class="btn btn-info btn-small" href="#">Info</a></td>
+							<td><a class="btn btn-info disabled" href="#">Info</a></td>
+							<td><a class="btn btn-info" href="#"><i
+									class="icon-exclamation-sign icon-white"></i> Info</a></td>
+							<td>
+								<div class="btn-group">
+									<a class="btn btn-info" href="#">Info</a> <a
+										class="btn btn-info dropdown-toggle" data-toggle="dropdown"
+										href="#"><span class="caret"></span></a>
+									<ul class="dropdown-menu">
+										<li><a href="#">Action</a></li>
+										<li><a href="#">Another action</a></li>
+										<li><a href="#">Something else here</a></li>
+										<li class="divider"></li>
+										<li><a href="#">Separated link</a></li>
+									</ul>
+								</div> <!-- /btn-group -->
+							</td>
+						</tr>
+						<tr>
+							<td><a class="btn btn-success" href="#">Success</a></td>
+							<td><a class="btn btn-success btn-large" href="#">Success</a></td>
+							<td><a class="btn btn-success btn-small" href="#">Success</a></td>
+							<td><a class="btn btn-success disabled" href="#">Success</a></td>
+							<td><a class="btn btn-success" href="#"><i
+									class="icon-ok icon-white"></i> Success</a></td>
+							<td>
+								<div class="btn-group">
+									<a class="btn btn-success" href="#">Success</a> <a
+										class="btn btn-success dropdown-toggle" data-toggle="dropdown"
+										href="#"><span class="caret"></span></a>
+									<ul class="dropdown-menu">
+										<li><a href="#">Action</a></li>
+										<li><a href="#">Another action</a></li>
+										<li><a href="#">Something else here</a></li>
+										<li class="divider"></li>
+										<li><a href="#">Separated link</a></li>
+									</ul>
+								</div> <!-- /btn-group -->
+							</td>
+						</tr>
+						<tr>
+							<td><a class="btn btn-warning" href="#">Warning</a></td>
+							<td><a class="btn btn-warning btn-large" href="#">Warning</a></td>
+							<td><a class="btn btn-warning btn-small" href="#">Warning</a></td>
+							<td><a class="btn btn-warning disabled" href="#">Warning</a></td>
+							<td><a class="btn btn-warning" href="#"><i
+									class="icon-warning-sign icon-white"></i> Warning</a></td>
+							<td>
+								<div class="btn-group">
+									<a class="btn btn-warning" href="#">Warning</a> <a
+										class="btn btn-warning dropdown-toggle" data-toggle="dropdown"
+										href="#"><span class="caret"></span></a>
+									<ul class="dropdown-menu">
+										<li><a href="#">Action</a></li>
+										<li><a href="#">Another action</a></li>
+										<li><a href="#">Something else here</a></li>
+										<li class="divider"></li>
+										<li><a href="#">Separated link</a></li>
+									</ul>
+								</div> <!-- /btn-group -->
+							</td>
+						</tr>
+						<tr>
+							<td><a class="btn btn-danger" href="#">Danger</a></td>
+							<td><a class="btn btn-danger btn-large" href="#">Danger</a></td>
+							<td><a class="btn btn-danger btn-small" href="#">Danger</a></td>
+							<td><a class="btn btn-danger disabled" href="#">Danger</a></td>
+							<td><a class="btn btn-danger" href="#"><i
+									class="icon-remove icon-white"></i> Danger</a></td>
+							<td>
+								<div class="btn-group">
+									<a class="btn btn-danger" href="#">Danger</a> <a
+										class="btn btn-danger dropdown-toggle" data-toggle="dropdown"
+										href="#"><span class="caret"></span></a>
+									<ul class="dropdown-menu">
+										<li><a href="#">Action</a></li>
+										<li><a href="#">Another action</a></li>
+										<li><a href="#">Something else here</a></li>
+										<li class="divider"></li>
+										<li><a href="#">Separated link</a></li>
+									</ul>
+								</div> <!-- /btn-group -->
+							</td>
+						</tr>
+						<tr>
+							<td><a class="btn btn-inverse" href="#">Inverse</a></td>
+							<td><a class="btn btn-inverse btn-large" href="#">Inverse</a></td>
+							<td><a class="btn btn-inverse btn-small" href="#">Inverse</a></td>
+							<td><a class="btn btn-inverse disabled" href="#">Inverse</a></td>
+							<td><a class="btn btn-inverse" href="#"><i
+									class="icon-random icon-white"></i> Inverse</a></td>
+							<td>
+								<div class="btn-group">
+									<a class="btn btn-inverse" href="#">Inverse</a> <a
+										class="btn btn-inverse dropdown-toggle" data-toggle="dropdown"
+										href="#"><span class="caret"></span></a>
+									<ul class="dropdown-menu">
+										<li><a href="#">Action</a></li>
+										<li><a href="#">Another action</a></li>
+										<li><a href="#">Something else here</a></li>
+										<li class="divider"></li>
+										<li><a href="#">Separated link</a></li>
+									</ul>
+								</div> <!-- /btn-group -->
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+			</section>
+
+
+			<!-- Forms
+================================================== -->
+			<section id="forms">
+				<div class="page-header">
+					<h1>Forms</h1>
+				</div>
+
+				<div class="row">
+					<div class="span10 offset1">
+
+						<form class="well form-search">
+							<input type="text" class="input-medium search-query" />
+							<button type="submit" class="btn">Search</button>
+						</form>
+
+						<form class="well form-search">
+							<input type="text" class="input-small" placeholder="Email" /> <input
+								type="password" class="input-small" placeholder="Password" />
+							<button type="submit" class="btn">Go</button>
+						</form>
+
+
+						<form class="form-horizontal well">
+							<fieldset>
+								<legend>Controls Bootstrap supports</legend>
+								<div class="control-group">
+									<label class="control-label" for="input01">Text input</label>
+									<div class="controls">
+										<input type="text" class="input-xlarge" id="input01" />
+										<p class="help-block">In addition to freeform text, any
+											HTML5 text-based input appears like so.</p>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" for="input01">Smaller text
+										input</label>
+									<div class="controls">
+										<input type="text" class="input-xlarge input-small"
+											id="input01" />
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" for="optionsCheckbox">Checkbox</label>
+									<div class="controls">
+										<label class="checkbox"> <input type="checkbox"
+											id="optionsCheckbox" value="option1" /> Option one is this
+											and that—be sure to include why it's great
+										</label>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" for="select01">Select list</label>
+									<div class="controls">
+										<select id="select01">
+											<option>something</option>
+											<option>2</option>
+											<option>3</option>
+											<option>4</option>
+											<option>5</option>
+										</select>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" for="multiSelect">Multicon-select</label>
+									<div class="controls">
+										<select multiple="multiple" id="multiSelect">
+											<option>1</option>
+											<option>2</option>
+											<option>3</option>
+											<option>4</option>
+											<option>5</option>
+										</select>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" for="fileInput">File input</label>
+									<div class="controls">
+										<input class="input-file" id="fileInput" type="file" />
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" for="textarea">Textarea</label>
+									<div class="controls">
+										<textarea class="input-xlarge" id="textarea" rows="3"></textarea>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" for="focusedInput">Focused
+										input</label>
+									<div class="controls">
+										<input class="input-xlarge focused" id="focusedInput"
+											type="text" value="This is focused…" />
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label">Uneditable input</label>
+									<div class="controls">
+										<span class="input-xlarge uneditable-input">Some value
+											here</span>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" for="disabledInput">Disabled
+										input</label>
+									<div class="controls">
+										<input class="input-xlarge disabled" id="disabledInput"
+											type="text" placeholder="Disabled input here…"
+											disabled="disabled" />
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" for="optionsCheckbox2">Disabled
+										checkbox</label>
+									<div class="controls">
+										<label class="checkbox"> <input type="checkbox"
+											id="optionsCheckbox2" value="option1" disabled="disabled" />
+											This is a disabled checkbox
+										</label>
+									</div>
+								</div>
+								<div class="control-group warning">
+									<label class="control-label" for="inputWarning">Input
+										with warning</label>
+									<div class="controls">
+										<input type="text" id="inputWarning" /> <span
+											class="help-inline">Something may have gone wrong</span>
+									</div>
+								</div>
+								<div class="control-group error">
+									<label class="control-label" for="inputError">Input
+										with error</label>
+									<div class="controls">
+										<input type="text" id="inputError" /> <span
+											class="help-inline">Please correct the error</span>
+									</div>
+								</div>
+								<div class="control-group success">
+									<label class="control-label" for="inputSuccess">Input
+										with success</label>
+									<div class="controls">
+										<input type="text" id="inputSuccess" /> <span
+											class="help-inline">Woohoo!</span>
+									</div>
+								</div>
+								<div class="control-group info">
+									<label class="control-label" for="selectError">Select
+										with info</label>
+									<div class="controls">
+										<select id="selectError">
+											<option>1</option>
+											<option>2</option>
+											<option>3</option>
+											<option>4</option>
+											<option>5</option>
+										</select> <span class="help-inline">Woohoo!</span>
+									</div>
+								</div>
+								<div class="form-actions">
+									<button type="submit" class="btn btn-primary">Save
+										changes</button>
+									<button type="reset" class="btn">Cancel</button>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+
+			</section>
+
+			<!-- Tables
+================================================== -->
+			<section id="tables">
+				<div class="page-header">
+					<h1>Tables</h1>
+				</div>
+
+				<table class="table table-bordered table-striped table-hover">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>First Name</th>
+							<th>Last Name</th>
+							<th>Username</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>1</td>
+							<td>Mark</td>
+							<td>Otto</td>
+							<td>@mdo</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>Jacob</td>
+							<td>Thornton</td>
+							<td>@fat</td>
+						</tr>
+						<tr>
+							<td>3</td>
+							<td>Larry</td>
+							<td>the Bird</td>
+							<td>@twitter</td>
+						</tr>
+					</tbody>
+				</table>
+			</section>
+
+
+			<!-- Miscellaneous
+================================================== -->
+			<section id="miscellaneous">
+				<div class="page-header">
+					<h1>Miscellaneous</h1>
+				</div>
+
+				<div class="row">
+					<div class="span4">
+
+						<h3 id="breadcrumbs">Breadcrumbs</h3>
+						<ul class="breadcrumb">
+							<li class="active">Home</li>
+						</ul>
+						<ul class="breadcrumb">
+							<li><a href="#">Home</a> <span class="divider">/</span></li>
+							<li><a href="#">Library</a> <span class="divider">/</span></li>
+							<li class="active">Data</li>
+						</ul>
+					</div>
+					<div class="span4">
+						<h3 id="pagination">Pagination</h3>
+						<div class="pagination">
+							<ul>
+								<li><a href="#">←</a></li>
+								<li class="active"><a href="#">10</a></li>
+								<li class="disabled"><a href="#">...</a></li>
+								<li><a href="#">20</a></li>
+								<li><a href="#">→</a></li>
+							</ul>
+						</div>
+						<div class="pagination pagination-centered">
+							<ul>
+								<li class="active"><a href="#">1</a></li>
+								<li><a href="#">2</a></li>
+								<li><a href="#">3</a></li>
+								<li><a href="#">4</a></li>
+								<li><a href="#">5</a></li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="span4">
+						<h3 id="pager">Pagers</h3>
+
+						<ul class="pager">
+							<li><a href="#">Previous</a></li>
+							<li><a href="#">Next</a></li>
+						</ul>
+
+						<ul class="pager">
+							<li class="previous disabled"><a href="#">← Older</a></li>
+							<li class="next"><a href="#">Newer →</a></li>
+						</ul>
+					</div>
+				</div>
+
+
+				<!-- Navs
+  ================================================== -->
+
+				<div class="row">
+					<div class="span4">
+
+						<h3 id="tabs">Tabs</h3>
+						<ul class="nav nav-tabs">
+							<li class="active"><a href="#A" data-toggle="tab">Section
+									1</a></li>
+							<li><a href="#B" data-toggle="tab">Section 2</a></li>
+							<li class="disabled"><a href="#" data-toggle="tab">Section
+									3</a></li>
+						</ul>
+						<div class="tabbable">
+							<div class="tab-content">
+								<div class="tab-pane active" id="A">
+									<p>I'm in Section A.</p>
+								</div>
+								<div class="tab-pane" id="B">
+									<p>Howdy, I'm in Section B.</p>
+								</div>
+								<div class="tab-pane" id="C">
+									<p>What up girl, this is Section C.</p>
+								</div>
+							</div>
+						</div>
+						<!-- /tabbable -->
+
+					</div>
+					<div class="span4">
+						<h3 id="pills">Pills</h3>
+						<ul class="nav nav-pills">
+							<li class="active"><a href="#">Home</a></li>
+							<li><a href="#">Profile</a></li>
+							<li class="dropdown"><a class="dropdown-toggle"
+								data-toggle="dropdown" href="#">Dropdown <b class="caret"></b></a>
+								<ul class="dropdown-menu">
+									<li><a href="#">Action</a></li>
+									<li><a href="#">Another action</a></li>
+									<li><a href="#">Something else here</a></li>
+									<li class="divider"></li>
+									<li><a href="#">Separated link</a></li>
+								</ul></li>
+							<li class="disabled"><a href="#">Disabled link</a></li>
+						</ul>
+					</div>
+
+					<div class="span4">
+
+						<h3 id="list">Lists</h3>
+
+						<div class="well" style="padding: 8px 0;">
+							<ul class="nav nav-list">
+								<li class="nav-header">List header</li>
+								<li class="active"><a href="#">Home</a></li>
+								<li><a href="#">Library</a></li>
+								<li><a href="#">Applications</a></li>
+								<li class="nav-header">Another list header</li>
+								<li><a href="#">Profile</a></li>
+								<li><a href="#">Settings</a></li>
+								<li class="divider"></li>
+								<li><a href="#">Help</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+
+				<!-- Labels
+================================================== -->
+
+				<div class="row">
+					<div class="span6">
+						<h3 id="labels">Labels</h3>
+						<span class="label">Default</span> <span
+							class="label label-success">Success</span> <span
+							class="label label-warning">Warning</span> <span
+							class="label label-important">Important</span> <span
+							class="label label-info">Info</span> <span
+							class="label label-inverse">Inverse</span>
+					</div>
+					<div class="span6">
+						<h3 id="badges">Badges</h3>
+						<span class="badge">Default</span> <span
+							class="badge badge-success">Success</span> <span
+							class="badge badge-warning">Warning</span> <span
+							class="badge badge-important">Important</span> <span
+							class="badge badge-info">Info</span> <span
+							class="badge badge-inverse">Inverse</span>
+					</div>
+				</div>
+				<br />
+
+				<!-- Progress bars
+================================================== -->
+
+
+				<h3 id="progressbars">Progress bars</h3>
+
+				<div class="row">
+					<div class="span4">
+						<div class="progress">
+							<div class="bar" style="width: 60%;"></div>
+						</div>
+					</div>
+					<div class="span4">
+						<div class="progress progress-info progress-striped">
+							<div class="bar" style="width: 20%;"></div>
+						</div>
+					</div>
+					<div class="span4">
+						<div class="progress progress-danger progress-striped active">
+							<div class="bar" style="width: 45%"></div>
+						</div>
+					</div>
+				</div>
+				<br />
+
+
+				<!-- Alerts & Messages
+================================================== -->
+
+
+				<h3 id="alerts">Alerts</h3>
+
+				<div class="row">
+					<div class="span12">
+						<div class="alert alert-block">
+							<a class="close">×</a>
+							<h4 class="alert-heading">Alert block</h4>
+							<p>Best check yo self, you're not looking too good. Nulla
+								vitae elit libero, a pharetra augue. Praesent commodo cursus
+								magna, vel scelerisque nisl consectetur et.</p>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span4">
+						<div class="alert alert-error">
+							<a class="close">×</a> <strong>Error</strong> Change a few things
+							up and try submitting again.
+						</div>
+					</div>
+					<div class="span4">
+						<div class="alert alert-success">
+							<a class="close">×</a> <strong>Success</strong> You successfully
+							read this important alert message.
+						</div>
+					</div>
+					<div class="span4">
+						<div class="alert alert-info">
+							<a class="close">×</a> <strong>Information</strong> This alert
+							needs your attention, but it's not super important.
+						</div>
+					</div>
+				</div>
+
+
+			</section>
+
+			<br /> <br /> <br /> <br />
+		</div>
+		<!-- Addition components -->
+		<h1>Additional Components</h1>
+		<br />
+		<h3>More icons (Font Awesome)</h3>
+		<div class="row">
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-glass <span class="muted">(&amp;#xf000;)</span>
+			</div>
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-music <span class="muted">(&amp;#xf001;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-search <span class="muted">(&amp;#xf002;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-envelope-alt <span
+					class="muted">(&amp;#xf003;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-heart <span class="muted">(&amp;#xf004;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-star <span class="muted">(&amp;#xf005;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-star-empty <span
+					class="muted">(&amp;#xf006;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-user <span class="muted">(&amp;#xf007;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-film <span class="muted">(&amp;#xf008;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-th-large <span class="muted">(&amp;#xf009;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-th <span class="muted">(&amp;#xf00a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-th-list <span class="muted">(&amp;#xf00b;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-ok <span class="muted">(&amp;#xf00c;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-remove <span class="muted">(&amp;#xf00d;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-zoom-in <span class="muted">(&amp;#xf00e;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-zoom-out <span class="muted">(&amp;#xf010;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-off <span class="muted">(&amp;#xf011;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-signal <span class="muted">(&amp;#xf012;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-cog <span class="muted">(&amp;#xf013;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-trash <span class="muted">(&amp;#xf014;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-home <span class="muted">(&amp;#xf015;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-file-alt <span class="muted">(&amp;#xf016;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-time <span class="muted">(&amp;#xf017;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-road <span class="muted">(&amp;#xf018;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-download-alt <span
+					class="muted">(&amp;#xf019;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-download <span class="muted">(&amp;#xf01a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-upload <span class="muted">(&amp;#xf01b;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-inbox <span class="muted">(&amp;#xf01c;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-play-circle <span
+					class="muted">(&amp;#xf01d;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-repeat <span class="muted">(&amp;#xf01e;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-refresh <span class="muted">(&amp;#xf021;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-list-alt <span class="muted">(&amp;#xf022;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-lock <span class="muted">(&amp;#xf023;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-flag <span class="muted">(&amp;#xf024;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-headphones <span
+					class="muted">(&amp;#xf025;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-volume-off <span
+					class="muted">(&amp;#xf026;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-volume-down <span
+					class="muted">(&amp;#xf027;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-volume-up <span class="muted">(&amp;#xf028;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-qrcode <span class="muted">(&amp;#xf029;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-barcode <span class="muted">(&amp;#xf02a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-tag <span class="muted">(&amp;#xf02b;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-tags <span class="muted">(&amp;#xf02c;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-book <span class="muted">(&amp;#xf02d;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-bookmark <span class="muted">(&amp;#xf02e;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-print <span class="muted">(&amp;#xf02f;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-camera <span class="muted">(&amp;#xf030;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-font <span class="muted">(&amp;#xf031;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-bold <span class="muted">(&amp;#xf032;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-italic <span class="muted">(&amp;#xf033;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-text-height <span
+					class="muted">(&amp;#xf034;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-text-width <span
+					class="muted">(&amp;#xf035;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-align-left <span
+					class="muted">(&amp;#xf036;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-align-center <span
+					class="muted">(&amp;#xf037;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-align-right <span
+					class="muted">(&amp;#xf038;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-align-justify <span
+					class="muted">(&amp;#xf039;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-list <span class="muted">(&amp;#xf03a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-indent-left <span
+					class="muted">(&amp;#xf03b;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-indent-right <span
+					class="muted">(&amp;#xf03c;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-facetime-video <span
+					class="muted">(&amp;#xf03d;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-picture <span class="muted">(&amp;#xf03e;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-pencil <span class="muted">(&amp;#xf040;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-map-marker <span
+					class="muted">(&amp;#xf041;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-adjust <span class="muted">(&amp;#xf042;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-tint <span class="muted">(&amp;#xf043;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-edit <span class="muted">(&amp;#xf044;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-share <span class="muted">(&amp;#xf045;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-check <span class="muted">(&amp;#xf046;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-move <span class="muted">(&amp;#xf047;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-step-backward <span
+					class="muted">(&amp;#xf048;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-fast-backward <span
+					class="muted">(&amp;#xf049;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-backward <span class="muted">(&amp;#xf04a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-play <span class="muted">(&amp;#xf04b;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-pause <span class="muted">(&amp;#xf04c;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-stop <span class="muted">(&amp;#xf04d;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-forward <span class="muted">(&amp;#xf04e;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-fast-forward <span
+					class="muted">(&amp;#xf050;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-step-forward <span
+					class="muted">(&amp;#xf051;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-eject <span class="muted">(&amp;#xf052;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-chevron-left <span
+					class="muted">(&amp;#xf053;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-chevron-right <span
+					class="muted">(&amp;#xf054;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-plus-sign <span class="muted">(&amp;#xf055;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-minus-sign <span
+					class="muted">(&amp;#xf056;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-remove-sign <span
+					class="muted">(&amp;#xf057;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-ok-sign <span class="muted">(&amp;#xf058;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-question-sign <span
+					class="muted">(&amp;#xf059;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-info-sign <span class="muted">(&amp;#xf05a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-screenshot <span
+					class="muted">(&amp;#xf05b;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-remove-circle <span
+					class="muted">(&amp;#xf05c;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-ok-circle <span class="muted">(&amp;#xf05d;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-ban-circle <span
+					class="muted">(&amp;#xf05e;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-arrow-left <span
+					class="muted">(&amp;#xf060;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-arrow-right <span
+					class="muted">(&amp;#xf061;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-arrow-up <span class="muted">(&amp;#xf062;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-arrow-down <span
+					class="muted">(&amp;#xf063;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-share-alt <span class="muted">(&amp;#xf064;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-resize-full <span
+					class="muted">(&amp;#xf065;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-resize-small <span
+					class="muted">(&amp;#xf066;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-plus <span class="muted">(&amp;#xf067;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-minus <span class="muted">(&amp;#xf068;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-asterisk <span class="muted">(&amp;#xf069;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-exclamation-sign <span
+					class="muted">(&amp;#xf06a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-gift <span class="muted">(&amp;#xf06b;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-leaf <span class="muted">(&amp;#xf06c;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-fire <span class="muted">(&amp;#xf06d;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-eye-open <span class="muted">(&amp;#xf06e;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-eye-close <span class="muted">(&amp;#xf070;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-warning-sign <span
+					class="muted">(&amp;#xf071;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-plane <span class="muted">(&amp;#xf072;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-calendar <span class="muted">(&amp;#xf073;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-random <span class="muted">(&amp;#xf074;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-comment <span class="muted">(&amp;#xf075;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-magnet <span class="muted">(&amp;#xf076;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-chevron-up <span
+					class="muted">(&amp;#xf077;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-chevron-down <span
+					class="muted">(&amp;#xf078;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-retweet <span class="muted">(&amp;#xf079;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-shopping-cart <span
+					class="muted">(&amp;#xf07a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-folder-close <span
+					class="muted">(&amp;#xf07b;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-folder-open <span
+					class="muted">(&amp;#xf07c;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-resize-vertical <span
+					class="muted">(&amp;#xf07d;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-resize-horizontal <span
+					class="muted">(&amp;#xf07e;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-bar-chart <span class="muted">(&amp;#xf080;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-twitter-sign <span
+					class="muted">(&amp;#xf081;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-facebook-sign <span
+					class="muted">(&amp;#xf082;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-camera-retro <span
+					class="muted">(&amp;#xf083;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-key <span class="muted">(&amp;#xf084;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-cogs <span class="muted">(&amp;#xf085;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-comments <span class="muted">(&amp;#xf086;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-thumbs-up-alt <span
+					class="muted">(&amp;#xf087;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-thumbs-down-alt <span
+					class="muted">(&amp;#xf088;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-star-half <span class="muted">(&amp;#xf089;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-heart-empty <span
+					class="muted">(&amp;#xf08a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-signout <span class="muted">(&amp;#xf08b;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-linkedin-sign <span
+					class="muted">(&amp;#xf08c;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-pushpin <span class="muted">(&amp;#xf08d;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-external-link <span
+					class="muted">(&amp;#xf08e;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-signin <span class="muted">(&amp;#xf090;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-trophy <span class="muted">(&amp;#xf091;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-github-sign <span
+					class="muted">(&amp;#xf092;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-upload-alt <span
+					class="muted">(&amp;#xf093;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-lemon <span class="muted">(&amp;#xf094;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-phone <span class="muted">(&amp;#xf095;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-check-empty <span
+					class="muted">(&amp;#xf096;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-bookmark-empty <span
+					class="muted">(&amp;#xf097;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-phone-sign <span
+					class="muted">(&amp;#xf098;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-twitter <span class="muted">(&amp;#xf099;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-facebook <span class="muted">(&amp;#xf09a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-github <span class="muted">(&amp;#xf09b;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-unlock <span class="muted">(&amp;#xf09c;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-credit-card <span
+					class="muted">(&amp;#xf09d;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-rss <span class="muted">(&amp;#xf09e;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-hdd <span class="muted">(&amp;#xf0a0;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-bullhorn <span class="muted">(&amp;#xf0a1;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-bell <span class="muted">(&amp;#xf0a2;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-certificate <span
+					class="muted">(&amp;#xf0a3;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-hand-right <span
+					class="muted">(&amp;#xf0a4;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-hand-left <span class="muted">(&amp;#xf0a5;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-hand-up <span class="muted">(&amp;#xf0a6;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-hand-down <span class="muted">(&amp;#xf0a7;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-circle-arrow-left <span
+					class="muted">(&amp;#xf0a8;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-circle-arrow-right <span
+					class="muted">(&amp;#xf0a9;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-circle-arrow-up <span
+					class="muted">(&amp;#xf0aa;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-circle-arrow-down <span
+					class="muted">(&amp;#xf0ab;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-globe <span class="muted">(&amp;#xf0ac;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-wrench <span class="muted">(&amp;#xf0ad;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-tasks <span class="muted">(&amp;#xf0ae;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-filter <span class="muted">(&amp;#xf0b0;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-briefcase <span class="muted">(&amp;#xf0b1;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-fullscreen <span
+					class="muted">(&amp;#xf0b2;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-group <span class="muted">(&amp;#xf0c0;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-link <span class="muted">(&amp;#xf0c1;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-cloud <span class="muted">(&amp;#xf0c2;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-beaker <span class="muted">(&amp;#xf0c3;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-cut <span class="muted">(&amp;#xf0c4;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-copy <span class="muted">(&amp;#xf0c5;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-paper-clip <span
+					class="muted">(&amp;#xf0c6;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-save <span class="muted">(&amp;#xf0c7;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-sign-blank <span
+					class="muted">(&amp;#xf0c8;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-reorder <span class="muted">(&amp;#xf0c9;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-list-ul <span class="muted">(&amp;#xf0ca;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-list-ol <span class="muted">(&amp;#xf0cb;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-strikethrough <span
+					class="muted">(&amp;#xf0cc;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-underline <span class="muted">(&amp;#xf0cd;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-table <span class="muted">(&amp;#xf0ce;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-magic <span class="muted">(&amp;#xf0d0;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-truck <span class="muted">(&amp;#xf0d1;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-pinterest <span class="muted">(&amp;#xf0d2;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-pinterest-sign <span
+					class="muted">(&amp;#xf0d3;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-google-plus-sign <span
+					class="muted">(&amp;#xf0d4;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-google-plus <span
+					class="muted">(&amp;#xf0d5;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-money <span class="muted">(&amp;#xf0d6;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-caret-down <span
+					class="muted">(&amp;#xf0d7;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-caret-up <span class="muted">(&amp;#xf0d8;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-caret-left <span
+					class="muted">(&amp;#xf0d9;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-caret-right <span
+					class="muted">(&amp;#xf0da;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-columns <span class="muted">(&amp;#xf0db;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-sort <span class="muted">(&amp;#xf0dc;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-sort-down <span class="muted">(&amp;#xf0dd;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-sort-up <span class="muted">(&amp;#xf0de;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-envelope <span class="muted">(&amp;#xf0e0;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-linkedin <span class="muted">(&amp;#xf0e1;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-undo <span class="muted">(&amp;#xf0e2;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-legal <span class="muted">(&amp;#xf0e3;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-dashboard <span class="muted">(&amp;#xf0e4;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-comment-alt <span
+					class="muted">(&amp;#xf0e5;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-comments-alt <span
+					class="muted">(&amp;#xf0e6;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-bolt <span class="muted">(&amp;#xf0e7;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-sitemap <span class="muted">(&amp;#xf0e8;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-umbrella <span class="muted">(&amp;#xf0e9;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-paste <span class="muted">(&amp;#xf0ea;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-lightbulb <span class="muted">(&amp;#xf0eb;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-exchange <span class="muted">(&amp;#xf0ec;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-cloud-download <span
+					class="muted">(&amp;#xf0ed;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-cloud-upload <span
+					class="muted">(&amp;#xf0ee;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-user-md <span class="muted">(&amp;#xf0f0;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-stethoscope <span
+					class="muted">(&amp;#xf0f1;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-suitcase <span class="muted">(&amp;#xf0f2;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-bell-alt <span class="muted">(&amp;#xf0f3;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-coffee <span class="muted">(&amp;#xf0f4;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-food <span class="muted">(&amp;#xf0f5;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-file-text-alt <span
+					class="muted">(&amp;#xf0f6;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-building <span class="muted">(&amp;#xf0f7;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-hospital <span class="muted">(&amp;#xf0f8;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-ambulance <span class="muted">(&amp;#xf0f9;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-medkit <span class="muted">(&amp;#xf0fa;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-fighter-jet <span
+					class="muted">(&amp;#xf0fb;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-beer <span class="muted">(&amp;#xf0fc;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-h-sign <span class="muted">(&amp;#xf0fd;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-plus-sign-alt <span
+					class="muted">(&amp;#xf0fe;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-double-angle-left <span
+					class="muted">(&amp;#xf100;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-double-angle-right <span
+					class="muted">(&amp;#xf101;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-double-angle-up <span
+					class="muted">(&amp;#xf102;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-double-angle-down <span
+					class="muted">(&amp;#xf103;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-angle-left <span
+					class="muted">(&amp;#xf104;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-angle-right <span
+					class="muted">(&amp;#xf105;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-angle-up <span class="muted">(&amp;#xf106;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-angle-down <span
+					class="muted">(&amp;#xf107;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-desktop <span class="muted">(&amp;#xf108;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-laptop <span class="muted">(&amp;#xf109;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-tablet <span class="muted">(&amp;#xf10a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-mobile-phone <span
+					class="muted">(&amp;#xf10b;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-circle-blank <span
+					class="muted">(&amp;#xf10c;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-quote-left <span
+					class="muted">(&amp;#xf10d;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-quote-right <span
+					class="muted">(&amp;#xf10e;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-spinner <span class="muted">(&amp;#xf110;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-circle <span class="muted">(&amp;#xf111;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-reply <span class="muted">(&amp;#xf112;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-github-alt <span
+					class="muted">(&amp;#xf113;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-folder-close-alt <span
+					class="muted">(&amp;#xf114;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-folder-open-alt <span
+					class="muted">(&amp;#xf115;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-expand-alt <span
+					class="muted">(&amp;#xf116;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-collapse-alt <span
+					class="muted">(&amp;#xf117;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-smile <span class="muted">(&amp;#xf118;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-frown <span class="muted">(&amp;#xf119;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-meh <span class="muted">(&amp;#xf11a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-gamepad <span class="muted">(&amp;#xf11b;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-keyboard <span class="muted">(&amp;#xf11c;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-flag-alt <span class="muted">(&amp;#xf11d;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-flag-checkered <span
+					class="muted">(&amp;#xf11e;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-terminal <span class="muted">(&amp;#xf120;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-code <span class="muted">(&amp;#xf121;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-reply-all <span class="muted">(&amp;#xf122;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-mail-reply-all <span
+					class="muted">(&amp;#xf122;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-star-half-empty <span
+					class="muted">(&amp;#xf123;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-location-arrow <span
+					class="muted">(&amp;#xf124;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-crop <span class="muted">(&amp;#xf125;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-code-fork <span class="muted">(&amp;#xf126;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-unlink <span class="muted">(&amp;#xf127;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-question <span class="muted">(&amp;#xf128;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-info <span class="muted">(&amp;#xf129;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-exclamation <span
+					class="muted">(&amp;#xf12a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-superscript <span
+					class="muted">(&amp;#xf12b;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-subscript <span class="muted">(&amp;#xf12c;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-eraser <span class="muted">(&amp;#xf12d;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-puzzle-piece <span
+					class="muted">(&amp;#xf12e;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-microphone <span
+					class="muted">(&amp;#xf130;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-microphone-off <span
+					class="muted">(&amp;#xf131;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-shield <span class="muted">(&amp;#xf132;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-calendar-empty <span
+					class="muted">(&amp;#xf133;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-fire-extinguisher <span
+					class="muted">(&amp;#xf134;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-rocket <span class="muted">(&amp;#xf135;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-maxcdn <span class="muted">(&amp;#xf136;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-chevron-sign-left <span
+					class="muted">(&amp;#xf137;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-chevron-sign-right <span
+					class="muted">(&amp;#xf138;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-chevron-sign-up <span
+					class="muted">(&amp;#xf139;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-chevron-sign-down <span
+					class="muted">(&amp;#xf13a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-html5 <span class="muted">(&amp;#xf13b;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-css3 <span class="muted">(&amp;#xf13c;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-anchor <span class="muted">(&amp;#xf13d;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-unlock-alt <span
+					class="muted">(&amp;#xf13e;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-bullseye <span class="muted">(&amp;#xf140;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-ellipsis-horizontal <span
+					class="muted">(&amp;#xf141;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-ellipsis-vertical <span
+					class="muted">(&amp;#xf142;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-rss-sign <span class="muted">(&amp;#xf143;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-play-sign <span class="muted">(&amp;#xf144;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-ticket <span class="muted">(&amp;#xf145;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-minus-sign-alt <span
+					class="muted">(&amp;#xf146;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-check-minus <span
+					class="muted">(&amp;#xf147;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-level-up <span class="muted">(&amp;#xf148;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-level-down <span
+					class="muted">(&amp;#xf149;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-check-sign <span
+					class="muted">(&amp;#xf14a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-edit-sign <span class="muted">(&amp;#xf14b;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-external-link-sign <span
+					class="muted">(&amp;#xf14c;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-share-sign <span
+					class="muted">(&amp;#xf14d;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-compass <span class="muted">(&amp;#xf14e;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-collapse <span class="muted">(&amp;#xf150;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-collapse-top <span
+					class="muted">(&amp;#xf151;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-expand <span class="muted">(&amp;#xf152;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-eur <span class="muted">(&amp;#xf153;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-gbp <span class="muted">(&amp;#xf154;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-usd <span class="muted">(&amp;#xf155;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-inr <span class="muted">(&amp;#xf156;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-jpy <span class="muted">(&amp;#xf157;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-cny <span class="muted">(&amp;#xf158;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-krw <span class="muted">(&amp;#xf159;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-btc <span class="muted">(&amp;#xf15a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-file <span class="muted">(&amp;#xf15b;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-file-text <span class="muted">(&amp;#xf15c;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-sort-by-alphabet <span
+					class="muted">(&amp;#xf15d;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-sort-by-alphabet-alt <span
+					class="muted">(&amp;#xf15e;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-sort-by-attributes <span
+					class="muted">(&amp;#xf160;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-sort-by-attributes-alt <span
+					class="muted">(&amp;#xf161;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-sort-by-order <span
+					class="muted">(&amp;#xf162;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-sort-by-order-alt <span
+					class="muted">(&amp;#xf163;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-thumbs-up <span class="muted">(&amp;#xf164;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-thumbs-down <span
+					class="muted">(&amp;#xf165;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-youtube-sign <span
+					class="muted">(&amp;#xf166;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-youtube <span class="muted">(&amp;#xf167;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-xing <span class="muted">(&amp;#xf168;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-xing-sign <span class="muted">(&amp;#xf169;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-youtube-play <span
+					class="muted">(&amp;#xf16a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-dropbox <span class="muted">(&amp;#xf16b;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-stackexchange <span
+					class="muted">(&amp;#xf16c;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-instagram <span class="muted">(&amp;#xf16d;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-flickr <span class="muted">(&amp;#xf16e;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-adn <span class="muted">(&amp;#xf170;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-bitbucket <span class="muted">(&amp;#xf171;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-bitbucket-sign <span
+					class="muted">(&amp;#xf172;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-tumblr <span class="muted">(&amp;#xf173;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-tumblr-sign <span
+					class="muted">(&amp;#xf174;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-long-arrow-down <span
+					class="muted">(&amp;#xf175;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-long-arrow-up <span
+					class="muted">(&amp;#xf176;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-long-arrow-left <span
+					class="muted">(&amp;#xf177;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-long-arrow-right <span
+					class="muted">(&amp;#xf178;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-apple <span class="muted">(&amp;#xf179;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-windows <span class="muted">(&amp;#xf17a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-android <span class="muted">(&amp;#xf17b;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-linux <span class="muted">(&amp;#xf17c;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-dribbble <span class="muted">(&amp;#xf17d;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-skype <span class="muted">(&amp;#xf17e;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-foursquare <span
+					class="muted">(&amp;#xf180;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-trello <span class="muted">(&amp;#xf181;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-female <span class="muted">(&amp;#xf182;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-male <span class="muted">(&amp;#xf183;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-gittip <span class="muted">(&amp;#xf184;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-sun <span class="muted">(&amp;#xf185;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-moon <span class="muted">(&amp;#xf186;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-archive <span class="muted">(&amp;#xf187;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-bug <span class="muted">(&amp;#xf188;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-vk <span class="muted">(&amp;#xf189;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-weibo <span class="muted">(&amp;#xf18a;)</span>
+			</div>
+
+			<div class="span4">
+				<i class="icon-fixed-width"></i> icon-renren <span class="muted">(&amp;#xf18b;)</span>
+			</div>
+			</div>
+		<br />
+		<h3>Panel</h3>
+		<div class="panel">
+			<p class="lead">This is a panel</p>
+			<p>Stet clita kasd gubergren, no sea takimata sanctus est Lorem
+				ipsum dolor sit amet. At vero eos et accusam et justo duo dolores et
+				ea rebum. Nam liber tempor cum soluta nobis eleifend option congue
+				nihil imperdiet doming id quod mazim placerat facer possim assum. Duis
+				autem vel eum iriure dolor in hendrerit in vulputate velit esse
+				molestie consequat, vel illum dolore eu feugiat nulla facilisis. Stet
+				clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
+				sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+				diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+				erat, sed diam voluptua. Stet clita kasd gubergren, no sea takimata
+				sanctus est Lorem ipsum dolor sit amet. Duis autem vel eum iriure
+				dolor in hendrerit in vulputate velit esse molestie consequat, vel
+				illum dolore eu feugiat nulla facilisis. Sanctus sea sed takimata ut
+				vero voluptua. Ut enim ad minim veniam, quis nostrud exercitation
+				ullamco laboris nisi ut aliquid ex ea commodi consequat.</p>
+		</div>
+		<br />
+		<h3>Task Sticker</h3>
+		<div class="row">
+			<div class="span4 sticker sticker-high">
+				<div class="sticker-header">
+					<div class="row">
+						<div class="header-left span3 pull-left">
+							<p class="small-lead">Task #1</p>
+							<p>Lorem ipsum dolor sit amet</p>
+						</div>
+						<div class="header-right pull-right">
+							<img class="img-circle avatar"
+								src="http://cuongtruc.tk/sample/user.png"
+								alt="hieu" />
+						</div>
+		
+					</div>
+					<div class="task-progress" style="width: 40%;"></div>
+				</div>
+				<div class="sticker-inner">
+					<p>Consetetur sadipscing elitr, sed diam nonumy eirmod tempor
+						invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+						Quis aute iure reprehenderit in voluptate velit esse cillum dolore
+						eu fugiat nulla pariatur. At vero eos et accusam et justo duo
+						dolores et ea rebum.</p>
+				</div>
+				<div class="sticker-footer">
+					<div class="row">
+						<div class="span2">V: 30 | Ri: 40 | R: D5T3</div>
+						<ul class="icon-wrapper unstyled inline pull-right text-right">
+							<li><a href="#"><i class="icon-comments"></i></a></li>
+							<li><a href="#"><i class="icon-pencil"></i></a></li>
+							<li><a href="#"><i class="icon-remove"></i></a></li>
+							<li><a href="#"><i class="icon-plus"></i></a></li>
+						</ul>
+					</div>
+		
+				</div>
+				<div class="comment-wrapper">
+					<div class="comment-input-wrapper row">
+						<img class="span1 img-circle avatar"
+							src="http://cuongtruc.tk/sample/user.png"
+							alt="hieu" />
+						<div class="span3">
+							<textarea class="input-block-level"
+								placeholder="Enter Your Comment"></textarea>
+						</div>
+		
+		
+					</div>
+		
+					<div class="comment row">
+						<img class="span1 img-circle avatar"
+							src="http://cuongtruc.tk/sample/user.png"
+							alt="hieu" />
+						<div class="span3 comment-content">
+							<p class="comment-time small-lead">Said at 16:00PM</p>
+							<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+								diam nonumy eirmod tempor invidunt ut labore et dolore magna
+								aliquyam erat, sed diam voluptua.</p>
+						</div>
+					</div>
+					<div class="comment row">
+		
+						<img class="span1 img-circle avatar input-block-level"
+							src="http://cuongtruc.tk/sample/user.png"
+							alt="qvinh" />
+		
+						<div class="span3 comment-content">
+							<p class="comment-time small-lead">Said at 17:00PM</p>
+							<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+								diam nonumy eirmod tempor invidunt ut labore et dolore magna
+								aliquyam erat, sed diam voluptua.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- End of sticker -->
+			<div class="span4 sticker sticker-medium">
+				<div class="sticker-header">
+					<div class="row">
+						<div class="header-left span3 pull-left">
+							<p class="small-lead">Task #1</p>
+							<p>Lorem ipsum dolor sit amet</p>
+						</div>
+						<div class="header-right pull-right">
+							<img class="img-circle avatar"
+								src="http://cuongtruc.tk/sample/user.png"
+								alt="hieu" />
+						</div>
+		
+					</div>
+					<div class="task-progress" style="width: 40%;"></div>
+				</div>
+				<div class="sticker-inner">
+					<p>Consetetur sadipscing elitr, sed diam nonumy eirmod tempor
+						invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+						Quis aute iure reprehenderit in voluptate velit esse cillum dolore
+						eu fugiat nulla pariatur. At vero eos et accusam et justo duo
+						dolores et ea rebum.</p>
+				</div>
+				<div class="sticker-footer">
+					<div class="row">
+						<div class="span2">V: 30 | Ri: 40 | R: D5T3</div>
+						<ul class="icon-wrapper unstyled inline pull-right text-right">
+							<li><a href="#"><i class="icon-comments"></i></a></li>
+							<li><a href="#"><i class="icon-pencil"></i></a></li>
+							<li><a href="#"><i class="icon-remove"></i></a></li>
+							<li><a href="#"><i class="icon-plus"></i></a></li>
+						</ul>
+					</div>
+		
+				</div>
+				<div class="comment-wrapper">
+					<div class="comment-input-wrapper row">
+						<img class="span1 img-circle avatar"
+							src="http://cuongtruc.tk/sample/user.png"
+							alt="hieu" />
+						<div class="span3">
+							<textarea class="input-block-level"
+								placeholder="Enter Your Comment"></textarea>
+						</div>
+		
+		
+					</div>
+		
+					<div class="comment row">
+						<img class="span1 img-circle avatar"
+							src="http://cuongtruc.tk/sample/user.png"
+							alt="hieu" />
+						<div class="span3 comment-content">
+							<p class="comment-time small-lead">Said at 16:00PM</p>
+							<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+								diam nonumy eirmod tempor invidunt ut labore et dolore magna
+								aliquyam erat, sed diam voluptua.</p>
+						</div>
+					</div>
+					<div class="comment row">
+		
+						<img class="span1 img-circle avatar input-block-level"
+							src="http://cuongtruc.tk/sample/user.png"
+							alt="qvinh" />
+		
+						<div class="span3 comment-content">
+							<p class="comment-time small-lead">Said at 17:00PM</p>
+							<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+								diam nonumy eirmod tempor invidunt ut labore et dolore magna
+								aliquyam erat, sed diam voluptua.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- End of sticker -->
+			<div class="span4 sticker sticker-low">
+				<div class="sticker-header">
+					<div class="row">
+						<div class="header-left span3 pull-left">
+							<p class="small-lead">Task #1</p>
+							<p>Lorem ipsum dolor sit amet</p>
+						</div>
+						<div class="header-right pull-right">
+							<img class="img-circle avatar"
+								src="http://cuongtruc.tk/sample/user.png"
+								alt="hieu" />
+						</div>
+		
+					</div>
+					<div class="task-progress" style="width: 40%;"></div>
+				</div>
+				<div class="sticker-inner">
+					<p>Consetetur sadipscing elitr, sed diam nonumy eirmod tempor
+						invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+						Quis aute iure reprehenderit in voluptate velit esse cillum dolore
+						eu fugiat nulla pariatur. At vero eos et accusam et justo duo
+						dolores et ea rebum.</p>
+				</div>
+				<div class="sticker-footer">
+					<div class="row">
+						<div class="span2">V: 30 | Ri: 40 | R: D5T3</div>
+						<ul class="icon-wrapper unstyled inline pull-right text-right">
+							<li><a href="#"><i class="icon-comments"></i></a></li>
+							<li><a href="#"><i class="icon-pencil"></i></a></li>
+							<li><a href="#"><i class="icon-remove"></i></a></li>
+							<li><a href="#"><i class="icon-plus"></i></a></li>
+						</ul>
+					</div>
+		
+				</div>
+				<div class="comment-wrapper">
+					<div class="comment-input-wrapper row">
+						<img class="span1 img-circle avatar"
+							src="http://cuongtruc.tk/sample/user.png"
+							alt="hieu" />
+						<div class="span3">
+							<textarea class="input-block-level"
+								placeholder="Enter Your Comment"></textarea>
+						</div>
+		
+		
+					</div>
+		
+					<div class="comment row">
+						<img class="span1 img-circle avatar"
+							src="http://cuongtruc.tk/sample/user.png"
+							alt="hieu" />
+						<div class="span3 comment-content">
+							<p class="comment-time small-lead">Said at 16:00PM</p>
+							<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+								diam nonumy eirmod tempor invidunt ut labore et dolore magna
+								aliquyam erat, sed diam voluptua.</p>
+						</div>
+					</div>
+					<div class="comment row">
+		
+						<img class="span1 img-circle avatar input-block-level"
+							src="http://cuongtruc.tk/sample/user.png"
+							alt="qvinh" />
+		
+						<div class="span3 comment-content">
+							<p class="comment-time small-lead">Said at 17:00PM</p>
+							<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+								diam nonumy eirmod tempor invidunt ut labore et dolore magna
+								aliquyam erat, sed diam voluptua.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- End of sticker -->
+		</div>
+	</ui:define>
+</ui:composition>

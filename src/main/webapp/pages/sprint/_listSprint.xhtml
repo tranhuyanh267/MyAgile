@@ -1,0 +1,46 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:custom="http://myagile.com/custom">
+	<style>
+.ui-datatable-scrollable table {
+	table-layout: fixed;
+	text-align: center;
+}
+</style>	
+	<p:fieldset styleClass="span12">
+		<h:form id="listSprints">
+			<p:dataTable id="lstSprsOfTeam" var="sprint" value="#{sprintBean.sprintList}" scrollable="true" scrollHeight="400">
+				<p:column sortBy="#{sprint.sprintId}" headerText="#ID" styleClass="content-font-size" style="width:10%">
+					<h:outputText value="##{sprint.sprintId}"  styleClass="content-font-size"/>
+				</p:column>
+				<p:column sortBy="#{sprint.sprintName}" headerText="Sprint Name" styleClass="content-font-size" style="width:40%">
+					<h:outputText value="#{sprint.sprintName}"  styleClass="content-font-size"/>
+				</p:column>
+				<p:column sortBy="#{sprint.dateStart}" headerText="Date Start" styleClass="content-font-size" style="width:20%">
+					<h:outputText value="#{sprint.dateStart}" styleClass="content-font-size">
+						<f:convertDateTime timeZone="#{sprintBean.timeZone}" styleClass="content-font-size" pattern="MM/dd/yyyy"></f:convertDateTime>
+					</h:outputText>
+				</p:column>
+				<p:column sortBy="#{sprint.dateEnd}" headerText="Date End" styleClass="content-font-size" style="width:20%">
+					<h:outputText value="#{sprint.dateEnd}" styleClass="content-font-size">
+						<f:convertDateTime timeZone="#{sprintBean.timeZone}" pattern="MM/dd/yyyy"></f:convertDateTime>
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Status" styleClass="content-font-size" style="width:20%">
+					<h:outputText value="#{sprint.status}" styleClass="content-font-size" />
+				</p:column>
+				<p:column headerText="Edit" styleClass="content-font-size" style="width:5%" rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', sprintBean.sprint.team.teamId)}">
+					<p:commandButton id="editButton" update=":sprintForm" icon="icon-pencil" title="Edit" oncomplete="handleEditRequest(xhr,status,args)" action="#{sprintBean.updateForm}">
+						<f:setPropertyActionListener value="#{sprint}" target="#{sprintBean.selectedSprint}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</p:fieldset>
+	
+
+</ui:composition>

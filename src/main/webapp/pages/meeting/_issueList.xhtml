@@ -1,0 +1,217 @@
+<ui:composition xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions" xmlns:custom="http://myagile.com/custom">
+	<p:fieldset styleClass="span12">
+		<h:form id="list-form" styleClass="form">
+			<p:treeTable id="issue-list" value="#{meetingBean.issueListTree}" var="issue" styleClass="ui-widget-header" style="white-space: normal;"
+				rowStyleClass="#{empty issue.parent? 'parent-issue':'child-issue'}">
+				<p:column style="width: 12%;" sortBy="#{issue.issueId}" styleClass="issue-id-column">
+					<f:facet name="header">
+		                #ID 
+		            </f:facet>
+		            <h:panelGroup styleClass="icon-move move-child-task" rendered="#{not empty issue.parent}" id="id-move-subtask"></h:panelGroup>
+		            	<p:overlayPanel  for="id-move-subtask" styleClass="move-subtask-selector" rendered="#{not empty issue.parent}" onShow="setScrollableForAssignMenu(this)">
+							<ul class="member-list">
+								<ui:repeat var="parentIssues" value="#{meetingBean.getParentIssuesBySprintExceptParentThis(issue.issueId)}">
+									<li>
+										<p:commandLink value="##{parentIssues.issueId} #{parentIssues.subject}" action="#{meetingBean.updateParentIssue(issue,parentIssues)}" update=":list-form">
+										</p:commandLink>
+									</li>
+								</ui:repeat>
+							</ul>															
+						</p:overlayPanel>
+		            
+<!-- 		            <pe:tooltip for="id-move-subtask"> -->
+<!-- 		            	<h:outputText value="Click to move to another parent task"></h:outputText> -->
+<!-- 		            </pe:tooltip> -->
+					<h:commandLink styleClass="id_header" id="viewbtn" action="#{issueBean.toViewIssuePage}" value="##{issue.displayIssueId}" target="_blank">
+						<f:setPropertyActionListener value="#{issue}" target="#{issueBean.viewIssue}" />
+					</h:commandLink>
+				</p:column>
+
+				<p:column style="width: 30%;white-space: normal;word-wrap: break-word;">
+					<f:facet name="header">
+		                Subject
+		            </f:facet>
+					<h:outputText value="#{issue.subject}" class="word-break-break-word" />
+				</p:column>
+
+				<p:column style="width: 47%;white-space: normal;word-wrap: break-word;">
+					<f:facet name="header">
+	                	Description
+					</f:facet>
+					<h:outputText value="#{issue.description}" escape="false" class="word-break-break-word" />
+				</p:column>
+
+				<p:column style="width: 12%;white-space: normal;text-align:center">
+					<f:facet name="header">
+		                Estimate
+					</f:facet>
+					<input type="hidden" class="existHistoryOfPointRemain" value="#{dashboardBean.existHistoryOfPointRemain}" />
+					<input type="hidden" class="oldEstimate" value="#{meetingBean.pointEstimateFormat}" />
+					<p:inplace widgetVar="p_inplace_e#{issue.issueId}" id="ajaxInplaceEstimatePoint"
+						disabled="#{!custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', meetingBean.teamId) or issue.status.type != 'START'}">
+						<p:ajax event="save" listener="#{meetingBean.updateEstimatePoint(issue.issueId)}" oncomplete="handleUpdateEstimatePoint(xhr, status, args)" />
+						<p:ajax event="cancel" global="false" listener="#{meetingBean.resetListIssueForm}" />
+						<p:inputText style="width: 60px;margin:0 !important" onkeyup="if(event.keyCode == 27){p_inplace_e#{issue.issueId}.cancel()}"
+							onkeypress="if(event.keyCode == 13){p_inplace_e#{issue.issueId}.save();return false};" id="estimatePoint" validator="#{meetingBean.checkEstimatePoint}" required="true"
+							value="#{meetingBean.pointEstimateFormat}" label="text" title="#{component.valid ? '' : 'This point is not valid (eg: D5T3 or 5)'}">
+						</p:inputText>
+					</p:inplace>
+					<pe:tooltip rendered="#{issue.status.type != 'START'}" for="ajaxInplaceEstimatePoint" showEvent="click" hideEvent="unfocus" fixed="true" atPosition="right center" myPosition="left center">
+						<h:outputText value="Estimate point can not be changed"></h:outputText>
+					</pe:tooltip>
+					<p:spacer width="5" />
+					<h:panelGroup rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', meetingBean.teamId)}">
+						<p:commandLink id="warning" styleClass="icon-warning-sign" style="color: #f39c12;" global="false" rendered="#{empty issue.parent and meetingBean.findTotalChildEstimatePoint(issue)}" />
+						<pe:tooltip rendered="#{custom:isSprintClosed(meetingBean.sprintId, 'closed')}" for="warning" showEvent="mouseover" hideEvent="unfocus" fixed="true" atPosition="right center"
+							myPosition="left center">
+							<h:outputText value="The estimate point of this task and total estimate points of its children are not equal. &lt;br /&gt; " escape="false" />
+							<h:panelGroup layout="block" style="margin:5px 0">
+								<h:outputText value="- " />
+								<a href="#" id="#{issue.issueId}" old-point="#{issue.estimate}" new-point="#{meetingBean.totalEstimatePoint}" point-format="#{issue.pointFormat}" class="ui-commandlink ui-widget"
+									onclick="prepareUpdateParentPoint('#{issue.issueId}','#{issue.displayIssueId}');return false;" style="text-decoration: underline; color: #0058F3;"> Click here </a>
+								<h:outputText value=" to update estimate point for parent issue. &lt;br /&gt;" escape="false" />
+							</h:panelGroup>
+							<h:panelGroup layout="block" style="margin:5px 0">
+								<h:outputText value="- " />
+								<p:commandLink value="Click here" onclick="setIdParent('#{issue.issueId}');reset();" style="text-decoration: underline;color: #0058F3;" update=":list-form">
+								</p:commandLink>
+								<h:outputText value=" to update estimate point for children issues" />
+							</h:panelGroup>
+						</pe:tooltip>
+					</h:panelGroup>
+				</p:column>
+
+				<p:column style="width: 1%; text-align: center;" rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', meetingBean.teamId) and custom:isSprintClosed(meetingBean.sprintId, 'closed')}">
+					<f:facet name="header">
+		                Remove
+					</f:facet>
+					<p:commandButton title="Remove" icon="icon-trash" global="false" oncomplete="deleteDialogMeetingParent.show()" update=":confirm-form"  rendered="#{empty issue.parent}">
+						<f:setPropertyActionListener target="#{meetingBean.selectedIssue}" value="#{issue}" />
+					</p:commandButton>
+
+					<p:commandButton title="Remove" icon="icon-trash" global="false" oncomplete="deleteDialogMeetingChild.show()" update=":confirm-form" rendered="#{not empty issue.parent}">
+						<f:setPropertyActionListener target="#{meetingBean.selectedIssue}" value="#{issue}" />
+					</p:commandButton>
+
+				</p:column>
+
+				<p:column style="width: 1%; text-align: center;" rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', meetingBean.teamId) and custom:isSprintClosed(meetingBean.sprintId, 'closed')}">
+					<f:facet name="header">
+	                	Add
+					</f:facet>
+					<p:commandButton title="Add sub-task" icon="icon-plus" rendered="#{empty issue.parent}"  oncomplete="showAddForm('#{issue.displayIssueId}');">
+						<f:setPropertyActionListener target="#{meetingBean.selectedIssue}" value="#{issue}" />
+					</p:commandButton>
+				</p:column>
+				<f:facet name="footer">
+					<strong>Total Estimate Points: <h:outputText value="#{meetingBean.calculateIssuesTotalPoints()}" /></strong>
+				</f:facet>
+
+			</p:treeTable>
+			<pe:tooltip global="true" myPosition="left center" atPosition="right center" forSelector=".ui-state-error" showEvent="mouseover" />
+			<p:blockUI block="issue-list" trigger="issue-list" />
+			<script>
+		hideTable();
+	</script>
+		</h:form>
+	</p:fieldset>
+
+	<h:form id="confirm-form">
+		<p:confirmDialog widgetVar="deleteDialogMeetingParent" id="deleteDialogMeetingParent" width="400" modal="true" closable="false" severity="alert">
+			<f:facet name="header">
+				<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+					<f:param value="Issue parent" />
+				</h:outputFormat>
+			</f:facet>
+			<f:facet name="message">
+				<h:outputFormat value="#{msg['myagile.meeting.DeleteParent']}">
+					<f:param value="##{meetingBean.selectedIssue.displayIssueId}" />
+				</h:outputFormat>
+			</f:facet>
+			<h:panelGroup layout="block" style="text-align: right">
+				<p:commandButton value="Yes" action="#{meetingBean.deleteIssue()}" global="false" oncomplete="deleteDialogMeetingParent.hide();" update=":list-form" />
+				<p:commandButton value="No" oncomplete="deleteDialogMeetingParent.hide();" global="false" />
+			</h:panelGroup>
+		</p:confirmDialog>
+
+		<p:confirmDialog widgetVar="deleteDialogMeetingChild" id="deleteDialogMeetingChild" width="400" modal="true" closable="false" severity="alert">
+			<f:facet name="header">
+				<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+					<f:param value="Issue" />
+				</h:outputFormat>
+			</f:facet>
+			<f:facet name="message">
+				<h:outputFormat value="#{msg['myagile.home.Delete']}">
+					<f:param value="issue" />
+					<f:param value="##{meetingBean.selectedIssue.displayIssueId}" />
+				</h:outputFormat>
+			</f:facet>
+			<h:panelGroup layout="block" style="text-align: right">
+				<p:commandButton value="Yes" action="#{meetingBean.deleteIssue()}" global="false" oncomplete="deleteDialogMeetingChild.hide();" update=":list-form" />
+				<p:commandButton value="No" oncomplete="deleteDialogMeetingChild.hide();" global="false" />
+			</h:panelGroup>
+		</p:confirmDialog>
+	</h:form>
+
+
+	<p:panel id="add-form" style="visibility: hidden; width: 25.3%; position: fixed; right: 0px; bottom: 0px;" header="Add issue for SprintBacklog">
+		<h:form id="add-issue-form">
+			<p:focus context="issue-description" />
+			<h:outputLabel value="Subject(*)" for="issue-subject" />
+			<h:inputText id="issue-subject" value="#{meetingBean.newIssue.subject}" styleClass="input-block-level remove-html-control-character" required="true" requiredMessage="#{msg['myagile.issue.ErrorEmptySubject']}">
+				<f:validateLength maximum="255" />
+				<p:ajax event="keyup" update="issue-subjectMsgs" global="false" />
+			</h:inputText>
+			<p:message id="issue-subjectMsgs" for="issue-subject" display="default" />
+			<h:outputLabel value="Description" for="issue-description" />
+			<p:editor controls="bold italic underline strikethrough size color | bullets numbering " id="issue-description" value="#{meetingBean.newIssue.description}" widgetVar="wEditorDesciption">
+			</p:editor>
+			<p/>
+			<h:outputLabel value="Note" for="issue-note" />
+			<p:editor controls="bold italic underline strikethrough size color | bullets numbering " id="issue-note" value="#{meetingBean.newIssue.note}" widgetVar="wEditorNote" >
+			</p:editor>
+			<br />
+			<center>
+				<span id="loadSpinnerImage" style="display:none;"><img src="resources/img/ajax_loader/spinner.gif" /></span>
+				<p:commandButton id="save-button" style="width: 74px;" value="Save" onclick="$('#add-issue-form\\:save-button').attr('disabled','disabled');$('#loadSpinnerImage').show();" actionListener="#{meetingBean.addIssue}" oncomplete="handleSaveButtonAddForm(xhr, status, args);" />
+				&#160;<p:commandButton id="cancel-button" value="Cancel" styleClass="secondary" onclick="hideAddForm();" actionListener="#{meetingBean.resetForm}" global="false" />
+			</center>
+			<script type="text/javascript" src="#{request.contextPath}/resources/assets/js/issue.js" />
+			<script type="text/javascript">
+			$(function () { 
+				handleDescriptionAndSubject("add-issue-form","issue-subject","issue-description");
+				PrimeFaces.ab({source:'',update:'list-form',global:false});
+				jQuery("#add-issue-form\\:issue-description").find("iframe").contents().find('html').css({"width":"100%","height":"100%"});
+				jQuery("#add-issue-form\\:issue-description").find("iframe").contents().find('body').css({"width":"90%","height":"90%"});
+				jQuery("#add-issue-form\\:issue-description").find("iframe").contents().find('body').keyup(function(){
+					jQuery("#add-issue-form\\:issue-description").find("iframe").contents().find('body').focus();
+				});
+ 			});
+			$(document).ready(function() {
+				removeHtmlTagWhenPasteInEditorByIdParentAndWidget("#add-issue-form\\:issue-description", wEditorDesciption);
+				removeHtmlTagWhenPasteInEditorByIdParentAndWidget("#add-issue-form\\:issue-note", wEditorNote);
+				setHeightIframeBody();
+			})
+		</script>
+		</h:form>
+	</p:panel>
+
+	<p:confirmDialog widgetVar="confirmChangeParentPointDlg" id="confirmChangeParentPoint" style="z-index:16000" message="" width="400" modal="true" closable="false" severity="alert">
+		<f:facet name="header">
+			<h:outputFormat value="#{msg['myagile.ChangeDialog']}">
+				<f:param value="Estimate point of Issue parent" />
+			</h:outputFormat>
+		</f:facet>
+		<f:facet name="message">
+			<h:outputText styleClass="msgWithIdPlaceHolder" />
+			<br />
+			<span class="ui-icon ui-icon-none ui-confirm-dialog-severity"></span>
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes" onclick="updateParentPoint([{name: 'issueId', value: issueId},{name: 'newPoint', value: nonFormatPoint}]);" />
+			<p:commandButton value="No" onclick="confirmChangeParentPointDlg.hide();return false;" global="false" />
+		</h:panelGroup>
+	</p:confirmDialog>
+
+</ui:composition>

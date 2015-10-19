@@ -1,0 +1,101 @@
+.form-inline tbody td {
+	padding: 0px;
+	border: none !important;
+}
+
+#projectList .ui-datatable-header {
+	background: white;
+	color: black;
+	border-top-right-radius: 0px;
+	border-top-left-radius: 0px;
+}
+
+#projectList img {
+	padding-right: 3px;
+}
+
+.admin-link-user-project {
+	float: right;
+}
+
+.admin-link-user-project a {
+	color: #45a1de !important;
+}
+
+.admin-link-user-project .selected-link {
+	font-weight: bold;
+}
+
+#projectList .capitalized {
+	text-transform: capitalize;
+}
+
+.ui-datatable tbody td {
+	white-space: normal !important;
+}
+
+/* style filter */
+.wrap-search {
+	float: left;
+	width: 370px;
+}
+
+.wrap-search label {
+	display: inline;
+	position: relative;
+	top: -3px;
+	margin-right:3px;
+}
+
+.wrap-search input {
+	padding: 4px 6px;
+	width: 280px;
+}
+
+/* style link */
+.wrap-admin-link-project {
+	float:right;
+	margin-top:5px;
+}
+/* style table */
+#tb-projects {
+	float:left;
+	width:100%;
+	border:1px solid #d9d9d9;
+	border-collapse: collapse;
+}
+
+#tb-projects th{
+	text-align: center;
+	cursor: default;
+	background: #38A8B1;
+	height: 20px;
+	padding:4px 10px;
+	color:white;
+}
+.th-projectName,
+.th-owner,
+.th-dateCreate,
+.th-isPublic {
+	display: inline !important;
+	margin-left:3px;
+}
+
+.header-sort{
+	cursor: pointer !important;
+}
+#tb-projects td{
+	padding:4px 10px;
+}
+.td-archive {
+	text-align: center;
+}
+.td-po {
+	width:130px;
+}
+.td-project-name {
+	width:250px;
+}
+.td-project-name img{
+	margin-right:5px;
+}

@@ -1,0 +1,233 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:custom="http://myagile.com/custom">
+	
+<style>
+	.issue-desc-input {
+	margin-bottom: 10px;
+	}
+
+.issue-desc-input .ui-editor {
+	width: 650px !important;
+	}
+
+.issue-desc-input iframe {
+	width: 650px !important;
+	}
+</style>
+	<h:form id="userStoryForm">
+		<p:fieldset legend="Update Issue">
+				<p:messages for="msgs" id="msgs" showDetail="true" closable="true" autoUpdate="true" showSummary="false"/>		
+				<c:set var="kanbanIssue" value="#{kanbanIssueBean.editedKanbanIssue}"></c:set>
+				<c:set var="userStory" value="#{kanbanIssueBean.editedUserStory}"></c:set>
+				<table style="max-width:100%;">
+					<tbody>
+						<tr>
+							<td width="10%">Name:</td>
+							<td width="40%">
+								<p:inputText value="#{kanbanIssueBean.editedKanbanIssue.subject}" style="width: 225px;"></p:inputText>
+							</td>
+							<td width="10%">ID:</td>
+							<td>
+								<h:outputText rendered="#{kanbanIssue.isSubIssue == false}" value="##{userStory.userStoryId}" />
+								<h:outputText rendered="#{kanbanIssue.isSubIssue == true}" value="##{kanbanIssue.issueId}" />
+							</td>
+						</tr>
+						<tr>
+							<td width="10%">Type:</td>
+							<td width="40%" style=" margin-bottom: 0px !important;">
+								<p:selectOneMenu id="typeSelect" value="#{kanbanIssueBean.editedKanbanIssue.type}" style="width: 235px;">
+									<f:selectItem itemLabel="Task" itemValue="Task" />
+									<f:selectItem itemLabel="Bug" itemValue="Bug" />
+								</p:selectOneMenu>
+							</td>
+							<td width="10%">Assign To:</td>
+							<td>
+								<p:selectCheckboxMenu label="Team member" value="#{kanbanIssueBean.assignedMembers}"  filter="true" filterMatchMode="contains" style="width:240px;">
+									<f:selectItems value="#{kanbanIssueBean.teamMembers}" var = "teamMember" itemValue="#{teamMember.memberId}" itemLabel="#{teamMember.lastName} #{teamMember.firstName}"/>
+								</p:selectCheckboxMenu>
+							</td>
+						</tr>
+						<tr>
+							<td width="10%">Priority:</td>
+							<td width="40%">
+								<p:selectOneMenu value="#{kanbanIssueBean.editedKanbanIssue.priority}" style="width: 235px;">
+									<f:selectItem itemLabel="--Select a priority--" itemValue="NONE" />
+									<f:selectItem itemLabel="Must" itemValue="MUST" />
+									<f:selectItem itemLabel="Could" itemValue="COULD" />
+									<f:selectItem itemLabel="Should" itemValue="SHOULD" />
+									<f:selectItem itemLabel="Wont" itemValue="WONT" />
+								</p:selectOneMenu>
+							</td>
+							<td width="10%">Estimate:</td>
+							<td><p:inputText id="estimate" style="width:235px;" readonly="#{kanbanIssueBean.editedKanbanIssue.kanbanStatus.type != 'START'}"
+									validator="#{kanbanIssueBean.checkPointEstimate}" value="#{kanbanIssueBean.editedKanbanIssue.estimate}" maxlength="8">
+									<p:ajax event="keyup" update="estimateMsg" oncomplete="removeError('estimate');" global="false"/>
+									<f:param name="editedKanbanIssueId" value="#{kanbanIssueBean.editedKanbanIssue.issueId}"></f:param>
+								</p:inputText>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" width="50%"></td>
+							<td colspan="2">
+								<p:message for="estimate" id="estimateMsg" display="default" />
+							</td>
+						</tr>
+						<tr>
+							<td width="10%">Project:</td>
+							<td width="40%">
+								<h:outputText value="#{userStory.project}" />
+							</td>
+							<td width="10%">Remain:</td>
+							<td><p:inputText id="remain" readonly="#{kanbanIssueBean.editedKanbanIssue.kanbanStatus.type == 'START'}"  style="width:235px;"
+									validator="#{kanbanIssueBean.checkPointRemain}"  value="#{kanbanIssueBean.editedKanbanIssue.remain}" maxlength="8">
+									<p:ajax event="keyup" update="remainMsg" oncomplete="removeError('estimate');" global="false"/>
+									<f:param name="editedKanbanIssueId" value="#{kanbanIssueBean.editedKanbanIssue.issueId}"></f:param>
+								</p:inputText></td>
+						</tr>
+						<tr>
+							<td colspan="2" width="50%"></td>
+							<td colspan="2">
+								<p:message for="remain" id="remainMsg" display="default" />
+							</td>
+						</tr>
+						<tr>
+							<td width="10%">Description:</td>
+							<td colspan="3">
+								<p:editor controls="bold italic underline strikethrough font size color highlight | bullets numbering " id="description"  styleClass="issue-desc-input "
+									value="#{kanbanIssueBean.editedKanbanIssue.description}" height="150" style="margin-bottom: 0px; width:500px;" widgetVar="editorDescriptionKanbanIssue"/>
+							</td>
+						</tr>
+						<tr >
+							<td width="10%">Note:</td>
+							<td colspan="3" style="padding-top:10px;">
+								<p:editor controls="bold italic underline strikethrough font size color highlight | bullets numbering " id="note" widgetVar="editorNoteKanbanIssue"
+									value="#{kanbanIssueBean.editedKanbanIssue.note}" height="150" style="margin-bottom: 0px;" styleClass="issue-desc-input " />
+							</td>
+						</tr>
+						<tr>
+							<td width="10%" style="padding-top:10px;">Upload file:</td>
+							<td colspan="3" style="padding-top:10px;">
+								<h:panelGroup layout="block" id="file-block" >
+									<p:messages for="downloadMsgs" id="downloadMsgs" showDetail="true"
+									closable="true" showSummary="false" />
+									<button type="button" id="addFile" style="margin-left: 0px; width: 150px;" class="btn btn-small btn-info input-block-level">
+										<i class="icon-picture icon-margin-right-5" /> Add file
+									</button>
+									<div id="team-logo-uploader" style="display: none;"></div>
+									<p:blockUI block="file-block" widgetVar="teamLogoBlock">Uploading... (<span class="upload-progress">0%</span>)</p:blockUI>
+								</h:panelGroup>
+									
+								<h:inputHidden id="kanbanIssueId" value="#{kanbanIssueBean.editedKanbanIssue.issueId}"></h:inputHidden>
+								<h:inputHidden id="attId"></h:inputHidden>
+								<script type="text/javascript">	
+									$(document).ready(function(){
+										removeHtmlTagWhenPasteInEditorByIdParentAndWidget("#userStoryForm\\:description",editorDescriptionKanbanIssue);
+										removeHtmlTagWhenPasteInEditorByIdParentAndWidget("#userStoryForm\\:note",editorNoteKanbanIssue);
+									});
+									$(function () { 
+										initUploadAttachment('#{request.contextPath}/upload'); 
+									});
+								</script>
+							</td>
+						</tr>
+						<tr>
+							<td width="10%"></td>
+							<td>
+								<h:panelGroup layout="block" id="filelist" >
+									<h:panelGroup rendered="#{kanbanIssueBean.getAttachmentsOfEditedKanbanIssue().size() gt 0}" >
+											<ui:repeat value="#{kanbanIssueBean.getAttachmentsOfEditedKanbanIssue()}" var="attachment">
+													<h:panelGroup layout="block" rendered="#{attachment.diskFilename != null and attachment.filename != null and kanbanIssueBean.isExistedFile(attachment.diskFilename,kanbanIssueBean.editedUserStory.project.projectId)}">
+														<p:commandLink rendered="#{attachment.diskFilename != null and attachment.filename != null}" onclick="sendAttId(#{attachment.attachmentId}); changeIdPlaceholder(&quot;#{attachment.filename}&quot;);deleteFileDlg.show();" process="@this">
+															<span class="ui-icon ui-icon-trash" style="float: left; margin-top: 0px !important; padding-right: 7px;"></span>
+															<f:param name="attachmentId" value="#{attachment.attachmentId}"></f:param>
+														</p:commandLink>
+														<p:commandLink  styleClass="ui-panel-titlebar-icon ui-corner-all"
+															ajax="false" action="#{downloadBean.download()}">
+															<f:setPropertyActionListener value="#{attachment.diskFilename}"
+																	target="#{downloadBean.fileName}" />
+															<f:setPropertyActionListener value="#{kanbanIssueBean.editedUserStory.project.projectId}"
+																	target="#{downloadBean.projectId}" />
+															<h:outputText value="#{attachment.filename}"/>
+															<f:param name="editedKanbanIssueId" value="#{kanbanIssueBean.editedKanbanIssue.issueId}"></f:param>
+														</p:commandLink>
+													<br />
+													</h:panelGroup>
+													
+											</ui:repeat>
+										</h:panelGroup>
+								</h:panelGroup>
+							</td>
+						</tr>
+						<tr>
+							<td width="10%"></td>
+							<td align="center" colspan="3">
+								<h:panelGroup layout="block" style="text-align: center;">
+										<p:commandButton id="saveBtn" value="Update" actionListener="#{kanbanIssueBean.updateKanbanIssue}"
+											style="margin-right:5px" icon="icon-save" update="msgs userStoryForm" oncomplete="backToViewDetail()">
+												<f:param name="editedKanbanIssueId" value="#{kanbanIssueBean.editedKanbanIssue.issueId}"></f:param>
+										</p:commandButton>
+										<p:commandButton id="cancelBtn" value="Cancel"  styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only secondary"
+											style="margin-right:5px" oncomplete="backToViewDetail()">
+										</p:commandButton>
+									</h:panelGroup>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			
+		</p:fieldset>
+
+	</h:form>
+	<h:form id="uploadF">
+		<p:remoteCommand name="uploadFile" action="#{kanbanIssueBean.uploadFile}" oncomplete="sendKanbanIssue()">
+		</p:remoteCommand>
+		<p:remoteCommand name="deleteFile" actionListener="#{kanbanIssueBean.deleteAttachment}" oncomplete="sendKanbanIssue()">
+		</p:remoteCommand>
+		<p:remoteCommand name="viewDetail"  action="#{kanbanIssueBean.goToViewDetail}">
+		</p:remoteCommand>
+		<p:remoteCommand name="sendData"  update=":userStoryForm:filelist">
+		</p:remoteCommand>
+	</h:form>
+	<p:confirmDialog widgetVar="deleteFileDlg" id="deleteFileDialog" width="400" modal="true" closable="false" severity="alert">
+		<f:facet name="header">
+					<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+						<f:param value="Attachment" />
+					</h:outputFormat>
+		</f:facet>
+		<f:facet name="message">
+			<h:outputFormat styleClass="msgWithIdPlaceHolder" value="#{msg['myagile.project.DeleteFile']}">
+				<f:param value="ID_PLACEHOLDER" />
+			</h:outputFormat>
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes" id="deleteBtn" update="" oncomplete="deleteFileDlg.hide();revertIdPlaceholder();" />
+			<p:commandButton value="No" oncomplete="deleteFileDlg.hide();revertIdPlaceholder();" />
+		</h:panelGroup>
+	</p:confirmDialog>
+	
+	<p:confirmDialog widgetVar="filesizeerror"
+				width="400" modal="true" closable="false" severity="alert"
+				type="hidden">
+				<f:facet name="header">
+					<h:outputFormat value="Warning">
+
+					</h:outputFormat>
+				</f:facet>
+				<f:facet name="message">
+					<h:outputFormat 
+						value="You uploaded a big file size. System supports uploading file size &lt; 10 MB.">
+					</h:outputFormat>
+				</f:facet>
+				<h:panelGroup layout="block" style="text-align: right">
+					<p:commandButton value="Ok" oncomplete="filesizeerror.hide()" />
+				</h:panelGroup>
+	</p:confirmDialog>
+		
+	
+</ui:composition>

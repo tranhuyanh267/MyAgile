@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<!-- Enable autowire -->
+	<context:annotation-config />
+
+	<!-- Enable component scanning -->
+	<context:component-scan base-package="com.ant" />
+
+	<context:property-placeholder location="classpath:config.properties" />
+
+	<!-- wro4j configuration -->
+	<bean name="wroFilter" id="wroFilter" class="ro.isdc.wro.http.ConfigurableWroFilter">
+		<property name="properties" ref="wroProperties" />
+	</bean>
+
+	<bean id="wroProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="location" value="classpath:wro.properties" />
+	</bean>
+
+	<!-- Message Source Configuration -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="classpath:messages" />
+	</bean>
+
+	<!-- Multipart Configuration -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	</bean>
+	
+	<!-- Application context  -->
+	<bean id="springContext" class="com.ant.myagile.utils.SpringContext" />
+	
+	<!-- Imports the configurations of the different infrastructure systems 
+		of the application -->
+	<import resource="data-access-config.xml" />
+	<import resource="scheduler-quartz.xml" />
+</beans>

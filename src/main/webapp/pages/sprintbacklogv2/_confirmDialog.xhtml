@@ -1,0 +1,89 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<p:confirmDialog widgetVar="deleteIssueDialog" styleClass="span4" modal="true" closable="false" severity="alert">
+		<f:facet name="header">
+					<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+						<f:param value="Issue" />
+					</h:outputFormat>
+		</f:facet>
+		<f:facet name="message">
+			<h:outputText styleClass="msgDeleteIssue" value="Would you like to remove Issue #ID_ISSUE?" />
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes" onclick="YesFunction()" />
+			<p:commandButton value="No" global="false" onclick="NoFunction()" />
+		</h:panelGroup>
+	</p:confirmDialog>
+	<script>
+		function YesFunction() {
+			deleteIssueDialog.hide();
+			var id = window.ID_ISSUE;
+			moveIssueToProductBacklog([ {
+				name : 'id',
+				value : 'panel_' + id,
+			} ]);
+			$("#panel_" + id).toggle("explode");
+		}
+		function NoFunction() {
+			deleteIssueDialog.hide();
+			var id = window.ID_ISSUE;
+			$("#panel_" + id).animate({
+				left : 0,
+				top : 0
+			});
+			$('.tooltip_panel_' + id).tooltipster('disable');
+		}
+	</script>
+	<p:confirmDialog widgetVar="confirmChangeParentPointDlg" id="confirmChangeParentPoint" style="z-index:16000" message="" width="400" modal="true" closable="false"
+		severity="alert">
+		<f:facet name="header">
+			<h:outputFormat value="#{msg['myagile.ChangeDialog']}">
+				<f:param value="Estimate point of Issue parent" />
+			</h:outputFormat>
+		</f:facet>
+		<f:facet name="message">
+			<h:outputText styleClass="msgWithIdPlaceHolder" />
+			<br />
+			<span class="ui-icon ui-icon-none ui-confirm-dialog-severity"></span>
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes" onclick="updateParentPoint([{name: 'issueId', value: issueId},{name: 'newPoint', value: nonFormatPoint}])" global="false">
+			</p:commandButton>
+			<p:commandButton value="No" onclick="setNullSelectedParentIssue()" oncomplete="confirmChangeParentPointDlg.hide();" global="false" />
+		</h:panelGroup>
+	</p:confirmDialog>
+	
+	<p:confirmDialog widgetVar="deleteNotAddedFileSBLDlg" id="deleteNotAddedFileSBLDlgId" width="400" modal="true" closable="false" severity="alert">
+		<f:facet name="header">
+					<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+						<f:param value="Attachment" />
+					</h:outputFormat>
+		</f:facet>
+		<f:facet name="message">
+			<h:outputFormat styleClass="msgWithIdPlaceHolder" value="#{msg['myagile.project.DeleteFile']}">
+				<f:param value="ID_PLACEHOLDER" />
+			</h:outputFormat>
+			<br />
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes" action="#{sprintBacklogBeanV2.deleteNotAddedAttachment}" update=":form-add-bl:us-attachment-list" oncomplete="deleteNotAddedFileSBLDlg.hide();revertIdPlaceholder();" />
+			<p:commandButton value="No" oncomplete="deleteNotAddedFileSBLDlg.hide();revertIdPlaceholder();" />
+		</h:panelGroup>
+	</p:confirmDialog>
+	
+	<p:confirmDialog widgetVar="pblfilesizeerror" width="400" modal="true"
+		closable="false" severity="alert" type="hidden">
+		<f:facet name="header">
+			<h:outputFormat value="Warning" />
+		</f:facet>
+		<f:facet name="message">
+			<h:outputFormat
+				value="You uploaded a big file size. System supports uploading file size &lt; 10 MB.">
+			</h:outputFormat>
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Ok" oncomplete="pblfilesizeerror.hide()"
+				global="false" />
+		</h:panelGroup>
+	</p:confirmDialog>
+</ui:composition>

@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<ui:composition xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:custom="http://myagile.com/custom"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+	<h:panelGrid id="productBacklog" styleClass="mobile-expand">
+		<h:form id="addBtnForm"
+			rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', homeBean.teamId) or custom:isOwnerOfProject(homeBean.projectId)}">
+			<div id="addBtn">
+				<p:commandButton global="false" icon="icon-plus"
+					id="newBtn" value="New" onclick="controlAdd()"
+					rendered="#{homeBean.projectId ne '0'}" styleClass="btn-add"
+					actionListener="#{productBacklogHomeBean.handleCreateNewUserStory}" />
+			</div>
+		</h:form>
+
+		<!-- Add New User Story -->
+		<h:form id="addNewForm">
+			<h:panelGrid id="addNewStory" cellpadding="0" cellspacing="0"
+				width="100%">
+				<div id="addNewForm:successMessage"
+					class="ui-messages ui-widget add-new-form-widget">
+					<div class="ui-messages-info ui-corner-all">
+						<span class="ui-messages-info-icon" />
+						<!-- 						<span class="ui-messages-info-summary"/>  -->
+						<span class="ui-messages-info-detail">#{msg['myagile.backlog.SaveSuccess']}</span>
+					</div>
+				</div>
+
+				<div id="addNewForm:UnsuccessMessage"
+					class="ui-messages ui-widget message-add-succesfully">
+					<div class="ui-message-error ui-widget ui-corner-all">
+						<span class="ui-message-error-icon" /> <span
+							class="ui-message-error-detail" /> <span
+							class="ui-message-error-detail">#{msg['myagile.backlog.SaveUnsuccess']}</span>
+					</div>
+				</div>
+
+				<h:panelGroup>
+					<h:outputLabel for="usName" value="Name(*):"
+						styleClass="us-subject" />
+					<p:inputText id="usName" onkeyup="fnc(this)"
+						value="#{productBacklogHomeBean.userStory.name}" label="Name"
+						requiredMessage="#{msg['myagile.backlog.NullName']}"
+						required="true"
+						validator="#{productBacklogHomeBean.validateUserStoryName}"
+						maxlength="255"
+						styleClass="input-user-story-name input-block-level remove-html-control-character">
+						<p:ajax event="keyup" update="usNameMsgs" global="false" />
+						<p:ajax event="change" update="usNameMsgs" global="false" />
+						<p:ajax event="blur" update="usNameMsgs" global="false" />
+						<f:validateLength maximum="255" />
+					</p:inputText>
+					<p:message for="usName" id="usNameMsgs" />
+				</h:panelGroup>
+
+				<h:panelGroup>
+					<h:outputLabel for="usDesc" value="Description(*):" />
+					<p:inputTextarea maxlength="10" id="usDesc"
+						value="#{productBacklogHomeBean.userStory.description}"
+						label="Description">
+						<p:ajax event="keyup" update="usDescMssage" global="false" />
+					</p:inputTextarea>
+					<p:message for="usDesc" id="usDescMssage" />
+					<div class="us-description-message">
+						<p:editor styleClass="input-user-story-desc input-block-level"></p:editor>
+					</div>
+					<script type="text/javascript"
+						src="#{request.contextPath}/resources/assets/js/issue.js" />
+					<script type="text/javascript">
+					    jQuery(document).ready(function ( $ ) {
+					    	var browserInfo = new UAParser().getResult();
+					    	if(browserInfo.os.name != "iOS") {
+					    		handleDescriptionAndSubjectForJavascript("addNewForm","usName","usDesc",
+							  	          "bold italic underline strikethrough | size " +
+								          " | color | bullets numbering");
+					    	}
+				    	});
+				   </script>
+				</h:panelGroup>
+
+				<h:panelGrid columns="2" cellpadding="0" class="ui-grid usCustom">
+					<h:outputLabel for="usValue" value="Value(*):"
+						styleClass="us-value" />
+					<p:spinner id="usValue"
+						value="#{productBacklogHomeBean.userStory.value}" min="0"
+						required="true">
+						<f:validateLongRange minimum="0" maximum="1000" />
+						<p:ajax event="keyup" update="msgValue" global="false" />
+						<p:ajax event="change" update="msgValue" global="false" />
+					</p:spinner>
+				</h:panelGrid>
+
+				<p:message for="usValue" id="msgValue" />
+
+
+				<div>
+					<p:messages for="downloadMsgs" id="downloadMsgs" showDetail="true"
+						closable="true" showSummary="false" />
+				</div>
+				<h:panelGroup layout="block" id="usAttachment">
+					<script type="text/javascript">
+										$(document).ready(function(){
+											initUploadAttachment('#{request.contextPath}/upload'); 
+										});
+								</script>
+					<button id="pickfiles"
+						class="btn btn-small btn-info input-block-level"
+						style="width: 150px; margin-top: 10px;">
+						<i class="icon-picture"></i> Add file
+					</button>
+
+					<p:blockUI block="usAttachment" widgetVar="uploadAttBlock"
+						style="width: 200px;">
+										Uploading... (<span class="upload-progress">0%</span>)
+								</p:blockUI>
+				</h:panelGroup>
+				<p:remoteCommand name="updateAtt"
+					actionListener="#{productBacklogHomeBean.uploadNewAttachment}"
+					update="us-attachment-list" process="@this" />
+				<h:panelGroup layout="block" id="us-attachment-list">
+					<p:panel id="filelist" style="border:0px;">
+						<!-- Not Added List-->
+						<ui:repeat
+							value="#{productBacklogHomeBean.notAddedAttachmentList}"
+							rendered="#{not empty productBacklogHomeBean.notAddedAttachmentList}"
+							var="attachment">
+							<p:commandLink
+								rendered="#{attachment.diskFilename != null and attachment.filename != null}"
+								onclick="changeIdPlaceholder(&quot;#{attachment.filename}&quot;);deleteNotAddedFileDlg.show();"
+								process="@this"
+								style="color:black !important;">
+								<span class="ui-icon ui-icon-trash"
+									style="float: left; margin-top: 1px !important; padding-right: 7px;"></span>
+								<span style="float: left;">#{productBacklogHomeBean.shortNameOfAttachment(attachment.filename)}</span>
+								<f:setPropertyActionListener value="#{attachment}"
+									target="#{productBacklogHomeBean.deleteAttachment}" />
+							</p:commandLink>
+							<br />
+						</ui:repeat>
+						<div class="upload-progress-wrapper">
+							<div id="upload-alert-add-file" style="display: none">
+								<span id="upload-alert-add-file-icon"></span> <span
+									id="upload-alert-add-file-message" class="upload-message"></span>
+							</div>
+						</div>
+					</p:panel>
+				</h:panelGroup>
+
+
+				<h:panelGroup>
+					<p:commandButton id="saveBtn" value="Save"
+						styleClass="title-margin-right-combobox" icon="icon-save"
+						actionListener="#{productBacklogHomeBean.addUserStory}"
+						update=":userStoryDetail, :historyPanel:tabView, :usDetailForm :addNewForm:usName :addNewForm:usValue :addNewForm:us-attachment-list"
+						oncomplete="handleComplete(xhr, status, args); $('#addNewForm\\:usDesc').cleditor()[0].clear();"
+						onclick="hideMessage()" />
+					<p:commandButton global="false" id="cancelBtn" value="Cancel"
+						onclick="closeAdd(); return false;" styleClass="secondary" />
+				</h:panelGroup>
+			</h:panelGrid>
+			<p:separator styleClass="separator" />
+		</h:form>
+		<!-- end new user story -->
+
+		<!-- ============= EDIT US FORM ================ -->
+    <h:panelGroup id="pnlEditUs" style="display: none">
+		<h:form id="frmEditUs" >
+			<h:panelGrid id="pnlEditUs" cellpadding="0" cellspacing="0"
+				width="100%">
+				<div id="frmEditUs:successMessage"
+					class="ui-messages ui-widget add-new-form-widget">
+					<div class="ui-messages-info ui-corner-all">
+						<span class="ui-messages-info-icon" /> <span
+							class="ui-messages-info-detail">#{msg['myagile.backlog.SaveSuccess']}</span>
+					</div>
+				</div>
+
+				<div id="frmEditUs:UnsuccessMessage"
+					class="ui-messages ui-widget message-add-succesfully">
+					<div class="ui-message-error ui-widget ui-corner-all">
+						<span class="ui-message-error-icon" /> <span
+							class="ui-message-error-detail" /> <span
+							class="ui-message-error-detail">#{msg['myagile.backlog.SaveUnsuccess']}</span>
+					</div>
+				</div>
+
+				<h:panelGroup >
+					<h:outputLabel for="usEditName" value="Name(*):"
+						styleClass="us-subject" />
+					<p:inputText id="usEditName" 
+						value="#{productBacklogHomeBean.userStory.name}" label="Name"
+						onkeyup="fnc(this)"
+						requiredMessage="#{msg['myagile.backlog.NullName']}"
+						validator="#{productBacklogHomeBean.validateUserStoryWhenEdit}"
+						required="true"
+						immediate="true"
+						maxlength="255"
+						styleClass="input-user-story-name input-block-level remove-html-control-character">
+						<p:ajax event="keyup" update="usEditNameMsgs" global="false" />
+						<p:ajax event="change" update="usEditNameMsgs" global="false" />
+						<p:ajax event="blur" update="usEditNameMsgs" global="false" />
+						<f:validateLength maximum="255" />
+					</p:inputText>
+					<p:message for="usEditName" id="usEditNameMsgs"/>
+				</h:panelGroup>
+
+				<h:panelGroup>
+					<h:outputLabel for="usEditDesc" value="Description(*):" />
+					<p:inputTextarea maxlength="10" id="usEditDesc"
+						value="#{productBacklogHomeBean.userStory.description}"
+						label="Description">
+						<p:ajax event="keyup" update="usEditDescMssage" global="false" />
+					</p:inputTextarea>
+					<p:message for="usEditDesc" id="usEditDescMssage" />
+					<div class="us-description-message">
+						<p:editor styleClass="input-user-story-desc input-block-level"></p:editor>
+					</div>
+					<script type="text/javascript"
+						src="#{request.contextPath}/resources/assets/js/issue.js" />
+					<script type="text/javascript">
+                        jQuery(document).ready(function ( $ ) {
+                            var browserInfo = new UAParser().getResult();
+                            if(browserInfo.os.name != "iOS") {
+                                handleDescriptionAndSubjectForJavascript("frmEditUs","usEditName","usEditDesc",
+                                          "bold italic underline strikethrough | size " +
+                                          " | color | bullets numbering");
+                            }
+                        });
+                   </script>
+				</h:panelGroup>
+
+				<h:panelGrid columns="2" cellpadding="0" class="ui-grid usCustom">
+					<h:outputLabel for="usEditValue" value="Value(*):"
+						styleClass="us-value" />
+					<p:spinner id="usEditValue"
+						value="#{productBacklogHomeBean.userStory.value}" min="0"
+						required="true">
+						<f:validateLongRange minimum="0" maximum="1000" />
+						<p:ajax event="keyup" update="msgEditValue" global="false" />
+						<p:ajax event="change" update="msgEditValue" global="false" />
+					</p:spinner>
+					<p:message for="usEditValue" id="msgEditValue" />
+				</h:panelGrid>
+				
+
+				<div>
+					<p:messages for="downloadEditMsgs" id="downloadEditMsgs"
+						showDetail="true" closable="true" showSummary="false" />
+				</div>
+				<h:panelGroup layout="block" id="usEditAttachment">
+					<script type="text/javascript">
+                                        $(document).ready(function(){
+                                            initUploadAttachmentEdit('#{request.contextPath}/upload'); 
+                                        });
+                                </script>
+					<button id="pickFileEdit"
+						class="btn btn-small btn-info input-block-level"
+						style="width: 150px; margin-top: 10px;">
+						<i class="icon-picture"></i> Add file
+					</button>
+
+					<p:blockUI block="usEditAttachment" widgetVar="uploadAttEditBlock"
+						style="width: 200px;">
+                                        Uploading... (<span
+							class="upload-progress">0%</span>)
+                                </p:blockUI>
+				</h:panelGroup>
+				<p:remoteCommand name="updateAttEdit"
+					actionListener="#{productBacklogHomeBean.uploadAttachment}"
+					update="usAttListEdit" process="@this" />
+				<h:panelGroup layout="block" id="usAttListEdit">
+					<p:panel id="fileListEdit" style="border:0px;">
+
+						<ui:repeat value="#{productBacklogHomeBean.attachmentList}"
+							rendered="#{not empty productBacklogHomeBean.attachmentList}"
+							var="attachment">
+							<p:commandLink
+							    style="color:black !important;"
+								rendered="#{attachment.diskFilename != null and attachment.filename != null}"
+								onclick="changeIdPlaceholder(&quot;#{attachment.filename}&quot;);deleteFileInDBDlg.show();">
+								<span class="ui-icon ui-icon-trash"
+									style="float: left; margin-top: 1px !important; padding-right: 7px;"></span>
+								<span style="float: left;">#{attachment.filename}</span>
+								<f:setPropertyActionListener value="#{attachment}"
+									target="#{productBacklogHomeBean.selectedAttachment}" />
+							</p:commandLink>
+							<br />
+						</ui:repeat>
+
+						<div class="upload-progress-wrapper">
+							<div id="upload-alert-add-file-edit" style="display: none">
+								<span id="upload-alert-add-file-icon-edit"></span> <span
+									id="upload-alert-add-file-message-edit" class="upload-message"></span>
+							</div>
+						</div>
+					</p:panel>
+				</h:panelGroup>
+
+				<h:panelGroup>
+					<p:commandButton id="saveEditUsBtn" value="Save"
+					   styleClass="title-margin-right-combobox" icon="icon-save"
+					   actionListener="#{productBacklogHomeBean.updateUserStory}"
+					   update=":frmEditUs :userStoryDetail :historyPanel:tabView :usDetailForm"
+					   oncomplete="handleCompleteUpdate(xhr, status, args);" >
+				    </p:commandButton>
+					<p:commandButton global="false" id="cancelEditBtn" value="Cancel"
+						onclick=" closeEditForm();" styleClass="secondary"
+						update=":frmEditUs :userStoryDetail :usDetailForm">
+					</p:commandButton>
+				</h:panelGroup>
+
+			</h:panelGrid>
+		</h:form>
+	</h:panelGroup>
+		<!-- ======================================================-->
+		<!-- Filter and Sort-->
+		<h:form id="filterForm">
+			<p:selectManyCheckbox label="Filters Status"
+				value="#{productBacklogHomeBean.selectedFilter}"
+				styleClass="filter-status">
+				<f:selectItem itemLabel="Todo" itemValue="TODO" />
+				<f:selectItem itemLabel="In-progress" itemValue="IN_PROGRESS" />
+				<f:selectItem itemLabel="Done" itemValue="DONE" />
+				<f:selectItem itemLabel="Void" itemValue="VOID" />
+				<p:ajax listener="#{productBacklogHomeBean.setValueForUsList}"
+					update=":userStoryDetail" />
+			</p:selectManyCheckbox>
+
+			<h:panelGroup id="sort" styleClass="center">
+				<p:selectOneMenu value="#{productBacklogHomeBean.order}"
+					styleClass="width-select-homepage text-left">
+					<f:selectItem itemLabel="Name" itemValue="name" />
+					<f:selectItem itemLabel="Value" itemValue="value" />
+					<f:selectItem itemLabel="Date create" itemValue="userStoryId" />
+					<p:ajax listener="#{productBacklogHomeBean.setValueForUsList}"
+						update=":userStoryDetail" />
+				</p:selectOneMenu>
+
+				<p:selectOneMenu value="#{productBacklogHomeBean.orderBy}"
+					styleClass="width-select-homepage text-left margin-left-select">
+					<f:selectItem itemLabel="Ascend" itemValue="1" />
+					<f:selectItem itemLabel="Descend" itemValue="0" />
+					<p:ajax listener="#{productBacklogHomeBean.setValueForUsList}"
+						update=":userStoryDetail" />
+				</p:selectOneMenu>
+			</h:panelGroup>
+		</h:form>
+		<!-- end filter and sort -->
+
+		<!-- User Story Detail -->
+		<h:form id="searchForm" onkeypress="return event.keyCode != 13"
+			styleClass="form-inline">
+			<h:panelGrid style="width: 100%">
+				<p:inputText id="keyword"
+					value="#{productBacklogHomeBean.searchedKeyWord}"
+					onkeyup="ajaxDelay()" styleClass="input-block-level">
+				</p:inputText>
+				<p:watermark id="watermark" for="keyword"
+					value="Search by ID or Subject" />
+				<p:remoteCommand name="searchUS" update=":userStoryDetail" />
+				<script type="text/javascript">
+				    var delay = (function() {
+				        var timer = 0;
+				        return function(callback, ms) {
+				            clearTimeout(timer);
+				            timer = setTimeout(callback, ms);
+				        };
+				    })();
+				
+				    function ajaxDelay() {
+				        delay( function() {
+				        	searchUS();
+				        }, 300);
+				    };
+				</script>
+			</h:panelGrid>
+		</h:form>
+		<h:panelGrid id="userStoryDetail">
+			<p:confirmDialog widgetVar="deleteDlgUs" width="400" modal="true"
+				closable="false" severity="alert" id="deleteDialog">
+				<f:facet name="header">
+					<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+						<f:param value="User Story" />
+					</h:outputFormat>
+				</f:facet>
+
+				<f:facet name="message">
+					<h:outputFormat value="#{msg['myagile.home.Delete']}">
+						<f:param value="user story" />
+						<f:param value="##{productBacklogHomeBean.deleteId}" />
+					</h:outputFormat>
+				</f:facet>
+
+				<h:panelGroup layout="block" styleClass="text-right">
+					<p:commandButton global="false" id="yesDelete"
+						onclick="($(this).parent().parent().parent().find('.ui-dialog-content').append('Sending inform email...Please wait!'));$(this).parent().find('#noDelete').prop('disabled', true); $(this).prop('disabled', true);"
+						value="Yes" action="#{productBacklogHomeBean.deleteUserStory}"
+						oncomplete="deleteDlgUs.hide();" process="@none"
+						update=":userStoryDetail,:historyPanel:tabView" />
+					<p:commandButton global="false" id="noDelete" value="No"
+						oncomplete="deleteDlgUs.hide();" process="@none" />
+				</h:panelGroup>
+			</p:confirmDialog>
+
+			<h:form id="usDetailForm">
+				<p:dataList lazy="true" value="#{productBacklogHomeBean.usList}"
+					var="us" id="toogleLink" paginator="true" rows="5"
+					paginatorPosition="bottom"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15,30,50,#{productBacklogHomeBean.usList.rowCount + 30}"
+					type="none" styleClass="user-story-list"
+					paginatorAlwaysVisible="false">
+
+					<p:panel toggleable="true" collapsed="true"
+						id="panel#{us.userStoryId}" widgetVar="panel#{us.userStoryId}"
+						styleClass="homepage-userstory-panel">
+						<f:facet name="header">
+							<strong> <h:commandLink id="usRedirectLink"
+									style="text-decoration:underline !important;"
+									action="#{productBacklogBean.goToViewUserStoryPage}"
+									value="##{us.userStoryId}:" target="_blank"
+									onblur="changeLinkColor()">
+									<f:setPropertyActionListener value="#{us}"
+										target="#{productBacklogBean.userStory}" />
+									<f:setPropertyActionListener
+										target="#{productBacklogBean.edit}" value="#{false}" />
+								</h:commandLink>
+							</strong>
+							<span class="word-break-break-word">#{us.name}</span>
+						</f:facet>
+
+						<f:facet name="actions">
+							<p:commandLink id="delUSLink" global="false"
+								rendered="#{custom:isUserNotInRoles('STAKEHOLDER', homeBean.teamId) or custom:isOwnerOfProject(homeBean.projectId)}"
+								styleClass="ui-panel-titlebar-icon ui-corner-all"
+								update=":deleteDialog" oncomplete="deleteDlgUs.show();">
+								<h:outputText styleClass="ui-icon ui-icon-trash" />
+								<f:setPropertyActionListener
+									target="#{productBacklogHomeBean.deleteId}"
+									value="#{us.userStoryId}" />
+								<f:setPropertyActionListener
+									target="#{productBacklogHomeBean.deleteSortId}"
+									value="#{us.sortId}" />
+							</p:commandLink>
+
+							<p:commandLink id="editUSLink" global="false"
+								rendered="#{custom:isUserNotInRoles('STAKEHOLDER', homeBean.teamId) or custom:isOwnerOfProject(homeBean.projectId)}"
+								styleClass="ui-panel-titlebar-icon ui-corner-all"
+								oncomplete="controlEdit()"
+								update=":frmEditUs"
+								actionListener="#{productBacklogHomeBean.handleEditUserStory}">
+								<f:setPropertyActionListener
+									target="#{productBacklogHomeBean.userStory}" value="#{us}"></f:setPropertyActionListener>
+								<h:outputText styleClass="ui-icon ui-icon-pencil" />
+							</p:commandLink>
+						</f:facet>
+                        
+                        <div id="showedUsSession#{us.userStoryId}" class="word-break-break-word">
+                            <h:outputText value="#{us.description}" escape="false"/>
+                            <br/><br/>
+                            <strong><h:outputText value="Value: #{us.value}"/></strong>
+                            <br/> 
+                            <strong> 
+                                <h:outputText rendered="#{us.status == 'TODO'}" value="Status: To do"></h:outputText>
+                                <h:outputText rendered="#{us.status == 'IN_PROGRESS'}" value="In progress: #{productBacklogHomeBean.calculateProgressOfUserStory(us)}%"></h:outputText> 
+                                <h:outputText rendered="#{us.status == 'DONE'}" value="Status: Done"></h:outputText> 
+                                <h:outputText rendered="#{us.status =='VOID'}" value="Status: Void"></h:outputText>
+                                <br/>
+                                <p:commandButton id="setVoidbtn" 
+                                                 styleClass="btn-set-des-void"
+                                                 update=":idConfirmSetVoidUserStoryEdit" 
+                                                 value="Set Void" 
+                                                 icon="icon-ok-sign" 
+                                                 oncomplete="confirmSetVoidUserStoryEdit.show();"
+                                                 actionListener="#{productBacklogHomeBean.setRelatedIssueForSelectedUserStory(us.userStoryId)}" 
+                                                 global="false"
+                                                 rendered="#{(us.status=='TODO' or us.status=='IN_PROGRESS') and (custom:isUserNotInRoles('STAKEHOLDER', homeBean.teamId) or custom:isOwnerOfProject(homeBean.projectId))}">
+                                </p:commandButton>
+                               <p:commandButton id="desVoidbtn" 
+                                                styleClass="btn-set-des-void"
+                                                update=":idConfirmSetDestroyVoidUserStoryEdit" 
+                                                value="Destroy Void" 
+                                                icon="icon-ban-circle" 
+                                                oncomplete="confirmSetDestroyVoidUserStoryEdit.show();"
+                                                actionListener="#{productBacklogHomeBean.setRelatedIssueForSelectedUserStory(us.userStoryId)}" 
+                                                global="false"
+                                                rendered="#{us.status=='VOID'}">
+                               </p:commandButton>
+                            </strong>
+                        </div>
+                        <div id="editedUsSession#{us.userStoryId}" class="edit-us-subject">
+                            <h:inputText class="name#{us.userStoryId} input-user-story-name input-block-level remove-html-control-character" value="#{us.name}" label="Name" maxlength="255" styleClass="remove-html-control-character"/>
+                            <div id="msn#{us.userStoryId}" class="error-desc-edit ui-message-error ui-corner-all display-none">
+                                <span class="customMsg">#{msg['myagile.backlog.NullName']}</span>
+                            </div>
+                            <div id="ms2n#{us.userStoryId}" class="error-desc-edit ui-message-error ui-corner-all display-none">
+                                <span class="customMsg">#{msg['myagile.backlog.Exists']}</span>
+                            </div>
+                            <p:inputTextarea value="#{us.description}" label="Description" maxlength="1000" styleClass="input-user-story-desc input-block-level"/>
+                            <h:panelGrid>
+                                <p:spinner value="#{us.value}" min="0" max="100" required="true" styleClass="spinner-value"/>
+                                <div id="ms3n#{us.userStoryId}" class="error-desc-edit ui-message-error ui-corner-all display-none">
+                                    <span class="customMsg">#{msg['myagile.backlog.RangeOfValue']}</span>
+                                </div>
+                            </h:panelGrid>
+                            <p:commandButton 
+                                global="false" 
+                                id="saveUpdate#{us.userStoryId}" 
+                                styleClass="title-margin-right-combobox"
+                                value="Save" 
+                                update=":historyPanel:tabView" 
+                                icon="icon-save"
+                                action="#{productBacklogHomeBean.updateUserStory(us.userStoryId,us.name)}" 
+                                oncomplete="handleCompleteUpdate(xhr, status, args)"/>
+                            <p:commandButton global="false" value="Cancel" actionListener="#{productBacklogHomeBean.resetUserStoryValue}" update=":userStoryDetail,:historyPanel:tabView" styleClass="secondary"/>
+                        </div>
+						
+					</p:panel>
+				</p:dataList>
+				<script type="text/javascript">	
+					removeTextInPagination();
+					setTextAllInPaginationSelect();
+					$(function(){
+						handleProgressBar(#{productBacklogHomeBean.progressList});
+					});		
+					jQuery(document).ready(function($) {
+				    	var browserInfo = new UAParser().getResult();
+				    	if(browserInfo.os.name != "iOS") {
+							var editorText = [];
+							$("textarea[id*='usDetailForm']").each(function(i,textEditor){
+								var itemCleditor = $(textEditor).cleditor({ 
+						    		controls: "bold italic underline strikethrough | size " +
+					    	          " | color | bullets numbering",
+                                	width: "100%",
+					    			height: 100
+				    			}); 
+								editorText.push(itemCleditor);
+								$(textEditor).parent().find("iframe").contents().find('body').on("paste",function(e){
+									e.preventDefault();
+									appendTextIntoEditorCleditor(editorText[i][0],e);
+								});						
+							});
+				    	}
+				    	setHeightIframeBody();
+			    	});
+					$(function changeLinkColor(){
+						$("a").css("color","white");
+					});
+				</script>
+			</h:form>
+			<h:form styleClass="btn-expand-all-wrapper">
+				<h:panelGrid>
+					<p:commandButton icon="icon-resize-full" global="false"
+						styleClass="btn-expand-all"
+						onclick="return toggleUs(#{productBacklogHomeBean.usList.rowCount})"
+						id="linkToggle" type="button" value="Expand all"
+						rendered="#{not empty productBacklogHomeBean.usList}" />
+				</h:panelGrid>
+			</h:form>
+		</h:panelGrid>
+		<!-- end user story detail -->
+	</h:panelGrid>
+
+	<h:form styleClass="margin-bottom-0">
+		<pe:blockUI target=":usDetailForm" widgetVar="block_ProductBacklog">
+			<h:graphicImage alt="ajax loader" library="images"
+				url="/resources/img/ajax_loader/ajax_loader.gif"
+				styleClass="image-loader" />
+		</pe:blockUI>
+		<p:ajaxStatus onstart="block_ProductBacklog.block();"
+			oncomplete="block_ProductBacklog.unblock();" />
+		<p:remoteCommand name="resetAddForm"
+			actionListener="#{productBacklogHomeBean.resetForm}"
+			update=":addNewForm:usName :addNewForm:usValue :addNewForm:us-attachment-list"
+			oncomplete="$('#addNewForm\\:usDesc').cleditor()[0].clear();"
+			global="false" />
+		<h:commandLink styleClass="display-none" />
+	</h:form>
+
+
+	<p:confirmDialog widgetVar="deleteNotAddedFileDlg"
+		id="deleteNotAddedFileDlgId" width="400" modal="true" closable="false"
+		severity="alert">
+		<f:facet name="header">
+			<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+				<f:param value="Attachment" />
+			</h:outputFormat>
+		</f:facet>
+		<f:facet name="message">
+			<h:outputFormat styleClass="msgWithIdPlaceHolder"
+				value="#{msg['myagile.project.DeleteFile']}">
+				<f:param value="ID_PLACEHOLDER" />
+			</h:outputFormat>
+			<br />
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes"
+				action="#{productBacklogHomeBean.deleteNotAddedAttachment}"
+				update=":addNewForm:us-attachment-list"
+				oncomplete="deleteNotAddedFileDlg.hide();revertIdPlaceholder();" />
+			<p:commandButton value="No"
+				oncomplete="deleteNotAddedFileDlg.hide();revertIdPlaceholder();" />
+		</h:panelGroup>
+	</p:confirmDialog>
+
+	<p:confirmDialog widgetVar="deleteFileInDBDlg" id="deleteFileInDBDlgId"
+		width="400" modal="true" closable="false" severity="alert">
+		<f:facet name="header">
+			<h:outputFormat value="#{msg['myagile.DeleteDialog']}">
+				<f:param value="Attachment" />
+			</h:outputFormat>
+		</f:facet>
+		<f:facet name="message">
+			<h:outputFormat styleClass="msgWithIdPlaceHolder"
+				value="#{msg['myagile.project.DeleteFile']}">
+				<f:param value="ID_PLACEHOLDER" />
+			</h:outputFormat>
+		</f:facet>
+		<h:panelGroup layout="block" style="text-align: right">
+			<p:commandButton value="Yes" id="deleteOnEditBtn"
+				action="#{productBacklogHomeBean.deleteAttachmentInDB}"
+				update=":frmEditUs:usAttListEdit"
+				oncomplete="deleteFileInDBDlg.hide();revertIdPlaceholder();" />
+			<p:commandButton value="No"
+				oncomplete="deleteFileInDBDlg.hide();revertIdPlaceholder();" />
+		</h:panelGroup>
+	</p:confirmDialog>
+	
+<!-- 	Confirm set void dialog -->
+	 <p:confirmDialog widgetVar="confirmSetVoidUserStoryEdit"
+                        id="idConfirmSetVoidUserStoryEdit" width="400" modal="true"
+                        closable="false" severity="alert" type="hidden">
+                        <f:facet name="header">
+                                Confirm
+                            </f:facet>
+                        <f:facet name="message">
+                            <h:outputText
+                                value="Do you want to set void for User Story #{productBacklogHomeBean.selectedUserStoryId}?" 
+                                rendered="#{(empty (productBacklogHomeBean.relatedIssues)) and (empty (productBacklogHomeBean.relatedKanbanIssues))}"/>
+                            
+                            <h:outputText value="Do you want to set void for User Story #{productBacklogHomeBean.selectedUserStoryId} and related Issues:" 
+                                          rendered="#{(not empty (productBacklogHomeBean.relatedIssues)) or (not empty (productBacklogHomeBean.relatedKanbanIssues))}"
+                                          style="text-align: left;display:block;margin-top:5px;"
+                                          layout="block"/>
+                            <!--                                 Show Scrum Issue  -->
+                            <h:panelGroup rendered="#{not empty (productBacklogHomeBean.relatedIssues)}"
+                                    style="text-align: left;margin-top:5px;">
+                                    <ui:repeat var="issue" value="#{productBacklogHomeBean.relatedIssues}">
+                                        <h:outputText value="- #{issue.issueId} : #{issue.subject}" style="margin-left:6%;display:block"/>
+                                    </ui:repeat>
+                            </h:panelGroup>
+                            
+<!--                             Show Kanban issue -->
+                            <h:panelGroup style="text-align: left;margin-top:5px;" 
+                                          rendered="#{(empty (productBacklogHomeBean.relatedIssues)) and (not empty (productBacklogHomeBean.relatedKanbanIssues))}">
+                                    <ui:repeat var="kanbanIssue" value="#{productBacklogHomeBean.relatedKanbanIssues}">
+                                        <h:outputText value="- #{kanbanIssue.issueId} : #{kanbanIssue.subject}" style="margin-left:6%;display:block"></h:outputText>
+                                    </ui:repeat>
+                            </h:panelGroup>
+                            
+                        </f:facet>
+                        <h:panelGroup layout="block" style="text-align: right">
+                            <p:commandButton value="Yes"
+                                actionListener="#{productBacklogHomeBean.setVoid}"
+                                oncomplete="confirmSetVoidUserStoryEdit.hide();"
+                                update=":historyPanel "/>
+                            <p:commandButton value="No"
+                                oncomplete="confirmSetVoidUserStoryEdit.hide()" />
+                        </h:panelGroup>
+                    </p:confirmDialog>
+                    
+       <p:confirmDialog widgetVar="confirmSetDestroyVoidUserStoryEdit"
+                        id="idConfirmSetDestroyVoidUserStoryEdit" width="400" modal="true"
+                        closable="false" severity="alert" type="hidden">
+                        <f:facet name="header">
+                                Confirm
+                            </f:facet>
+                        <f:facet name="message">
+                            <h:outputText
+                                value="Do you want to destroy void for User Story #{productBacklogHomeBean.selectedUserStoryId}?" 
+                                rendered="#{(empty (productBacklogHomeBean.relatedIssues)) and (empty (productBacklogHomeBean.relatedKanbanIssues))}"/>
+                            
+                            <h:outputText value="Do you want to destroy void for User Story #{productBacklogHomeBean.selectedUserStoryId} and related Issues:" 
+                                          rendered="#{(not empty (productBacklogHomeBean.relatedIssues)) or (not empty (productBacklogHomeBean.relatedKanbanIssues))}"
+                                          style="text-align: left;display:block;margin-top:5px;"
+                                          layout="block"/>
+                            <!--                                 Show Scrum Issue  -->
+                            <h:panelGroup rendered="#{not empty (productBacklogHomeBean.relatedIssues)}"
+                                    style="text-align: left;margin-top:5px;">
+                                    <ui:repeat var="issue" value="#{productBacklogHomeBean.relatedIssues}">
+                                        <h:outputText value="- #{issue.issueId} : #{issue.subject}" style="margin-left:6%;display:block"/>
+                                    </ui:repeat>
+                            </h:panelGroup>
+                            
+<!--                             Show Kanban issue -->
+                            <h:panelGroup style="text-align: left;margin-top:5px;" 
+                                          rendered="#{(empty (productBacklogHomeBean.relatedIssues)) and (not empty (productBacklogHomeBean.relatedKanbanIssues))}">
+                                    <ui:repeat var="kanbanIssue" value="#{productBacklogHomeBean.relatedKanbanIssues}">
+                                        <h:outputText value="- #{kanbanIssue.issueId} : #{kanbanIssue.subject}" style="margin-left:6%;display:block"></h:outputText>
+                                    </ui:repeat>
+                            </h:panelGroup>
+                            
+                        </f:facet>
+                        <h:panelGroup layout="block" style="text-align: right">
+                            <p:commandButton value="Yes"
+                                actionListener="#{productBacklogHomeBean.destroyVoid}"
+                                oncomplete="confirmSetDestroyVoidUserStoryEdit.hide();"
+                                update=":historyPanel "/>
+                            <p:commandButton value="No"
+                                oncomplete="confirmSetDestroyVoidUserStoryEdit.hide()" />
+                        </h:panelGroup>
+                    </p:confirmDialog>
+</ui:composition>
+
+

@@ -1,0 +1,45 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<center>	
+<h:panelGroup id="burndownChart">
+		<h:panelGroup rendered="#{!chartBean.display}">
+			<div class="ui-message-info ui-widget ui-corner-all no-margin" style="text-align: left;">
+				<span class="ui-message-info-icon"></span>
+				<span class="ui-message-info-detail">#{msg['myagile.home.NoChart']}</span>
+			</div>
+		</h:panelGroup>
+		<h:panelGroup rendered="#{chartBean.display}">
+			<p:lineChart id="bar" value="#{chartBean.combinedModel}" widgetVar="BurndownChartClient"
+				legendPosition="n" title="Combined Bar Chart" min="0" zoom="true"
+				style="height:400px; width: 95%;" extender="ext">
+			</p:lineChart>
+		</h:panelGroup>
+	</h:panelGroup>
+    <script type="text/javascript">
+        //<![CDATA[
+        var CURRENT_CHART_SIZE = 1;
+        jQuery(window).resize(function( $ ) {
+            if (CURRENT_CHART_SIZE != 1 && jQuery(window).width() > 1199) {
+                CURRENT_CHART_SIZE = 1;
+                BurndownChartClient.plot.replot();
+            }
+            else if (CURRENT_CHART_SIZE != 2 && jQuery(window).width() < 1200 && jQuery(window).width() > 979) {
+                CURRENT_CHART_SIZE = 2;
+                BurndownChartClient.plot.replot();
+            }
+            else if (CURRENT_CHART_SIZE !=3 && jQuery(window).width() < 980 && jQuery(window).width() > 767) {
+                CURRENT_CHART_SIZE = 3;
+                BurndownChartClient.plot.replot();
+            }
+            else if (CURRENT_CHART_SIZE !=4 && jQuery(window).width() < 768) {
+                CURRENT_CHART_SIZE = 4;
+                BurndownChartClient.plot.replot();
+            }
+        });
+        //]]>
+    </script>
+</center>
+</ui:composition>

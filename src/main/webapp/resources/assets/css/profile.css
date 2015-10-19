@@ -1,0 +1,87 @@
+@CHARSET "UTF-8";
+
+#loadSpinnerImage {
+	top: 550px;
+	left: 1134px;
+}
+
+.btnContainer {
+	margin-left: 100px;
+}
+
+form .ui-widget-content {
+	border-color: white !important;
+}
+
+.ui-messages-error .ui-corner-all {
+	width: 780px;
+}
+
+.ui-panelgrid td {
+	border-width: 1px;
+	border-style: solid;
+	border-color: inherit;
+	padding: 8px 10px;
+}
+
+.label {
+	display: block;
+	margin-bottom: 5px;
+	background-color: #D3D3D3;
+	color: #2C3E50;
+	text-align: center;
+}
+
+.tagAction {
+	background-color: #FCF8E3;
+	border-radius: 5px;
+	max-width: 220px;
+	padding: 5px;
+	color: #E9AF59;
+	border-style: dashed;
+	border-width: 1px;
+	border-color: #E9AF59;
+	cursor: default;
+}
+
+fieldset.span12 legend {
+	margin-left: 10px;
+}
+
+@media ( max-width : 979px) {
+	body {
+		min-width: 890px;
+	}
+	#body-div.container,.row {
+		width: 844px !important;
+	}
+}
+
+.email-icon a.list, .email-icon a.exchange{
+	text-decoration: none;
+	color: #45A1DE
+}
+
+.email-icon a.add{
+	text-decoration: none;
+	color: #6EB243;
+}
+.email-icon a.trash {
+	text-decoration: none;
+	color: #5F497A;
+}
+
+.email-icon a.not-active {
+	text-decoration: none;
+	color: #F39C46;
+}
+
+#emaiListPane{
+	
+}
+
+.email-icon a.save{
+	text-decoration: none;
+	color: #45A1DE;
+	font-size: 1.4em;
+}

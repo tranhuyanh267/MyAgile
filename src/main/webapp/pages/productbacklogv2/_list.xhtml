@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:custom="http://myagile.com/custom" 
+	>
+	<style>
+		.form-inline tbody td{
+			padding: 0px;
+ 	 		border: none !important;  
+		}
+	</style>
+	<p:fieldset styleClass="span12">
+		<h:form  id="form-userStoryTable">
+		<h:commandLink action="#{issueBeanV2.toViewIssuePage}" value = ""></h:commandLink>
+		<div class = "wrap-search-filter">
+			
+			<h:panelGroup id="export-pdf" styleClass="pull-right" style="position:relative;top:8px;">
+				<h:panelGroup layout="block" styleClass=" text-right" rendered="#{not empty productBacklogBeanV2.userStoryList}">
+					<h:outputText>Export UserStories </h:outputText>
+					
+					<p:commandLink id="exportExcel" title="Export To Excel" actionListener="#{productBacklogBeanV2.checkExportUserStoryExcel}">
+							<h:graphicImage alt="excel icon" value="/#{request.contextPath}/resources/img/icons/excel.png"/>
+					</p:commandLink>
+					<p:commandButton ajax="false" id="exportExcelButton" style="display: none;" actionListener="#{productBacklogBeanV2.exportExcelProductBacklogFromProject}"></p:commandButton>
+					
+					<p:commandLink id="exportPDF" title="Export To PDF" actionListener="#{productBacklogBeanV2.checkExportUserStoryPDF}">
+							<h:graphicImage alt="pdf icon" value="/#{request.contextPath}/resources/img/icons/pdf.png" />
+					</p:commandLink>
+					<p:commandButton ajax="false" id="exportPDFButton" style="display: none;" actionListener="#{productBacklogBeanV2.exportUserStoryPDF}" />
+					
+				</h:panelGroup> 
+			</h:panelGroup>
+		
+			<div class = "wrap-search">
+				<h:outputLabel value="Search:"></h:outputLabel>
+				<h:inputText id="txtSearch" value="#{productBacklogBeanV2.stateUserstoryList.filters.value}" onkeyup="ajaxDelay()" onkeypress="if(event.keyCode == 13) return false;"></h:inputText>
+			</div>
+			<div class = "wrap-filter-status">
+				<p:selectManyCheckbox id="filterCheckbox" label="Filters Status"  value="#{productBacklogBeanV2.selectedFilter}" style="width:300px; cellpadding: 0px;"
+				>
+					<f:selectItem itemLabel="To do" itemValue="TODO" />
+					<f:selectItem itemLabel="In-progress" itemValue="IN_PROGRESS" />
+					<f:selectItem itemLabel="Done" itemValue="DONE" />
+					<f:selectItem itemLabel="Void" itemValue="VOID" />
+					<p:ajax global="true" listener="#{productBacklogBeanV2.filterStatusUserStory}" update="wrap-table-userstory"/>
+				</p:selectManyCheckbox>
+			</div>
+			
+			<div style = 'clear:both;'></div>
+		</div>
+		<h:panelGroup id="wrap-table-userstory" layout="block">
+		<ui:param name="sortField" value="#{productBacklogBeanV2.stateUserstoryList.sorters}"></ui:param>
+		<table border = "1" id = "tb-userstory">
+			<thead>
+				<tr>
+					<th style="width: 15px;">
+						<h:panelGroup styleClass="select-or-unselect-all-userstory" style="cursor:pointer;" rendered="#{!productBacklogBeanV2.selectedAllUserStory }">
+	            			<i class="icon icon-check-empty icon-select-unselect-all" style="color:white;"></i>
+	            			
+		            	</h:panelGroup>
+		            	<h:panelGroup styleClass="select-or-unselect-all-userstory" style="cursor:pointer;" rendered="#{productBacklogBeanV2.selectedAllUserStory }">
+		            		<i class="icon icon-check icon-select-unselect-all" style="color:white;"></i>
+		            	</h:panelGroup>
+					</th>
+					<th style="width:75px" class = "header-sort" data-field = 'id'>
+						<h:outputText value="#ID"></h:outputText>
+						<h:panelGroup styleClass="th-id ui-icon ui-icon-carat-2-n-s" rendered="#{sortField.field ne 'id'}"></h:panelGroup>
+						<h:panelGroup styleClass="th-id ui-icon ui-icon-triangle-1-n" rendered="#{sortField.field eq 'id' and sortField.value eq 'ASC'}"></h:panelGroup>
+						<h:panelGroup styleClass="th-id ui-icon ui-icon-triangle-1-s" rendered="#{sortField.field eq 'id' and sortField.value eq 'DESC'}"></h:panelGroup>
+					</th>
+					<th class = "header-sort" data-field = 'name'  style = "width:250px;">
+						<h:outputText value="Subject"></h:outputText>
+						<h:panelGroup styleClass="th-subject ui-icon ui-icon-carat-2-n-s" rendered="#{sortField.field ne 'name'}"></h:panelGroup>
+						<h:panelGroup styleClass="th-subject ui-icon ui-icon-triangle-1-n" rendered="#{sortField.field eq 'name' and sortField.value eq 'ASC'}"></h:panelGroup>
+						<h:panelGroup styleClass="th-subject ui-icon ui-icon-triangle-1-s" rendered="#{sortField.field eq 'name' and sortField.value eq 'DESC'}"></h:panelGroup>
+					</th>
+					<th><h:outputText value="Description"></h:outputText></th>
+					<th style = "width:80px;"><h:outputText value="Status"></h:outputText></th>
+					<th style = "width:70px;"><h:outputText value="Done (%)"></h:outputText></th>
+					<th style = "width:50px;" class = "header-sort" data-field = 'value' >
+						<h:outputText value="Value"></h:outputText>
+						<h:panelGroup styleClass="th-value ui-icon ui-icon-carat-2-n-s" rendered="#{sortField.field ne 'value'}"></h:panelGroup>
+						<h:panelGroup styleClass="th-value ui-icon ui-icon-triangle-1-n" rendered="#{sortField.field eq 'value' and sortField.value eq 'ASC'}"></h:panelGroup>
+						<h:panelGroup styleClass="th-value ui-icon ui-icon-triangle-1-s" rendered="#{sortField.field eq 'value' and sortField.value eq 'DESC'}"></h:panelGroup>
+					</th>
+					<th style = "width:30px;"><h:outputText value="Edit"></h:outputText></th>
+					<th style = "width:57px;"><h:outputText value="Void"></h:outputText></th>
+					<th style = "width:30px;"><h:outputText value="Delete" ></h:outputText></th>
+				</tr>
+			</thead>
+			<tbody>
+			<h:form id="form-list-us">
+				<ui:param name="userStories" value="#{productBacklogBeanV2.userStoryList}"></ui:param>
+				<ui:repeat var="userStory" value="#{userStories}">
+					<tr>
+						<td style="text-align: center;">
+							<h:panelGroup styleClass="icon-select-userstory" style="cursor:pointer;" rendered="#{!productBacklogBeanV2.selectedUserStories.contains(userStory) }">
+			            		<i class="icon icon-check-empty" data-id-userstory = "#{userStory.userStoryId}"></i>
+			            	</h:panelGroup>
+			            	<h:panelGroup styleClass="icon-select-userstory" style="cursor:pointer;" rendered="#{productBacklogBeanV2.selectedUserStories.contains(userStory)}">
+			            		<i class="icon icon-check" data-id-userstory = "#{userStory.userStoryId}"></i>
+			            	</h:panelGroup>
+						</td>
+						<td class ="td-id box-issue-title-content-child ellipsis-text">
+							<p:commandLink id="viewButton" title="View Detail" action = "#{productBacklogBeanV2.viewProductBackLog}" oncomplete="showUserStoryForm()" update=":userStoryForm" global="false" ajax="true">
+								##{userStory.userStoryId}
+								<f:setPropertyActionListener value="#{userStory}" target="#{productBacklogBeanV2.userStory}" />
+								<f:setPropertyActionListener target="#{productBacklogBeanV2.edit}" value="#{false}"/>
+							</p:commandLink>
+						</td>
+						<td class ="td-subject">
+							<h:outputText value="#{userStory.name}" />
+						</td>
+						<td class ="td-description"><h:outputText value="#{userStory.description}" escape="false" class="word-break-break-word"/></td>
+						<td class ="td-status">
+							<ui:param name="userStoryStatus" value="#{userStory.status}" />
+				            <h:outputText rendered="#{userStoryStatus == 'TODO'}" value="To do"></h:outputText>
+							<h:outputText rendered="#{userStoryStatus == 'IN_PROGRESS'}" value="In progress"></h:outputText>
+							<h:outputText rendered="#{userStoryStatus == 'DONE'}" value="Done"></h:outputText>
+							<h:outputText rendered="#{userStoryStatus == 'VOID'}" value="Void"></h:outputText>
+						</td>
+						<td class ="td-progress">
+							<script type="text/javascript">
+			            		fillZeroTextInProgressBar();
+			            	</script>
+			            	
+							<p:progressBar rendered="#{userStoryStatus == 'IN_PROGRESS'}" value="#{productBacklogBeanV2.calculateProgressOfUserStory(userStory)}" labelTemplate="{value}%" displayOnly="true"></p:progressBar>
+							<p:progressBar rendered="#{userStoryStatus == 'DONE'}" value="100" labelTemplate="{value}%" displayOnly="true"></p:progressBar>
+							<p:progressBar rendered="#{userStoryStatus == 'TODO'}" value="0" labelTemplate="{value}%" displayOnly="true"></p:progressBar>
+							<p:progressBar rendered="#{userStoryStatus == 'VOID'}" value="#{productBacklogBeanV2.calculateProgressOfUserStory(userStory)}" labelTemplate="{value}%" displayOnly="true"></p:progressBar>
+						</td>
+						<td class ="td-value">
+							<h:outputText value="#{userStory.value}"/>
+						</td>
+						
+						<td class ="td-button-view">
+							<p:commandLink id="editButton" title="Edit" action = "#{productBacklogBeanV2.viewProductBackLog}" oncomplete="showUserStoryForm()" update=":userStoryForm " global="false" ajax="true">
+								<i class="icon icon-edit"></i>
+								<f:setPropertyActionListener value="#{userStory}" target="#{productBacklogBeanV2.userStory}" />
+								<f:setPropertyActionListener target="#{productBacklogBeanV2.edit}" value="#{true}"/>
+								<f:setPropertyActionListener value="#{false}" target="#{productBacklogBeanV2.createMode}" />
+							</p:commandLink>
+						</td>
+						<td class="td-button-setVoid">
+							<p:commandButton id="td-button-setVoid" icon="icon-ok-sign" oncomplete="confirmSetVoidUserStory.show()" title="Set Void"
+							rendered="#{userStory.status=='TODO' or userStory.status=='IN_PROGRESS'}" 
+							action="#{productBacklogBeanV2.setRelatedIssueForSelectedUserStory}"
+							update=":form-userStoryTable:idConfirmSetVoidUserStory">
+								<f:setPropertyActionListener value="#{userStory}" target="#{productBacklogBeanV2.selectedUserStoryForSetVoid}"/>
+							</p:commandButton>
+							<p:commandButton id="td-button-desVoid" title="Destroy Void"
+									icon="icon-ban-circle" oncomplete="confirmSetDestroyVoid.show()"
+									global="false" rendered="#{userStory.status=='VOID' }"
+									action="#{productBacklogBeanV2.setRelatedIssueForSelectedUserStory}"
+									update=":form-userStoryTable:idConfirmSetDestroyVoid">
+								<f:setPropertyActionListener value="#{userStory}" target="#{productBacklogBeanV2.selectedUserStoryForSetVoid}"/>
+							</p:commandButton>
+						</td>
+						<td class ="td-button-delete">
+							<p:commandButton id="deleteButton" styleClass="tb-userstory-button-delete" title="Delete" icon="icon-trash" 
+								onclick="changeIdPlaceholder('#{userStory.userStoryId}');deleteDlgUs.show()" global="false">
+								<f:setPropertyActionListener value="#{userStory}" target="#{productBacklogBeanV2.userStory}" />
+								<f:setPropertyActionListener target="#{productBacklogBeanV2.edit}" value="#{false}"/>
+							</p:commandButton>
+						</td>
+					</tr>
+					</ui:repeat>
+					
+					</h:form>
+<!-- 					Confirm set void -->
+					<p:confirmDialog widgetVar="confirmSetVoidUserStory"
+						id="idConfirmSetVoidUserStory" width="400" modal="true"
+						closable="false" severity="alert" type="hidden">
+						<f:facet name="header">
+								Confirm
+							</f:facet>
+						<f:facet name="message">
+							<h:outputText
+                                value="Do you want to set void for User Story #{productBacklogBeanV2.selectedUserStoryForSetVoid.userStoryId} ?"
+                                rendered="#{(empty (productBacklogBeanV2.relatedIssueSelectedUserStoryForSetVoid)) and (empty (productBacklogBeanV2.relatedKanbanIssueSelectedUserStoryForSetVoid))}"
+                                />
+                            
+                            <h:outputText value="Do you want to set void for User Story #{productBacklogBeanV2.selectedUserStoryForSetVoid.userStoryId} and related Issues:" 
+                                          rendered="#{(not empty (productBacklogBeanV2.relatedIssueSelectedUserStoryForSetVoid)) or (not empty (productBacklogBeanV2.relatedKanbanIssueSelectedUserStoryForSetVoid))}"
+                                          style="text-align: left;display:block;margin-top:5px;"
+                                          layout="block"/> 
+                                          
+                            <!--                                 Show Scrum Issue  -->
+                            <h:panelGroup rendered="#{not empty (productBacklogBeanV2.relatedIssueSelectedUserStoryForSetVoid)}"
+                                    style="text-align: left;margin-top:5px;">
+                                    <ui:repeat var="issue" value="#{productBacklogBeanV2.relatedIssueSelectedUserStoryForSetVoid}">
+                                        <h:outputText value="- #{issue.issueId} : #{issue.subject}" style="margin-left:6%;display:block"/>
+                                    </ui:repeat>
+                            </h:panelGroup>
+                             
+                             <!--                             Show Kanban issue -->
+                            <h:panelGroup style="text-align: left;margin-top:5px;" 
+                                          rendered="#{(empty (productBacklogBeanV2.relatedIssueSelectedUserStoryForSetVoid)) and (not empty (productBacklogBeanV2.relatedKanbanIssueSelectedUserStoryForSetVoid))}">
+                                    <ui:repeat var="kanbanIssue" value="#{productBacklogBeanV2.relatedKanbanIssueSelectedUserStoryForSetVoid}">
+                                        <h:outputText value="- #{kanbanIssue.issueId} : #{kanbanIssue.subject}" style="margin-left:6%;display:block"></h:outputText>
+                                    </ui:repeat>
+                            </h:panelGroup>
+						</f:facet>
+						<h:panelGroup layout="block" style="text-align: right">
+							<p:commandButton value="Yes"
+								actionListener="#{productBacklogBeanV2.processSetVoidUserStory()}"
+								oncomplete="confirmSetVoidUserStory.hide();"
+								update=":form-userStoryTable :userStoryForm" />
+							<p:commandButton value="No"
+								oncomplete="confirmSetVoidUserStory.hide()" />
+						</h:panelGroup>
+					</p:confirmDialog>
+<!-- 					Confirm destroy void -->
+					<p:confirmDialog widgetVar="confirmSetDestroyVoid"
+						id="idConfirmSetDestroyVoid" width="400" modal="true"
+						closable="false" severity="alert" type="hidden">
+						<f:facet name="header">
+								Confirm
+							</f:facet>
+						<f:facet name="message">
+                            <h:outputText
+                                value="Do you want to destroy void for User Story #{productBacklogBeanV2.selectedUserStoryForSetVoid.userStoryId} ?"
+                                rendered="#{(empty (productBacklogBeanV2.relatedIssueSelectedUserStoryForSetVoid)) and (empty (productBacklogBeanV2.relatedKanbanIssueSelectedUserStoryForSetVoid))}"
+                                />
+                            
+                            <h:outputText value="Do you want to destroy void for User Story #{productBacklogBeanV2.selectedUserStoryForSetVoid.userStoryId} and related Issues:" 
+                                          rendered="#{(not empty (productBacklogBeanV2.relatedIssueSelectedUserStoryForSetVoid)) or (not empty (productBacklogBeanV2.relatedKanbanIssueSelectedUserStoryForSetVoid))}"
+                                          style="text-align: left;display:block;margin-top:5px;"
+                                          layout="block"/> 
+                                          
+                            <!--                                 Show Scrum Issue  -->
+                            <h:panelGroup rendered="#{not empty (productBacklogBeanV2.relatedIssueSelectedUserStoryForSetVoid)}"
+                                    style="text-align: left;margin-top:5px;">
+                                    <ui:repeat var="issue" value="#{productBacklogBeanV2.relatedIssueSelectedUserStoryForSetVoid}">
+                                        <h:outputText value="- #{issue.issueId} : #{issue.subject}" style="margin-left:6%;display:block"/>
+                                    </ui:repeat>
+                            </h:panelGroup>
+                             
+                             <!--                             Show Kanban issue -->
+                            <h:panelGroup style="text-align: left;margin-top:5px;" 
+                                          rendered="#{(empty (productBacklogBeanV2.relatedIssueSelectedUserStoryForSetVoid)) and (not empty (productBacklogBeanV2.relatedKanbanIssueSelectedUserStoryForSetVoid))}">
+                                    <ui:repeat var="kanbanIssue" value="#{productBacklogBeanV2.relatedKanbanIssueSelectedUserStoryForSetVoid}">
+                                        <h:outputText value="- #{kanbanIssue.issueId} : #{kanbanIssue.subject}" style="margin-left:6%;display:block"></h:outputText>
+                                    </ui:repeat>
+                            </h:panelGroup>
+                        </f:facet>
+						<h:panelGroup layout="block" style="text-align: right">
+							<p:commandButton value="Yes"
+								actionListener="#{productBacklogBeanV2.processSetDestroyVoid()}"
+								oncomplete="confirmSetDestroyVoid.hide();"
+								update=":form-userStoryTable :userStoryForm" />
+							<p:commandButton value="No"
+								oncomplete="confirmSetDestroyVoid.hide()" />
+						</h:panelGroup>
+					</p:confirmDialog>
+					<ui:fragment rendered="#{empty userStories}">
+					<tr>
+						<td colspan="10">
+							No Product Backlogs
+						</td>
+					</tr>
+				</ui:fragment>
+			</tbody>
+			<tfoot>
+				<tr>
+					<th colspan="10">
+						<h:outputText value="Showing #{userStories.size()} of #{productBacklogBeanV2.totalRowProductBacklog} Entries" rendered="#{userStories.size() gt 0}" style="float:right;color:white;font-weight:normal;"/>
+					</th>
+				</tr>
+			</tfoot>
+		</table>
+		<h:outputText styleClass="checkRemainingUserStory" style="display:none;" rendered="${productBacklogBeanV2.remainingDataUserStoty}"/>
+		
+		</h:panelGroup>
+		<p:remoteCommand name="filterUserStory" actionListener="#{productBacklogBeanV2.filterUserStory()}" update="wrap-table-userstory"></p:remoteCommand>
+		<p:remoteCommand name="loadmore" actionListener="#{productBacklogBeanV2.loadMoreUserStory()}" update="wrap-table-userstory"></p:remoteCommand>
+		<p:remoteCommand name="fieldSort" actionListener="#{productBacklogBeanV2.sortUserStory()}" global="true" update="wrap-table-userstory"/>
+		<script type="text/javascript">
+		    var delay = (function() {
+		        var timer = 0;
+		        return function(callback, ms) {
+		            clearTimeout(timer);
+		            timer = setTimeout(callback, ms);
+		        };
+		    })();
+		
+		    function ajaxDelay() {
+		        delay( function() {
+		        	filterUserStory();
+		        }, 500);
+		    };
+		</script>
+
+	</h:form>		
+	</p:fieldset>	
+</html>

@@ -1,0 +1,125 @@
+.wrapp-content {
+	width: 100% !important;
+}
+
+.reference-link {
+	margin-left: 0px;
+}
+
+.reference-link li {
+	list-style: none;
+	float: left;
+	margin-right: 2px;
+	margin-top: 3px;
+	height: 30px;
+	height: 30px;
+	overflow: hidden;
+}
+
+.reference-link li img {
+	position: relative;
+}
+
+.reference-link li:hover img {
+	top: -32px;
+}
+
+.title-about {
+	color: #777;
+	border-bottom: 2px groove #ccc;
+}
+
+.content-box {
+	margin-bottom: 10px;
+}
+
+.introduct-image-company {
+	float: left;
+	width: 30%;
+	margin-left: 5%;
+	margin-top: 10px;
+}
+
+.content-about {
+	float: left;
+	width: 55%;
+	margin-left: 5%;
+	margin-top: 46px;
+	text-align: justify;
+	margin-bottom: 20px;
+}
+
+.flexslider {
+	width: 98%;
+	height: auto;
+	position: relative;
+	top: -20px;
+}
+
+.wrap-slide-image h3 {
+	color: #777 !important;
+	margin: 0px 0px !important;
+	text-align: center;
+}
+
+.carousel, .carousel-inner {
+	height: 230px;
+}
+
+
+.carousel-inner .active {
+	height: 100%;
+}
+
+.carousel-caption {
+	bottom: 0px !important;
+	position: absolute;
+}
+
+.carousel-indicators li:hover {
+	cursor: pointer;
+	background: rgba(0, 0, 0, 0.7);
+}
+
+.title-lastest-news {
+	color: #686d71 !important;
+	text-align: center;
+	font-weight: bold;
+	font-size: 17.5px !important;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.loggedInName {
+	display: none !important;
+}
+
+.carousel {
+	margin-bottom: 30px !important;
+}
+
+.img-polaroid {
+	padding: 0px !important;
+	border: 0px !important;
+}
+
+ol {
+	margin: 0px;
+}
+
+@media screen and (max-width:1026px){
+	.top-230 {
+		top: 230px !important;
+	}
+	.carousel, .carousel-inner {
+		height: 180px;
+	}
+}
+
+@media screen and (max-width:500px){
+	.content-about {
+		width: 90%;
+	}
+	.introduct-image-company {
+		width: 90%;
+	}
+}

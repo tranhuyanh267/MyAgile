@@ -1,0 +1,72 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+		xmlns:ui="http://java.sun.com/jsf/facelets" 
+		xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui" template="/WEB-INF/layouts/template.xhtml"
+		xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="layoutTitle">
+        Myagile User Guide
+    </ui:define>
+	<ui:define name="layoutHead">
+	</ui:define>
+	<ui:define name="layoutBody">
+		<c:set value="#{request.contextPath}/resources/img/help/issue" var="issueSourcePath"></c:set>
+		<div class="content-section">
+			<div class="heading">
+				<h4>Manage Issue Overview</h4>
+				<a id="issueOverview"></a>
+			</div>
+			<div class="content-block">
+				<div class="content-block-nav">
+					<p class="content-block-nav-back">
+						<a href="#{request.contextPath}/help"><i class="icon-double-angle-left"></i> Guide</a>
+						<a href="#{request.contextPath}/help/sprint-backlog"><i class="icon-double-angle-left"></i> Previous</a>
+					</p>
+					<p class="content-block-nav-forward">
+						<a href="#{request.contextPath}/help/statistics">Next <i class="icon-double-angle-right"></i></a>
+					</p>
+				</div>
+				<div class="content-block-main">
+					<p>Choose the “Sprint/Manage Issue” path to come to issue page.</p>
+					<img alt="issue_guide.picture" src="#{issueSourcePath}/issue_page.png" />
+					<dl>
+						<dt><a id="CRUD">1. Create, update and delete</a></dt>
+						<dd>
+							<p>Click the “New Issue” button and fill in the form information.</p>
+							<img alt="issue_guide.picture" src="#{issueSourcePath}/issue_new.png" />
+							<p>You can update the issue by clicking the “edit” button (pencil symbol).</p>
+							<img alt="issue_guide.picture" src="#{issueSourcePath}/issue_update.png" />
+							<p>Delete an issue by clicking the “delete” button (bin symbol)..</p>
+							<img alt="issue_guide.picture" src="#{issueSourcePath}/issue_delete.png" />
+							<div class="backToTop"><a href="#issueOverview">BACK TO TOP <i class="icon-hand-up"></i></a></div>
+						</dd>
+						<dt><a id="view">2. View and history</a></dt>
+						<dd>
+							<p>View detail information and updated history of the issue by clicking the “view” button (magnifier symbol).</p>
+							<img alt="issue_guide.picture" src="#{issueSourcePath}/issue_view_history.png" />
+							<div class="backToTop"><a href="#issueOverview">BACK TO TOP <i class="icon-hand-up"></i></a></div>
+						</dd>
+						<dt><a id="excel">3. Excel export</a></dt>
+						<dd>
+							<p>Check the some issues y from table of issues ou want to export to excel file. 
+							Choose the file content format (plain text or rich text) and click the “excel” icon..</p>
+							<img alt="issue_guide.picture" src="#{issueSourcePath}/issue_choose_excel_format.png" />
+							<p>The file with excel format (.xls extension) will be created.</p>
+							<img alt="issue_guide.picture" src="#{issueSourcePath}/issue_excel_file.png" />
+							<div class="backToTop"><a href="#issueOverview">BACK TO TOP <i class="icon-hand-up"></i></a></div>
+						</dd>
+						<dt><a id="pdf">4. PDF export</a></dt>
+						<dd>
+							<p>Choose the some issues from table of issues you want to export to excel file and click the “pdf” icon.</p>
+							<img alt="issue_guide.picture" src="#{issueSourcePath}/issue_export_pdf_choose_issue.png" />
+							<p>The file with PDF format will be created.</p>
+							<img alt="issue_guide.picture" src="#{issueSourcePath}/issue_pdf_file.png" />
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+	<ui:define name="layoutFooter">
+	</ui:define>
+</ui:composition>

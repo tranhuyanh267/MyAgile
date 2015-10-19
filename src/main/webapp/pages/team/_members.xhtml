@@ -1,0 +1,183 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:custom="http://myagile.com/custom">
+	<style>
+		.myTeamLink{
+			color: #297DB6 !important;
+		}
+		
+		.myTeamLink:hover{
+			text-decoration: underline !important; 
+		}
+	</style>
+		<p:fieldset legend="Member Info" styleClass="team-members span12">
+		<h:form id="memberForm">
+			<ui:repeat var="teamMemPro" value="#{teamBean.teamMemberProjectsList}" varStatus="columnCounter">
+				<div id="member-profile-#{teamMemPro.teamMember.teammemberId}" class="member-profile">
+					<div class="member-avatar" style="padding: 10px; width: 144px; height: 144px;">
+						<div class="darken" style="overflow: hidden; width: 100%; height: 100%;">
+							<h:graphicImage alt="member-avatar" width="100%"
+								value="/file/?type=member-logo&amp;filename=#{teamMemPro.teamMember.member.avatar}"
+								rendered="#{!empty teamMemPro.teamMember.member.avatar}" atl="#{teamMemPro.teamMember.member.memberId}" />
+							<h:graphicImage alt="member-avatar" style="height:145px;"
+								value="resources/img/user.png"
+								rendered="#{empty teamMemPro.teamMember.member.avatar}" atl="#{teamMemPro.teamMember.member.memberId}" />
+
+						</div>
+						<p:commandLink onclick="com#{teamMemPro.teamMember.teammemberId}.show()" global="false" value="Remove" styleClass="btn btn-info btn-small content-font-size" style="margin-top:-40px;display:none;" rendered="#{custom:isUserInAnyRoles('DEVELOPER,SCRUM_MASTER,PRODUCT_OWNER', teamBean.team.teamId)}"/>
+					</div>
+					<p:confirmDialog widgetVar="com#{teamMemPro.teamMember.teammemberId}">
+						<f:facet name="header">
+							<h:outputFormat value="#{msg['myagile.team.RemoveMemberTitle']}" styleClass="content-font-size" />
+						</f:facet>
+						<f:facet name="message">
+							<h:outputFormat value="#{msg['myagile.team.RemoveMember']}">
+								<f:param value="#{teamBean.checkName(teamMemPro.teamMember.getMember())}"/>
+							</h:outputFormat>
+						</f:facet>
+						<h:panelGroup layout="block" style="text-align: right">
+							<p:commandButton value="Yes"
+								actionListener="#{teamBean.removeMember(teamMemPro.teamMember.teammemberId,teamMemPro.teamMember.member.memberId)}"
+								update=":memberForm"
+								oncomplete="com#{teamMemPro.teamMember.teammemberId}.hide(),$('#member-profile-#{teamMemPro.teamMember.teammemberId}').hide(500);" />
+							<p:commandButton value="No" global="false"
+								oncomplete="com#{teamMemPro.teamMember.teammemberId}.hide()" immediate="true" />
+						</h:panelGroup>
+					</p:confirmDialog>
+					
+					<h:panelGroup rendered="#{teamMemPro.teamMember.isAccepted == true}">
+						<div class="member-info">
+							<h:outputLink value="#{teamBean.getMyTeamUrl(teamMemPro.teamMember.member.username)}" id="myTeamLinked" target="_blank" rendered="#{teamBean.getMyTeamUrl(teamMemPro.teamMember.member.username) != ''}" styleClass="member-name myTeamLink" >#{teamMemPro.teamMember.member.lastName}&#160;#{teamMemPro.teamMember.member.firstName}
+								<i class="icon-link" style="font-size:12px;color:#808080;"/>
+							</h:outputLink>
+							<h:outputText styleClass="member-name" value="#{teamMemPro.teamMember.member.lastName}&#160;#{teamMemPro.teamMember.member.firstName}" rendered="#{teamBean.getMyTeamUrl(teamMemPro.teamMember.member.username) == ''}"/>
+							<pe:tooltip for="myTeamLinked" showEvent="mouseover" fixed="true">
+									<h:outputText value="View details in myteam.axonactive.vn" />
+							</pe:tooltip>
+							<h:panelGrid style="margin-top:10px;">
+								<p:selectOneMenu style="margin-bottom:-2px;" id="selectPosition#{teamMemPro.teamMember.teammemberId}" 
+								                 disabled="#{!custom:isUserInAnyRoles('SCRUM_MASTER,PRODUCT_OWNER', teamBean.team.teamId)}"
+									             value="${teamMemPro.teamMember.position}" styleClass="text-left">
+									<f:selectItem itemLabel="Scrum Master" itemValue="SCRUM_MASTER" />
+									<f:selectItem itemLabel="Stakeholder" itemValue="STAKEHOLDER" />
+									<f:selectItem itemLabel="Developer" itemValue="DEVELOPER" />
+									<f:selectItem itemLabel="Product Owner" itemValue="PRODUCT_OWNER" />
+									<p:ajax listener="#{teamBean.changePosition(teamMemPro.teamMember.teammemberId, teamMemPro.teamMember.position)}"
+										      update=":memberForm, :teamInfoFieldset, :selectTeamForm :memberForm:projectDialog" oncomplete="chooseProject.show();" />
+								</p:selectOneMenu>
+							</h:panelGrid>
+								<h:outputText rendered="#{teamMemPro.teamMember.position == 'PRODUCT_OWNER'}">
+								    <p> 
+								         <p:commandLink id="assignProjectLink" disabled="#{!custom:isUserInAnyRoles('SCRUM_MASTER,PRODUCT_OWNER', teamBean.team.teamId)}"  
+								                        action="#{teamBean.resetSelectedMemberIdAndProjects(teamMemPro.teamMember.member.memberId)}" 
+								                        update=":memberForm:projectDialog" oncomplete="chooseProject.show();" > 
+								            <span class="icon-pencil" style="margin-top: 5px;"/>&#160;&#160;<h:outputText id="assignProject" value="PO of projects: "/>
+								         </p:commandLink>
+								         <pe:tooltip for="assignProject" showEvent="mouseover" fixed="true">
+								            <c:if test="${custom:isUserInAnyRoles('SCRUM_MASTER,PRODUCT_OWNER', teamBean.team.teamId)}">
+                                                <h:outputText value="Click to assign or unassign project."/>
+                                            </c:if>
+                                            <c:if test="${!custom:isUserInAnyRoles('SCRUM_MASTER,PRODUCT_OWNER', teamBean.team.teamId)}">
+                                                <h:outputText value=""/>
+                                            </c:if>
+                                        </pe:tooltip>
+								        <h:outputText value="#{teamMemPro.shortProjectsName}" id="proNameLinked" target="_blank"/>
+								        <pe:tooltip for="proNameLinked" showEvent="mouseover" fixed="true">
+								            <h:outputText styleClass="member-name" value="#{teamMemPro.projectsName}"/>
+								        </pe:tooltip>
+					                </p>
+				                </h:outputText>
+							<p>
+								<span class="aicon-email" style="margin-top: 5px;"/>
+								<a href="mailto:#{teamMemPro.teamMember.member.username}?Subject=Hello" target="_new">#{teamMemPro.teamMember.member.username}</a>
+							</p>							
+							<h:panelGroup id="skypeStatus">
+								<p>
+									<a href="skype:${teamMemPro.teamMember.member.skype}?chat"> 
+									<i class="icon-skype #{onlineMembersBean.getSkypeStatusType(teamMemPro.teamMember.member.memberId)}" id="Skype_#{teamMemPro.teamMember.member.skype}" style="margin-right: 5px;"/>
+									<h:outputText id="skypeName" style="display: inline;" value=" ${teamMemPro.teamMember.member.skype}"/></a>
+									
+								</p>
+								<pe:tooltip for="skypeName" showEvent="mouseover" fixed="true">
+									<h:outputText
+										value="#{onlineMembersBean.getSkypeStatusType(teamMemPro.teamMember.member.memberId)}" />
+								</pe:tooltip>
+							</h:panelGroup>
+							<p:remoteCommand
+								name="remoteSkypeStatusMember${teamMemPro.teamMember.member.memberId}"
+								action="#{onlineMembersBean.checkStatusSkype}"
+								update="skypeStatus" global="false" immediate="true">
+							</p:remoteCommand>
+							
+							<!-- Effect loading page My Team -->
+							<!-- <script>
+								$(function () {
+									setTimeout(function(){
+										remoteSkypeStatusMember${teamMemPro.teamMember.member.memberId}([
+		           							{ name: 'account', value: '${teamMemPro.teamMember.member.skype}'}
+		           						]);
+									}, #{columnCounter.index}*2000);
+									
+		       						setInterval(function(){
+		       							remoteSkypeStatusMember${teamMemPro.teamMember.member.memberId}([
+		       									{ name: 'account', value: '${teamMemPro.teamMember.member.skype}'}
+		       								]);
+		       							}, 120*1000 + #{columnCounter.index}*2000);
+								});
+							</script> -->
+							<p>
+								<i class="aicon-mobile" style="margin-top: 3px;"></i>${teamMemPro.teamMember.member.mobile}
+							</p>
+							<p>
+								<span class="aicon-company" style="margin-top: 3px;"></span>${teamMemPro.teamMember.member.company}
+							</p>
+						</div>
+					</h:panelGroup>
+					<h:panelGroup rendered="#{teamMemPro.teamMember.isAccepted == false}">
+						<div class="member-info">
+							<p class="member-name">Waiting for acceptance</p>
+							<p>
+								<span class="aicon-email"></span>${teamMemPro.teamMember.member.username}
+							</p>
+
+						</div>
+					</h:panelGroup>
+				</div>
+				
+			</ui:repeat>
+			<script>
+				initMemberForm();
+			</script>
+                <!-- Assign PO for projects -->
+                 <p:confirmDialog id="projectDialog" layout="block" modal="true" width="400" closable="true" header="Information" severity="" widgetVar="chooseProject" type="hidden">
+                    <c:choose> 
+					  <c:when test="#{teamBean.newRole != 'PRODUCT_OWNER'}">
+					     <f:facet name="message">Save successful.</f:facet>
+	                     <div style="text-align:right"><p:commandButton value="OK" onclick="chooseProject.hide();" /></div>
+					  </c:when>
+					  <c:otherwise>
+					       <f:facet name="message">Select to assign Project</f:facet>   
+					       <div style="margin-left:30px"> 
+                                <p:selectCheckboxMenu id="checkProjects" value="#{teamBean.selectedProjectIdsForPO}" label="Projects of team" filter="true" filterText="Filter" filterMatchMode="startsWith">
+                                     <f:selectItems value="#{teamBean.projectsOfTeam}" var="project" itemLabel="#{project.projectName}" itemValue="#{project.projectId}" />
+                                 </p:selectCheckboxMenu>
+                                 <h:inputHidden />
+                            </div>
+                          <div style="text-align:right">
+                            <p:commandButton value="Save" actionListener="#{teamBean.assignProductOnwerforProjects()}" update=":memberForm, :teamInfoFieldset, :selectTeamForm" oncomplete="chooseProject.hide();" />
+                            <p:commandButton value="Cancel" onclick="chooseProject.hide();" />
+                          </div>
+					  </c:otherwise>
+					</c:choose>
+                 </p:confirmDialog>
+	</h:form>
+   </p:fieldset>
+</ui:composition>
+
+
